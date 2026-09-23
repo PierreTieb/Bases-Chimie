@@ -1,0 +1,429 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Space+Mono&display=swap');
+
+@font-face {
+  font-family: 'Holidays Homework';
+  src: url('HolidaysHomework.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---------- Thème "accueil" ---------- */
+body[data-theme="home"] {
+  --home-light: #eef4f6;
+  --home-mid:   #d9e7ec;
+  --home-dark:  #b9d2da;
+  --home-text:  #2e3d42;
+  --theme-accent: #6fb3c9;
+}
+
+:root {
+  --font-display: 'Holidays Homework', 'Quicksand', cursive;
+  --font-body: 'Quicksand', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+
+  --success: #4caf7d;
+  --error: #e0554f;
+  --warning: #eab54a;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: var(--font-body);
+  font-weight: 500;
+  color: var(--home-text);
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 40%),
+    radial-gradient(circle at 85% 85%, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 45%),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.35) 0px, rgba(255,255,255,0.35) 1px, transparent 1px, transparent 32px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.35) 0px, rgba(255,255,255,0.35) 1px, transparent 1px, transparent 32px),
+    linear-gradient(160deg, var(--home-light), var(--home-mid) 60%, var(--home-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  overflow-x: hidden;
+}
+
+/* ---------- Écrans ---------- */
+.screen {
+  display: none;
+  width: 100%;
+  max-width: 480px;
+}
+.screen.active {
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------- Panneau "verre" ---------- */
+.glass-panel {
+  position: relative;
+  width: 100%;
+  background: rgba(255,255,255,0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 32px;
+  padding: 32px 20px 40px;
+  box-shadow:
+    0 8px 30px rgba(80, 110, 120, 0.18),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+/* ---------- Titre ---------- */
+.app-title {
+  font-family: var(--font-display);
+  font-weight: normal;
+  text-align: center;
+  font-size: 2.4rem;
+  line-height: 1.15;
+  margin: 4px 0 32px;
+  color: var(--home-text);
+  text-shadow: 0 2px 0 rgba(255,255,255,0.6);
+}
+.app-title--small {
+  font-size: 1.8rem;
+  margin: 8px 0 20px;
+}
+
+/* ---------- Liste des modes ---------- */
+.mode-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mode-btn {
+  position: relative;
+  border: none;
+  border-radius: 26px;
+  padding: 0;
+  height: 120px;
+  cursor: pointer;
+  overflow: hidden;
+  font-family: var(--font-display);
+  isolation: isolate;
+}
+
+.mode-btn__label {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  padding: 12px 16px;
+  font-size: 1.3rem;
+  line-height: 1.25;
+}
+
+/* Bouton Mode 1 : fond "molécules" en SVG + effet relief */
+.mode-btn--molecules {
+  background-image: linear-gradient(160deg, #7fc2dd, #3f8fb8 55%, #2c6f92);
+  color: #fff;
+  box-shadow:
+    0 6px 0 rgba(46,61,66,0.35),
+    0 10px 18px rgba(46,61,66,0.25);
+}
+.mode-btn--molecules .mode-btn__label {
+  text-shadow: 0 2px 4px rgba(0,0,0,0.45);
+}
+.mode-btn--molecules:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 2px 0 rgba(46,61,66,0.35),
+    0 4px 8px rgba(46,61,66,0.25);
+}
+
+/* Bouton "Construire une molécule" : plan bleu d'ingénierie + schéma chimique */
+.mode-btn--build {
+  background-color: #163a5c;
+  background-image:
+    linear-gradient(160deg, rgba(255,255,255,0.08), rgba(0,0,0,0.28)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cpolygon points='140,100 120,135 80,135 60,100 80,65 120,65' fill='none' stroke='rgba(180,225,255,0.4)' stroke-width='3'/%3E%3Cline x1='60' y1='100' x2='30' y2='100' stroke='rgba(180,225,255,0.4)' stroke-width='3'/%3E%3Ccircle cx='30' cy='100' r='6' fill='rgba(180,225,255,0.55)'/%3E%3Cline x1='140' y1='100' x2='170' y2='100' stroke='rgba(180,225,255,0.4)' stroke-width='3'/%3E%3Ccircle cx='170' cy='100' r='6' fill='rgba(180,225,255,0.55)'/%3E%3Cline x1='100' y1='65' x2='100' y2='35' stroke='rgba(180,225,255,0.4)' stroke-width='3'/%3E%3Ccircle cx='100' cy='35' r='6' fill='rgba(180,225,255,0.55)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpath d='M20 0H0V20' fill='none' stroke='rgba(255,255,255,0.15)' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: cover, 220px, 20px;
+  background-position: center, center, center;
+  background-repeat: no-repeat, repeat, repeat;
+  color: #eaf6ff;
+  box-shadow:
+    0 6px 0 rgba(10,30,50,0.5),
+    0 10px 18px rgba(10,30,50,0.35);
+}
+.mode-btn--build .mode-btn__label {
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+.mode-btn--build:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 2px 0 rgba(10,30,50,0.5),
+    0 4px 8px rgba(10,30,50,0.35);
+}
+
+/* Bouton "Prochainement" (Mode 1-2) : bleu foncé flou, non cliquable */
+.mode-btn--soon-dark {
+  background: linear-gradient(160deg, #35506a, #1f374c);
+  box-shadow: 0 6px 0 rgba(10,30,50,0.4), 0 10px 18px rgba(10,30,50,0.3);
+  pointer-events: none;
+  cursor: default;
+}
+.mode-btn--soon-dark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  filter: blur(6px);
+  background: inherit;
+  z-index: 1;
+}
+.mode-btn__label--soon-dark {
+  color: #dce8f0;
+  font-size: 1.4rem;
+}
+
+/* Bouton "Prochainement" : gris flou, non cliquable */
+.mode-btn--soon {
+  background: linear-gradient(160deg, #d7dcdd, #b8bfc1);
+  box-shadow: 0 6px 0 rgba(80,90,92,0.25), 0 10px 18px rgba(80,90,92,0.18);
+  pointer-events: none;
+  cursor: default;
+}
+.mode-btn--soon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  filter: blur(6px);
+  background: inherit;
+  z-index: 1;
+}
+.mode-btn__label--soon {
+  color: #4a5254;
+  font-size: 1.4rem;
+}
+
+/* ---------- Bouton retour ---------- */
+.btn-back {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.7);
+  box-shadow: 0 3px 0 rgba(46,61,66,0.2), 0 5px 10px rgba(46,61,66,0.15);
+  font-size: 1.3rem;
+  color: var(--home-text);
+  cursor: pointer;
+}
+.btn-back:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 rgba(46,61,66,0.2), 0 2px 4px rgba(46,61,66,0.15);
+}
+
+.placeholder-text {
+  text-align: center;
+  margin-top: 12px;
+}
+
+/* ---------- Desktop ---------- */
+@media (min-width: 640px) {
+  .glass-panel { padding: 48px 40px 56px; }
+  .app-title { font-size: 3.2rem; }
+  .mode-btn { height: 140px; }
+  .mode-btn__label { font-size: 1.5rem; }
+}
+
+/* ---------- Mode 1-1 : bac à sable ---------- */
+.screen--sandbox { max-width: 680px; }
+
+.sandbox-shell {
+  position: relative;
+  width: 100%;
+  background: rgba(255,255,255,0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 28px;
+  padding: 64px 10px 18px;
+  box-shadow:
+    0 8px 30px rgba(80, 110, 120, 0.18),
+    inset 0 1px 0 rgba(255,255,255,0.8);
+}
+
+.sandbox-layout {
+  display: flex;
+  gap: 8px;
+  height: 56vh;
+  min-height: 320px;
+}
+
+/* Panneau des atomes : "plaque de verre" grise, 2 colonnes, scrollable */
+.atoms-panel {
+  flex: 0 0 34%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-content: start;
+  gap: 6px;
+  overflow-y: auto;
+  background: #e6e9ea;
+  border: 2px solid #cbd0d2;
+  border-radius: 16px;
+  padding: 8px;
+}
+
+.element-cell {
+  position: relative;
+  background: #f6f7f8;
+  border: 1px solid #d6dadc;
+  border-radius: 8px;
+  aspect-ratio: 1 / 1.2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 2px 3px;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.element-mass,
+.element-number {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.55rem;
+  line-height: 1;
+  color: #4a5254;
+}
+.element-mass { top: 3px; left: 4px; }
+.element-number { bottom: 3px; left: 4px; }
+.element-symbol {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #2e3d42;
+}
+.element-name {
+  font-family: var(--font-body);
+  font-size: 0.48rem;
+  text-align: center;
+  color: #5a6265;
+  margin-top: 2px;
+  line-height: 1.05;
+}
+
+/* Zone de dépôt : même esthétique "plaque de verre" détachée du fond */
+.drop-zone-wrapper {
+  flex: 1 1 66%;
+  position: relative;
+  display: flex;
+}
+.drop-zone {
+  position: relative;
+  flex: 1;
+  background: #e6e9ea;
+  border: 2px solid #cbd0d2;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.placed-atom {
+  position: absolute;
+  z-index: 2;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 2px rgba(0,0,0,0.85), 0 0 5px rgba(0,0,0,0.5);
+  box-shadow:
+    inset 0 -5px 7px rgba(0,0,0,0.25),
+    inset 0 3px 4px rgba(255,255,255,0.35),
+    0 2px 5px rgba(0,0,0,0.2);
+  pointer-events: none;
+}
+
+.bond-line {
+  position: absolute;
+  z-index: 1;
+  height: 4px;
+  background: #7c868a;
+  border-radius: 2px;
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+.drag-ghost {
+  position: fixed;
+  z-index: 999;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 0 2px rgba(0,0,0,0.85), 0 0 5px rgba(0,0,0,0.5);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0.9;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+}
+
+.btn-clear {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  z-index: 3;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(160deg, #f2867f, #e0554f);
+  box-shadow: 0 4px 0 rgba(140,40,35,0.4), 0 6px 10px rgba(140,40,35,0.3);
+  cursor: pointer;
+}
+.btn-clear:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(140,40,35,0.4), 0 2px 4px rgba(140,40,35,0.3);
+}
+
+.formula-display {
+  margin-top: 14px;
+  text-align: center;
+  min-height: 44px;
+}
+.formula-brute {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #1a1a1a;
+}
+.formula-name {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--home-text);
+  margin-top: 2px;
+}
+.formula-name--error {
+  color: var(--error);
+}
+
+@media (min-width: 640px) {
+  .sandbox-layout { height: 60vh; }
+  .element-symbol { font-size: 1.25rem; }
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Les bases de la Chimie</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="home">
+
+  <!-- ÉCRAN : ACCUEIL -->
+  <section id="screen-home" class="screen active">
+    <div class="glass-panel home-panel">
+      <h1 class="app-title">Les Bases<br>de la Chimie</h1>
+
+      <div class="mode-list">
+        <button type="button" id="btn-mode1" class="mode-btn mode-btn--molecules">
+          <span class="mode-btn__label">Les Molécules et<br>les formules chimiques</span>
+        </button>
+
+        <button type="button" class="mode-btn mode-btn--soon" aria-disabled="true" tabindex="-1">
+          <span class="mode-btn__label mode-btn__label--soon">Prochainement…</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉCRAN : MODE 1 (sélection des sous-modes) -->
+  <section id="screen-mode1" class="screen">
+    <div class="glass-panel">
+      <button type="button" class="btn-back" id="btn-back-to-home" aria-label="Retour">&larr;</button>
+      <h1 class="app-title app-title--small">Les Molécules et<br>les formules chimiques</h1>
+
+      <div class="mode-list">
+        <button type="button" id="btn-mode1-1" class="mode-btn mode-btn--build">
+          <span class="mode-btn__label">Construire<br>une molécule</span>
+        </button>
+
+        <button type="button" class="mode-btn mode-btn--soon-dark" aria-disabled="true" tabindex="-1">
+          <span class="mode-btn__label mode-btn__label--soon-dark">Prochainement…</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉCRAN : MODE 1-1 (bac à sable de construction moléculaire) -->
+  <section id="screen-mode1-1" class="screen screen--sandbox">
+    <div class="sandbox-shell">
+      <button type="button" class="btn-back" id="btn-back-to-mode1" aria-label="Retour">&larr;</button>
+
+      <div class="sandbox-layout">
+        <div class="atoms-panel" id="atoms-panel" aria-label="Tableau des 20 premiers atomes"></div>
+
+        <div class="drop-zone-wrapper">
+          <div class="drop-zone" id="drop-zone" aria-label="Zone de dépôt"></div>
+          <button type="button" class="btn-clear" id="btn-clear">Effacer</button>
+        </div>
+      </div>
+
+      <div class="formula-display">
+        <div class="formula-brute" id="formula-brute"></div>
+        <div class="formula-name" id="formula-name"></div>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/units.js"></script>
+  <script src="js/molecules.js"></script>
+  <script src="js/sandbox.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
