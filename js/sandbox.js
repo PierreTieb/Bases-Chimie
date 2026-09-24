@@ -7,9 +7,18 @@ window.Sandbox = (function () {
   var formulaEl = null;
   var nameEl = null;
   var placedAtoms = [];
+  var isCoarsePointer = false;
 
   var BOND_CANDIDATE_ANGLES = [270, 90, 0, 180, 315, 135, 45, 225];
   var BOND_ANGLE_TOLERANCE = 25;
+
+  function detectCoarsePointer() {
+    try {
+      return !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    } catch (e) {
+      return false;
+    }
+  }
 
   function clamp(v, min, max) {
     return Math.min(Math.max(v, min), max);
@@ -36,11 +45,16 @@ window.Sandbox = (function () {
 
     var cells = atomsPanelEl.querySelectorAll('.element-cell');
     for (var j = 0; j < cells.length; j++) {
-      cells[j].addEventListener('pointerdown', onCellPointerDown);
+      if (isCoarsePointer) {
+        cells[j].addEventListener('click', onCellTapMobile);
+      } else {
+        cells[j].addEventListener('pointerdown', onCellPointerDownDesktop);
+      }
     }
   }
 
-  function onCellPointerDown(evt) {
+  // ---------- Interaction PC : glisser-déposer (Pointer Events) ----------
+  function onCellPointerDownDesktop(evt) {
     evt.preventDefault();
     var symbol = evt.currentTarget.getAttribute('data-symbol');
     var el = window.Units.getBySymbol(symbol);
@@ -84,27 +98,46 @@ window.Sandbox = (function () {
     ghost.style.top = y + 'px';
   }
 
-  // Cherche l'atome déjà posé le plus proche du point de dépôt, en préférant
-  // un atome qui a encore de la "place" côté valence ; sinon le plus proche tout court.
-  function findAnchor(x, y) {
-    var withCapacity = null, withCapacityDist = Infinity;
-    var any = null, anyDist = Infinity;
+  // ---------- Interaction mobile : tap pour ajouter / tap pour retirer ----------
+  function onCellTapMobile(evt) {
+    var symbol = evt.currentTarget.getAttribute('data-symbol');
+    var el = window.Units.getBySymbol(symbol);
+    if (!el) return;
+    var zoneW = dropZoneEl.clientWidth || 300;
+    var zoneH = dropZoneEl.clientHeight || 200;
+    placeAtom(el, zoneW / 2, zoneH / 2);
+  }
 
-    for (var i = 0; i < placedAtoms.length; i++) {
-      var a = placedAtoms[i];
+  // Choisit l'atome déjà posé auquel accrocher le nouvel atome : on privilégie
+  // l'atome "central" de plus grande valence disponible (ex: le carbone), et
+  // seulement à distance égale de "centralité" on prend le plus proche du point visé.
+  function bestByValenceThenDistance(atoms, x, y) {
+    if (atoms.length === 0) return null;
+    var maxValence = -Infinity;
+    for (var i = 0; i < atoms.length; i++) {
+      if (atoms[i].valence > maxValence) maxValence = atoms[i].valence;
+    }
+    var topTier = atoms.filter(function (a) { return a.valence === maxValence; });
+    var best = null, bestDist = Infinity;
+    for (var j = 0; j < topTier.length; j++) {
+      var a = topTier[j];
       var dx = a.x - x, dy = a.y - y;
       var d = dx * dx + dy * dy;
-      if (d < anyDist) { anyDist = d; any = a; }
-      if (a.bonds.length < a.valence && d < withCapacityDist) {
-        withCapacityDist = d; withCapacity = a;
-      }
+      if (d < bestDist) { bestDist = d; best = a; }
     }
-    return withCapacity || any;
+    return best;
+  }
+
+  function findAnchor(x, y) {
+    var withCapacity = placedAtoms.filter(function (a) { return a.bonds.length < a.valence; });
+    var chosen = bestByValenceThenDistance(withCapacity, x, y);
+    if (chosen) return chosen;
+    return bestByValenceThenDistance(placedAtoms, x, y);
   }
 
   function angleIsFree(anchor, angleDeg) {
-    for (var i = 0; i < anchor.usedAngles.length; i++) {
-      if (Math.abs(normalizeAngleDiff(anchor.usedAngles[i] - angleDeg)) < BOND_ANGLE_TOLERANCE) {
+    for (var i = 0; i < anchor.bonds.length; i++) {
+      if (Math.abs(normalizeAngleDiff(anchor.bonds[i].angle - angleDeg)) < BOND_ANGLE_TOLERANCE) {
         return false;
       }
     }
@@ -115,12 +148,11 @@ window.Sandbox = (function () {
     for (var i = 0; i < BOND_CANDIDATE_ANGLES.length; i++) {
       if (angleIsFree(anchor, BOND_CANDIDATE_ANGLES[i])) return BOND_CANDIDATE_ANGLES[i];
     }
-    // Repli : l'angle le plus éloigné de tous les angles déjà utilisés.
     var best = 0, bestScore = -1;
     for (var a = 0; a < 360; a += 10) {
       var minDiff = 360;
-      for (var j = 0; j < anchor.usedAngles.length; j++) {
-        var diff = Math.abs(normalizeAngleDiff(anchor.usedAngles[j] - a));
+      for (var j = 0; j < anchor.bonds.length; j++) {
+        var diff = Math.abs(normalizeAngleDiff(anchor.bonds[j].angle - a));
         if (diff < minDiff) minDiff = diff;
       }
       if (minDiff > bestScore) { bestScore = minDiff; best = a; }
@@ -139,14 +171,13 @@ window.Sandbox = (function () {
     line.style.top = a.y + 'px';
     line.style.transform = 'rotate(' + angle + 'deg)';
     dropZoneEl.insertBefore(line, dropZoneEl.firstChild);
+    return line;
   }
 
   function bondAtoms(anchor, atom, angleDeg) {
-    anchor.bonds.push(atom);
-    atom.bonds.push(anchor);
-    anchor.usedAngles.push(angleDeg);
-    atom.usedAngles.push((angleDeg + 180) % 360);
-    createBondLine(anchor, atom);
+    var line = createBondLine(anchor, atom);
+    anchor.bonds.push({ atom: atom, angle: angleDeg, line: line });
+    atom.bonds.push({ atom: anchor, angle: (angleDeg + 180) % 360, line: line });
   }
 
   function placeAtom(el, dropX, dropY) {
@@ -184,7 +215,7 @@ window.Sandbox = (function () {
       symbol: el.symbol, z: el.z, radius: radius,
       x: pos.x, y: pos.y, node: node,
       valence: window.Units.getValence(el.symbol),
-      bonds: [], usedAngles: []
+      bonds: []
     };
 
     if (anchor) {
@@ -192,8 +223,27 @@ window.Sandbox = (function () {
     }
 
     placedAtoms.push(atom);
+
+    // Sur mobile : re-taper sur la bulle la retire (elle "revient" dans la liste).
+    if (isCoarsePointer) {
+      node.style.pointerEvents = 'auto';
+      node.addEventListener('click', function () { removeAtom(atom); });
+    }
+
     updateFormulaDisplay();
     return atom;
+  }
+
+  function removeAtom(target) {
+    target.node.remove();
+    for (var i = 0; i < target.bonds.length; i++) {
+      var b = target.bonds[i];
+      b.line.remove();
+      var other = b.atom;
+      other.bonds = other.bonds.filter(function (ob) { return ob.atom !== target; });
+    }
+    placedAtoms = placedAtoms.filter(function (a) { return a !== target; });
+    updateFormulaDisplay();
   }
 
   function computeCounts() {
@@ -241,6 +291,11 @@ window.Sandbox = (function () {
     nameEl = document.getElementById('formula-name');
     if (!atomsPanelEl || !dropZoneEl || !clearBtnEl) return;
 
+    isCoarsePointer = detectCoarsePointer();
+    if (isCoarsePointer) {
+      document.body.classList.add('touch-mode');
+    }
+
     renderPanel();
     clearBtnEl.addEventListener('click', clearAll);
     updateFormulaDisplay();
@@ -251,6 +306,8 @@ window.Sandbox = (function () {
   return {
     clearAll: clearAll,
     placeAtom: placeAtom,
-    getPlacedAtoms: getPlacedAtoms
+    removeAtom: removeAtom,
+    getPlacedAtoms: getPlacedAtoms,
+    isTouchMode: function () { return isCoarsePointer; }
   };
 })();

@@ -36,8 +36,8 @@
           <span class="mode-btn__label">Construire<br>une molécule</span>
         </button>
 
-        <button type="button" id="btn-mode1-2" class="mode-btn mode-btn--exercise">
-          <span class="mode-btn__label">Quiz des<br>molécules</span>
+        <button type="button" class="mode-btn mode-btn--soon-dark" aria-disabled="true" tabindex="-1">
+          <span class="mode-btn__label mode-btn__label--soon-dark">Prochainement…</span>
         </button>
       </div>
     </div>
@@ -66,26 +66,9 @@
     </div>
   </section>
 
-  <!-- ÉCRAN : MODE 1-2 (quiz de reconnaissance des molécules) -->
-  <section id="screen-exercise1-2" class="screen screen--sandbox">
-    <div class="sandbox-shell">
-      <button type="button" class="btn-back" id="btn-back-to-mode1-ex" aria-label="Retour">&larr;</button>
-      <h1 class="app-title app-title--small">Quiz des<br>molécules</h1>
-      <p class="sandbox-intro">Retrouve le nom qui correspond à la formule affichée.</p>
-
-      <div class="quiz-score" id="quiz-score">Score : 0 / 0</div>
-      <div class="quiz-formula" id="quiz-formula"></div>
-      <div class="quiz-options" id="quiz-options"></div>
-      <p class="quiz-feedback" id="quiz-feedback"></p>
-      <button type="button" class="btn-next" id="btn-quiz-next" style="display:none;">Suivant</button>
-    </div>
-  </section>
-
   <script src="js/units.js"></script>
   <script src="js/molecules.js"></script>
-  <script src="js/generator.js"></script>
   <script src="js/sandbox.js"></script>
-  <script src="js/exercise.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
