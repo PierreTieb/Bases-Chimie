@@ -94,8 +94,15 @@ window.Molecules = (function () {
     return KNOWN_MAP.hasOwnProperty(sig) ? KNOWN_MAP[sig] : undefined;
   }
 
+  function getAllKnown() {
+    return KNOWN.map(function (entry) {
+      return { name: entry.name, formula: buildFormula(entry.counts) };
+    });
+  }
+
   return {
     buildFormula: buildFormula,
-    lookupName: lookupName
+    lookupName: lookupName,
+    getAllKnown: getAllKnown
   };
 })();

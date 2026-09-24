@@ -17,6 +17,8 @@ window.App = (function () {
     var btnBackHome = document.getElementById('btn-back-to-home');
     var btnMode1_1 = document.getElementById('btn-mode1-1');
     var btnBackMode1 = document.getElementById('btn-back-to-mode1');
+    var btnMode1_2 = document.getElementById('btn-mode1-2');
+    var btnBackMode1FromEx = document.getElementById('btn-back-to-mode1-ex');
 
     if (btnMode1) {
       btnMode1.addEventListener('click', function () {
@@ -38,6 +40,18 @@ window.App = (function () {
 
     if (btnBackMode1) {
       btnBackMode1.addEventListener('click', function () {
+        showScreen('screen-mode1');
+      });
+    }
+
+    if (btnMode1_2) {
+      btnMode1_2.addEventListener('click', function () {
+        showScreen('screen-exercise1-2');
+      });
+    }
+
+    if (btnBackMode1FromEx) {
+      btnBackMode1FromEx.addEventListener('click', function () {
         showScreen('screen-mode1');
       });
     }
