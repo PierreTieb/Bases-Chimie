@@ -16,24 +16,8 @@ window.Generator = (function () {
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  // Génère une question de quiz à partir d'un pool [{name, formula}, ...]
-  function generateQuestion(pool, optionsCount) {
-    optionsCount = optionsCount || 4;
-    var correct = pickRandom(pool);
-    var distractorPool = pool.filter(function (m) { return m.name !== correct.name; });
-    var distractors = shuffle(distractorPool).slice(0, optionsCount - 1);
-    var options = shuffle([correct].concat(distractors));
-
-    return {
-      formula: correct.formula,
-      correctName: correct.name,
-      options: options.map(function (o) { return o.name; })
-    };
-  }
-
   return {
     shuffle: shuffle,
-    pickRandom: pickRandom,
-    generateQuestion: generateQuestion
+    pickRandom: pickRandom
   };
 })();

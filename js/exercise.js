@@ -1,87 +1,164 @@
 window.Exercise = (function () {
   'use strict';
 
-  var formulaEl = null;
-  var optionsEl = null;
-  var feedbackEl = null;
-  var scoreEl = null;
-  var nextBtnEl = null;
-
-  var pool = [];
+  var els = {};
+  var previewBuilder = null;
+  var buildSandbox = null;
   var current = null;
+  var answered = false;
   var score = { correct: 0, total: 0 };
 
-  function updateScoreDisplay() {
-    scoreEl.textContent = 'Score : ' + score.correct + ' / ' + score.total;
+  function countsEqual(a, b) {
+    var ak = Object.keys(a).filter(function (k) { return a[k] > 0; });
+    var bk = Object.keys(b).filter(function (k) { return b[k] > 0; });
+    if (ak.length !== bk.length) return false;
+    for (var i = 0; i < ak.length; i++) {
+      var k = ak[i];
+      if (a[k] !== b[k]) return false;
+    }
+    return true;
   }
 
-  function renderQuestion() {
-    feedbackEl.textContent = '';
-    feedbackEl.classList.remove('quiz-feedback--success', 'quiz-feedback--error');
-    nextBtnEl.style.display = 'none';
+  // Place les atomes en commençant par les plus "centraux" (grande valence),
+  // pour un aperçu visuel cohérent (ex: les H s'agglomèrent autour du C).
+  function expandCountsByValenceDesc(counts) {
+    var symbols = Object.keys(counts);
+    symbols.sort(function (a, b) {
+      return window.Units.getValence(b) - window.Units.getValence(a);
+    });
+    var flat = [];
+    symbols.forEach(function (s) {
+      for (var i = 0; i < counts[s]; i++) flat.push(s);
+    });
+    return flat;
+  }
 
-    current = window.Generator.generateQuestion(pool, 4);
-    formulaEl.textContent = current.formula;
-
-    optionsEl.innerHTML = '';
-    current.options.forEach(function (name) {
-      var btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'quiz-option';
-      btn.textContent = name;
-      btn.addEventListener('click', function () { onAnswer(name, btn); });
-      optionsEl.appendChild(btn);
+  function renderIdentifyPreview(counts) {
+    previewBuilder.clearAll();
+    expandCountsByValenceDesc(counts).forEach(function (sym) {
+      previewBuilder.placeAtomAuto(window.Units.getBySymbol(sym));
     });
   }
 
-  function onAnswer(chosenName, chosenBtn) {
-    var buttons = optionsEl.querySelectorAll('.quiz-option');
-    for (var i = 0; i < buttons.length; i++) {
-      buttons[i].disabled = true;
-      if (buttons[i].textContent === current.correctName) {
-        buttons[i].classList.add('quiz-option--correct');
-      }
+  function pickQuestion() {
+    var pool = window.Molecules.getAllKnown();
+    var entry = window.Generator.pickRandom(pool);
+    var type = window.Generator.pickRandom(['identify', 'build']);
+    return { type: type, name: entry.name, counts: entry.counts, formula: entry.formula };
+  }
+
+  function resetFeedback() {
+    els.feedback.textContent = '';
+    els.feedback.className = 'ex-feedback';
+  }
+
+  function showQuestion() {
+    answered = false;
+    current = pickQuestion();
+    resetFeedback();
+    els.nextBtn.style.display = 'none';
+    els.validateBtn.style.display = 'inline-block';
+    els.validateBtn.disabled = false;
+
+    if (current.type === 'identify') {
+      els.identifyPanel.style.display = '';
+      els.buildPanel.style.display = 'none';
+      renderIdentifyPreview(current.counts);
+      els.formulaInput.value = '';
+      els.formulaPreview.textContent = '';
+      els.formulaInput.disabled = false;
+    } else {
+      els.identifyPanel.style.display = 'none';
+      els.buildPanel.style.display = '';
+      els.targetFormula.textContent = current.formula;
+      buildSandbox.clearAll();
+    }
+  }
+
+  function updateScoreDisplay() {
+    els.score.textContent = 'Score : ' + score.correct + ' / ' + score.total;
+  }
+
+  function triggerConfetti() {
+    if (!window.Confetti || !els.confettiCanvas) return;
+    try {
+      var rect = els.validateBtn.getBoundingClientRect();
+      window.Confetti.burst(els.confettiCanvas, rect.left + rect.width / 2, rect.top + rect.height / 2);
+    } catch (e) {
+      // Purement décoratif : une erreur ici ne doit jamais bloquer l'exercice.
+    }
+  }
+
+  function onValidate() {
+    if (answered || !current) return;
+    answered = true;
+
+    var correct;
+    if (current.type === 'identify') {
+      var parsed = window.Molecules.parseFormulaInput(els.formulaInput.value);
+      correct = !!parsed && countsEqual(parsed, current.counts);
+      els.formulaInput.disabled = true;
+    } else {
+      correct = countsEqual(buildSandbox.getCounts(), current.counts);
     }
 
     score.total++;
-    if (chosenName === current.correctName) {
+    els.validateBtn.disabled = true;
+
+    if (correct) {
       score.correct++;
-      feedbackEl.textContent = 'Bravo, bonne réponse !';
-      feedbackEl.classList.add('quiz-feedback--success');
+      els.feedback.textContent = 'Bravo, bonne réponse !';
+      els.feedback.className = 'ex-feedback success';
+      triggerConfetti();
     } else {
-      chosenBtn.classList.add('quiz-option--wrong');
-      feedbackEl.textContent = 'Pas tout à fait : c\'était "' + current.correctName + '".';
-      feedbackEl.classList.add('quiz-feedback--error');
+      els.feedback.textContent = "Ce n'est pas la bonne formule (réponse : " + current.formula + ').';
+      els.feedback.className = 'ex-feedback error';
     }
 
     updateScoreDisplay();
-    nextBtnEl.style.display = 'inline-block';
+    els.nextBtn.style.display = 'inline-block';
   }
 
-  function resetScore() {
-    score = { correct: 0, total: 0 };
-    updateScoreDisplay();
+  function onFormulaInput() {
+    els.formulaPreview.textContent = window.Molecules.formatSubscripts(els.formulaInput.value);
   }
 
   function init() {
-    formulaEl = document.getElementById('quiz-formula');
-    optionsEl = document.getElementById('quiz-options');
-    feedbackEl = document.getElementById('quiz-feedback');
-    scoreEl = document.getElementById('quiz-score');
-    nextBtnEl = document.getElementById('btn-quiz-next');
-    if (!formulaEl || !optionsEl || !feedbackEl || !scoreEl || !nextBtnEl) return;
+    els.identifyPanel = document.getElementById('ex-identify-panel');
+    els.buildPanel = document.getElementById('ex-build-panel');
+    els.previewZone = document.getElementById('ex-preview-zone');
+    els.formulaInput = document.getElementById('ex-formula-input');
+    els.formulaPreview = document.getElementById('ex-formula-preview');
+    els.targetFormula = document.getElementById('ex-target-formula');
+    els.feedback = document.getElementById('ex-feedback');
+    els.score = document.getElementById('ex-score');
+    els.validateBtn = document.getElementById('btn-ex-validate');
+    els.nextBtn = document.getElementById('btn-ex-next');
+    els.confettiCanvas = document.getElementById('confetti-canvas');
 
-    pool = window.Molecules.getAllKnown();
+    if (!els.identifyPanel || !els.buildPanel || !els.previewZone) return;
+
+    previewBuilder = window.MoleculeBuilder.create(els.previewZone);
+    buildSandbox = window.Sandbox.create({
+      panelEl: document.getElementById('atoms-panel-ex'),
+      dropZoneEl: document.getElementById('drop-zone-ex'),
+      clearBtnEl: document.getElementById('btn-clear-ex'),
+      formulaEl: document.getElementById('formula-brute-ex'),
+      nameEl: null
+    });
+
+    els.formulaInput.addEventListener('input', onFormulaInput);
+    els.validateBtn.addEventListener('click', onValidate);
+    els.nextBtn.addEventListener('click', showQuestion);
+
     updateScoreDisplay();
-    nextBtnEl.addEventListener('click', renderQuestion);
-    renderQuestion();
+    showQuestion();
   }
 
   document.addEventListener('DOMContentLoaded', init);
 
   return {
-    renderQuestion: renderQuestion,
-    resetScore: resetScore,
+    showQuestion: showQuestion,
     getScore: function () { return { correct: score.correct, total: score.total }; }
   };
 })();

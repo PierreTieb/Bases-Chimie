@@ -1,8 +1,9 @@
 window.Molecules = (function () {
   'use strict';
 
-  // Ordre d'écriture conventionnel des symboles dans la formule brute
-  // (du plus "métallique" vers le plus "électronégatif").
+  // Ordre d'écriture "par défaut" des symboles dans la formule brute
+  // (du plus "métallique" vers le plus "électronégatif"). Sert de repli
+  // générique pour toute combinaison d'atomes, connue ou non.
   var PRIORITY = [
     'Na', 'K', 'Ca', 'Mg', 'Al', 'Li', 'Be', 'B', 'Si', 'C',
     'P', 'N', 'H', 'S', 'F', 'Cl', 'O', 'He', 'Ne', 'Ar'
@@ -13,7 +14,11 @@ window.Molecules = (function () {
     '5': '\u2085', '6': '\u2086', '7': '\u2087', '8': '\u2088', '9': '\u2089'
   };
 
-  // Liste organisée d'une vingtaine de molécules courantes (V1).
+  // Banque de molécules connues (V2, élargie).
+  // "formula" est optionnel : s'il est fourni, c'est l'écriture d'usage qui est
+  // affichée telle quelle (utile pour les composés dont l'ordre "usuel" ne suit
+  // pas la règle générique ci-dessus, ex: NaOH, HNO3...). Sans "formula", la
+  // formule est déduite automatiquement des comptages via l'ordre générique.
   var KNOWN = [
     { counts: { H: 2 }, name: 'Dihydrogène' },
     { counts: { O: 2 }, name: 'Dioxygène' },
@@ -41,7 +46,28 @@ window.Molecules = (function () {
     { counts: { S: 1, O: 3 }, name: 'Trioxyde de soufre' },
     { counts: { N: 2, O: 1 }, name: "Protoxyde d'azote" },
     { counts: { N: 1, O: 1 }, name: "Monoxyde d'azote" },
-    { counts: { N: 1, O: 2 }, name: "Dioxyde d'azote" }
+    { counts: { N: 1, O: 2 }, name: "Dioxyde d'azote" },
+
+    // --- Hydroxydes (l'ordre usuel place O avant H : override nécessaire) ---
+    { counts: { Na: 1, O: 1, H: 1 }, name: 'Hydroxyde de sodium', formula: 'NaOH' },
+    { counts: { K: 1, O: 1, H: 1 }, name: 'Hydroxyde de potassium', formula: 'KOH' },
+    { counts: { Ca: 1, O: 2, H: 2 }, name: 'Hydroxyde de calcium', formula: 'Ca(OH)\u2082' },
+    { counts: { Mg: 1, O: 2, H: 2 }, name: 'Hydroxyde de magnésium', formula: 'Mg(OH)\u2082' },
+
+    // --- Carbonates (l'ordre générique convient déjà) ---
+    { counts: { Ca: 1, C: 1, O: 3 }, name: 'Carbonate de calcium' },
+    { counts: { Na: 2, C: 1, O: 3 }, name: 'Carbonate de sodium' },
+
+    // --- Sulfates (l'ordre générique convient déjà) ---
+    { counts: { Na: 2, S: 1, O: 4 }, name: 'Sulfate de sodium' },
+    { counts: { Ca: 1, S: 1, O: 4 }, name: 'Sulfate de calcium' },
+    { counts: { Mg: 1, S: 1, O: 4 }, name: 'Sulfate de magnésium' },
+
+    // --- Acides usuels (certains nécessitent un override) ---
+    { counts: { H: 1, N: 1, O: 3 }, name: 'Acide nitrique', formula: 'HNO\u2083' },
+    { counts: { H: 2, S: 1, O: 4 }, name: 'Acide sulfurique' },
+    { counts: { H: 3, P: 1, O: 4 }, name: 'Acide phosphorique', formula: 'H\u2083PO\u2084' },
+    { counts: { H: 2, C: 1, O: 3 }, name: 'Acide carbonique', formula: 'H\u2082CO\u2083' }
   ];
 
   function signature(counts) {
@@ -54,16 +80,18 @@ window.Molecules = (function () {
 
   var KNOWN_MAP = {};
   KNOWN.forEach(function (entry) {
-    KNOWN_MAP[signature(entry.counts)] = entry.name;
+    KNOWN_MAP[signature(entry.counts)] = entry;
   });
 
-  function toSubscript(n) {
-    return String(n).split('').map(function (d) {
-      return SUBSCRIPTS.hasOwnProperty(d) ? SUBSCRIPTS[d] : d;
-    }).join('');
+  function formatSubscripts(str) {
+    return String(str).replace(/\d+/g, function (m) {
+      return m.split('').map(function (d) {
+        return SUBSCRIPTS.hasOwnProperty(d) ? SUBSCRIPTS[d] : d;
+      }).join('');
+    });
   }
 
-  // Construit la formule brute (ex: {H:2,O:1} -> "H2O" avec 2 en indice).
+  // Construit la formule brute générique (ex: {H:2,O:1} -> "H₂O").
   function buildFormula(counts) {
     var symbols = Object.keys(counts).filter(function (s) { return counts[s] > 0; });
     symbols.sort(function (a, b) {
@@ -73,10 +101,11 @@ window.Molecules = (function () {
       if (ib === -1) ib = PRIORITY.length;
       return ia - ib;
     });
-    return symbols.map(function (s) {
+    var plain = symbols.map(function (s) {
       var n = counts[s];
-      return s + (n > 1 ? toSubscript(n) : '');
+      return s + (n > 1 ? String(n) : '');
     }).join('');
+    return formatSubscripts(plain);
   }
 
   // Retourne : null si rien n'est posé, une chaîne si un nom est trouvé
@@ -90,19 +119,59 @@ window.Molecules = (function () {
       return el ? el.name : undefined;
     }
 
-    var sig = signature(counts);
-    return KNOWN_MAP.hasOwnProperty(sig) ? KNOWN_MAP[sig] : undefined;
+    var entry = KNOWN_MAP[signature(counts)];
+    return entry ? entry.name : undefined;
   }
 
+  // Liste complète des molécules connues, avec comptage et formule d'affichage
+  // (formule d'usage si définie, sinon déduite génériquement).
   function getAllKnown() {
     return KNOWN.map(function (entry) {
-      return { name: entry.name, formula: buildFormula(entry.counts) };
+      return {
+        name: entry.name,
+        counts: Object.assign({}, entry.counts),
+        formula: entry.formula || buildFormula(entry.counts)
+      };
     });
+  }
+
+  // Analyse une saisie utilisateur ("H2O", "Na2CO3"...) en comptage d'atomes.
+  // La casse compte : seuls les symboles exacts (parmi les 20 premiers éléments)
+  // sont reconnus. Les espaces sont ignorés. Retourne null si invalide.
+  function parseFormulaInput(str) {
+    var s = String(str).replace(/\s+/g, '');
+    if (!s) return null;
+
+    var symbols = window.Units.getAll().map(function (e) { return e.symbol; });
+    symbols.sort(function (a, b) { return b.length - a.length; });
+
+    var i = 0;
+    var counts = {};
+    while (i < s.length) {
+      var matched = null;
+      for (var k = 0; k < symbols.length; k++) {
+        var sym = symbols[k];
+        if (s.substr(i, sym.length) === sym) { matched = sym; break; }
+      }
+      if (!matched) return null;
+      i += matched.length;
+
+      var numStart = i;
+      while (i < s.length && s[i] >= '0' && s[i] <= '9') i++;
+      var numStr = s.slice(numStart, i);
+      var n = numStr.length ? parseInt(numStr, 10) : 1;
+      if (!n || n <= 0) return null;
+
+      counts[matched] = (counts[matched] || 0) + n;
+    }
+    return Object.keys(counts).length ? counts : null;
   }
 
   return {
     buildFormula: buildFormula,
     lookupName: lookupName,
-    getAllKnown: getAllKnown
+    getAllKnown: getAllKnown,
+    parseFormulaInput: parseFormulaInput,
+    formatSubscripts: formatSubscripts
   };
 })();

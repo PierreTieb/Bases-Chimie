@@ -1,33 +1,49 @@
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Space+Mono&display=swap');
-
-/* ---------- Thème "accueil" ---------- */
-body[data-theme="home"] {
-  --home-light: #eef4f6;
-  --home-mid:   #d9e7ec;
-  --home-dark:  #b9d2da;
-  --home-text:  #2e3d42;
-  --theme-accent: #6fb3c9;
-}
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800&family=Space+Mono&display=swap');
 
 :root {
-  --font-display: 'Quicksand', sans-serif;
-  --font-body: 'Quicksand', sans-serif;
+  --font-display: 'Fredoka', 'Nunito', sans-serif;
+  --font-body: 'Nunito', sans-serif;
   --font-mono: 'Space Mono', monospace;
+
+  --ink: #1C3B4A;
+  --ink-soft: #5B7A8A;
+  --ink-faint: #9CB4BF;
 
   --success: #4caf7d;
   --error: #e0554f;
   --warning: #eab54a;
+
+  --radius-lg: 26px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+
+  --shadow-card: 0 10px 26px rgba(28, 59, 74, 0.12);
+
+  /* Nuances de bleu pastel : tous les boutons de l'appli piochent dans cette
+     même famille pour donner une impression homogène de "verre" bleuté. */
+  --blue-100: #EAF6FC;
+  --blue-200: #D3ECF8;
+  --blue-300: #A9D9F0;
+  --blue-400: #7EC2E6;
+  --blue-500: #52A6CE;
+  --blue-600: #2E7FA6;
+
+  --home-light: #EAF6FC;
+  --home-mid:   #CFE9F7;
+  --home-dark:  #A9D9F0;
+  --home-text:  var(--ink);
+  --theme-accent: var(--blue-500);
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: var(--font-body);
-  font-weight: 500;
-  color: var(--home-text);
+  font-weight: 600;
+  color: var(--ink);
 }
 
 body {
@@ -64,12 +80,27 @@ body {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255,255,255,0.7);
-  border-radius: 32px;
+  border-radius: var(--radius-lg);
   padding: 32px 20px 40px;
-  box-shadow:
-    0 8px 30px rgba(80, 110, 120, 0.18),
-    inset 0 1px 0 rgba(255,255,255,0.8);
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255,255,255,0.8);
 }
+
+/* ---------- Bouton retour (texte, discret) ---------- */
+.btn-back {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+  padding: 8px 6px;
+}
+.btn-back:hover { color: var(--ink); }
+.btn-back:active { transform: translateY(1px); }
 
 /* ---------- Titre ---------- */
 .app-title {
@@ -79,8 +110,7 @@ body {
   font-size: 2.4rem;
   line-height: 1.15;
   margin: 4px 0 32px;
-  color: var(--home-text);
-  text-shadow: 0 2px 0 rgba(255,255,255,0.6);
+  color: var(--ink);
 }
 .app-title--small {
   font-size: 1.4rem;
@@ -97,7 +127,7 @@ body {
 .mode-btn {
   position: relative;
   border: none;
-  border-radius: 26px;
+  border-radius: var(--radius-lg);
   padding: 0;
   height: 120px;
   cursor: pointer;
@@ -105,8 +135,8 @@ body {
   font-family: var(--font-body);
   font-weight: 700;
   isolation: isolate;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
-
 .mode-btn__label {
   position: relative;
   z-index: 2;
@@ -120,71 +150,31 @@ body {
   font-size: 1.3rem;
   line-height: 1.25;
 }
+.mode-btn:active { transform: translateY(4px); }
 
-/* Bouton Mode 1 : fond "molécules" en SVG + effet relief */
-.mode-btn--molecules {
-  background-image: linear-gradient(160deg, #7fc2dd, #3f8fb8 55%, #2c6f92);
-  color: #fff;
-  box-shadow:
-    0 6px 0 rgba(46,61,66,0.35),
-    0 10px 18px rgba(46,61,66,0.25);
+/* Nuances de bleu pastel : une teinte légèrement différente par bouton */
+.mode-btn--tier1 {
+  background: linear-gradient(160deg, var(--blue-100), var(--blue-300));
+  color: var(--ink);
+  box-shadow: 0 6px 0 var(--blue-400), 0 12px 20px rgba(82,166,206,0.28), inset 0 2px 0 rgba(255,255,255,0.6);
 }
-.mode-btn--molecules .mode-btn__label {
-  text-shadow: 0 2px 4px rgba(0,0,0,0.45);
-}
-.mode-btn--molecules:active {
-  transform: translateY(4px);
-  box-shadow:
-    0 2px 0 rgba(46,61,66,0.35),
-    0 4px 8px rgba(46,61,66,0.25);
-}
+.mode-btn--tier1:active { box-shadow: 0 2px 0 var(--blue-400), 0 6px 10px rgba(82,166,206,0.24), inset 0 2px 0 rgba(255,255,255,0.5); }
 
-/* Bouton "Construire une molécule" : plan bleu d'ingénierie + schéma chimique */
-.mode-btn--build {
-  background-color: #163a5c;
-  background-image:
-    linear-gradient(160deg, rgba(255,255,255,0.08), rgba(0,0,0,0.28)),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cpolygon points='140,100 120,135 80,135 60,100 80,65 120,65' fill='none' stroke='rgba(180,225,255,0.4)' stroke-width='3'/%3E%3Cline x1='60' y1='100' x2='30' y2='100' stroke='rgba(180,225,255,0.4)' stroke-width='3'/%3E%3Ccircle cx='30' cy='100' r='6' fill='rgba(180,225,255,0.55)'/%3E%3Cline x1='140' y1='100' x2='170' y2='100' stroke='rgba(180,225,255,0.4)' stroke-width='3'/%3E%3Ccircle cx='170' cy='100' r='6' fill='rgba(180,225,255,0.55)'/%3E%3Cline x1='100' y1='65' x2='100' y2='35' stroke='rgba(180,225,255,0.4)' stroke-width='3'/%3E%3Ccircle cx='100' cy='35' r='6' fill='rgba(180,225,255,0.55)'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpath d='M20 0H0V20' fill='none' stroke='rgba(255,255,255,0.15)' stroke-width='1'/%3E%3C/svg%3E");
-  background-size: cover, 220px, 20px;
-  background-position: center, center, center;
-  background-repeat: no-repeat, repeat, repeat;
-  color: #eaf6ff;
-  box-shadow:
-    0 6px 0 rgba(10,30,50,0.5),
-    0 10px 18px rgba(10,30,50,0.35);
+.mode-btn--tier2 {
+  background: linear-gradient(160deg, var(--blue-200), var(--blue-400));
+  color: var(--ink);
+  box-shadow: 0 6px 0 var(--blue-500), 0 12px 20px rgba(46,127,166,0.28), inset 0 2px 0 rgba(255,255,255,0.55);
 }
-.mode-btn--build .mode-btn__label {
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-.mode-btn--build:active {
-  transform: translateY(4px);
-  box-shadow:
-    0 2px 0 rgba(10,30,50,0.5),
-    0 4px 8px rgba(10,30,50,0.35);
-}
+.mode-btn--tier2:active { box-shadow: 0 2px 0 var(--blue-500), 0 6px 10px rgba(46,127,166,0.24), inset 0 2px 0 rgba(255,255,255,0.5); }
 
-/* Bouton "Prochainement" (Mode 1-2) : bleu foncé flou, non cliquable */
-.mode-btn--soon-dark {
-  background: linear-gradient(160deg, #35506a, #1f374c);
-  box-shadow: 0 6px 0 rgba(10,30,50,0.4), 0 10px 18px rgba(10,30,50,0.3);
-  pointer-events: none;
-  cursor: default;
+.mode-btn--tier3 {
+  background: linear-gradient(160deg, var(--blue-300), var(--blue-500));
+  color: #0B2E44;
+  box-shadow: 0 6px 0 var(--blue-600), 0 12px 20px rgba(46,127,166,0.32), inset 0 2px 0 rgba(255,255,255,0.5);
 }
-.mode-btn--soon-dark::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  filter: blur(6px);
-  background: inherit;
-  z-index: 1;
-}
-.mode-btn__label--soon-dark {
-  color: #dce8f0;
-  font-size: 1.4rem;
-}
+.mode-btn--tier3:active { box-shadow: 0 2px 0 var(--blue-600), 0 6px 10px rgba(46,127,166,0.28), inset 0 2px 0 rgba(255,255,255,0.45); }
 
-/* Bouton "Prochainement" : gris flou, non cliquable */
+/* Bouton "Prochainement" : gris flou, non cliquable (placeholder neutre) */
 .mode-btn--soon {
   background: linear-gradient(160deg, #d7dcdd, #b8bfc1);
   box-shadow: 0 6px 0 rgba(80,90,92,0.25), 0 10px 18px rgba(80,90,92,0.18);
@@ -199,35 +189,27 @@ body {
   background: inherit;
   z-index: 1;
 }
-.mode-btn__label--soon {
-  color: #4a5254;
-  font-size: 1.4rem;
-}
+.mode-btn__label--soon { color: #4a5254; font-size: 1.4rem; }
 
-/* ---------- Bouton retour ---------- */
-.btn-back {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  width: 44px;
-  height: 44px;
+.placeholder-text { text-align: center; margin-top: 12px; }
+
+/* ---------- Boutons d'action en pilule (Valider / Suivant) ---------- */
+.btn-primary {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 0.98rem;
   border: none;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.7);
-  box-shadow: 0 3px 0 rgba(46,61,66,0.2), 0 5px 10px rgba(46,61,66,0.15);
-  font-size: 1.3rem;
-  color: var(--home-text);
+  border-radius: 999px;
+  padding: 13px 28px;
   cursor: pointer;
+  color: var(--ink);
+  background: linear-gradient(160deg, var(--blue-200), var(--blue-400));
+  box-shadow: 0 4px 0 var(--blue-500), 0 8px 14px rgba(46,127,166,0.22);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  min-height: 46px;
 }
-.btn-back:active {
-  transform: translateY(2px);
-  box-shadow: 0 1px 0 rgba(46,61,66,0.2), 0 2px 4px rgba(46,61,66,0.15);
-}
-
-.placeholder-text {
-  text-align: center;
-  margin-top: 12px;
-}
+.btn-primary:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--blue-500), 0 3px 6px rgba(46,127,166,0.2); }
+.btn-primary:disabled { opacity: 0.5; cursor: default; transform: none; }
 
 /* ---------- Desktop ---------- */
 @media (min-width: 640px) {
@@ -237,7 +219,7 @@ body {
   .mode-btn__label { font-size: 1.5rem; }
 }
 
-/* ---------- Mode 1-1 : bac à sable ---------- */
+/* ---------- Mode 1-1 / Mode 1-2 "construire" : bac à sable ---------- */
 .screen--sandbox { max-width: 680px; }
 
 .sandbox-shell {
@@ -247,22 +229,19 @@ body {
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255,255,255,0.7);
-  border-radius: 28px;
+  border-radius: var(--radius-lg);
   padding: 64px 10px 18px;
-  box-shadow:
-    0 8px 30px rgba(80, 110, 120, 0.18),
-    inset 0 1px 0 rgba(255,255,255,0.8);
+  box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255,255,255,0.8);
 }
 
-.sandbox-shell .app-title--small {
-  margin: 0 0 4px;
-}
+.sandbox-shell .app-title--small { margin: 0 0 4px; }
 
 .sandbox-intro {
   text-align: center;
   font-family: var(--font-body);
+  font-weight: 700;
   font-size: 0.85rem;
-  color: var(--home-text);
+  color: var(--ink-soft);
   margin: 0 0 14px;
   padding: 0 6px;
 }
@@ -272,7 +251,9 @@ body {
   gap: 8px;
   height: 50vh;
   min-height: 280px;
-}/* Panneau des atomes : "plaque de verre" grise, 2 colonnes, scrollable */
+}
+
+/* Panneau des atomes : "plaque de verre" grise, 2 colonnes, scroll vertical uniquement */
 .atoms-panel {
   flex: 0 0 40%;
   display: grid;
@@ -280,9 +261,11 @@ body {
   align-content: start;
   gap: 4px;
   overflow-y: auto;
+  overflow-x: hidden;
+  touch-action: pan-y;
   background: #e6e9ea;
   border: 2px solid #cbd0d2;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   padding: 6px;
 }
 
@@ -290,7 +273,7 @@ body {
   position: relative;
   background: #f6f7f8;
   border: 1px solid #d6dadc;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   min-height: 62px;
   display: flex;
   flex-direction: column;
@@ -300,11 +283,8 @@ body {
   cursor: grab;
   user-select: none;
 }
-.touch-mode .element-cell {
-  cursor: pointer;
-}
-.element-mass,
-.element-number {
+.touch-mode .element-cell { cursor: pointer; }
+.element-mass, .element-number {
   position: absolute;
   font-family: var(--font-mono);
   font-size: 0.62rem;
@@ -315,7 +295,7 @@ body {
 .element-number { bottom: 3px; left: 4px; }
 .element-symbol {
   font-family: var(--font-body);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 1.3rem;
   color: #2e3d42;
 }
@@ -339,7 +319,7 @@ body {
   flex: 1;
   background: #e6e9ea;
   border: 2px solid #cbd0d2;
-  border-radius: 16px;
+  border-radius: var(--radius-md);
   overflow: hidden;
 }
 
@@ -351,7 +331,7 @@ body {
   align-items: center;
   justify-content: center;
   font-family: var(--font-body);
-  font-weight: 700;
+  font-weight: 800;
   color: #fff;
   text-shadow: 0 0 2px rgba(0,0,0,0.85), 0 0 5px rgba(0,0,0,0.5);
   box-shadow:
@@ -379,7 +359,7 @@ body {
   align-items: center;
   justify-content: center;
   font-family: var(--font-body);
-  font-weight: 700;
+  font-weight: 800;
   color: #fff;
   text-shadow: 0 0 2px rgba(0,0,0,0.85), 0 0 5px rgba(0,0,0,0.5);
   transform: translate(-50%, -50%);
@@ -397,15 +377,15 @@ body {
   border-radius: 20px;
   padding: 8px 16px;
   font-family: var(--font-body);
-  font-weight: 700;
-  color: #fff;
-  background: linear-gradient(160deg, #f2867f, #e0554f);
-  box-shadow: 0 4px 0 rgba(140,40,35,0.4), 0 6px 10px rgba(140,40,35,0.3);
+  font-weight: 800;
+  color: var(--ink);
+  background: linear-gradient(160deg, var(--blue-300), var(--blue-500));
+  box-shadow: 0 4px 0 var(--blue-600), 0 6px 10px rgba(46,127,166,0.25);
   cursor: pointer;
 }
 .btn-clear:active {
   transform: translateY(3px);
-  box-shadow: 0 1px 0 rgba(140,40,35,0.4), 0 2px 4px rgba(140,40,35,0.3);
+  box-shadow: 0 1px 0 var(--blue-600), 0 2px 4px rgba(46,127,166,0.2);
 }
 
 .formula-display {
@@ -417,19 +397,102 @@ body {
   font-family: var(--font-mono);
   font-weight: 700;
   font-size: 1.3rem;
-  color: #1a1a1a;
+  color: var(--ink);
 }
 .formula-name {
   font-family: var(--font-body);
   font-size: 0.95rem;
-  color: var(--home-text);
+  color: var(--ink-soft);
   margin-top: 2px;
 }
-.formula-name--error {
-  color: var(--error);
-}
+.formula-name--error { color: var(--error); }
 
 @media (min-width: 640px) {
   .sandbox-layout { height: 56vh; }
   .element-symbol { font-size: 1.5rem; }
+}
+
+/* ---------- Mode 1-2 : exercice (identifier / construire) ---------- */
+.exercise-topbar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 4px 0 12px;
+}
+.ex-score {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  background: rgba(255,255,255,0.5);
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.ex-preview-zone {
+  width: 100%;
+  height: 32vh;
+  min-height: 200px;
+  margin: 4px 0 16px;
+}
+
+.ex-formula-preview {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--ink);
+  min-height: 30px;
+  margin-bottom: 8px;
+}
+
+.ex-formula-input {
+  display: block;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
+  text-align: center;
+  background: rgba(255,255,255,0.6);
+  color: var(--ink);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  padding: 12px 10px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.ex-formula-input:focus { border-color: var(--blue-500); }
+.ex-formula-input:disabled { opacity: 0.75; }
+
+.ex-target-formula {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: var(--ink);
+  margin: 4px 0 14px;
+}
+
+.ex-feedback {
+  text-align: center;
+  font-family: var(--font-body);
+  font-weight: 800;
+  min-height: 24px;
+  margin: 12px 0 4px;
+}
+.ex-feedback.success { color: var(--success); }
+.ex-feedback.error { color: var(--error); }
+
+.ex-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Confettis ---------- */
+#confetti-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  display: none;
 }

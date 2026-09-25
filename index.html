@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Les bases de la Chimie</title>
+<title>Les Bases de la Chimie</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="home">
@@ -14,7 +14,7 @@
       <h1 class="app-title">Les Bases<br>de la Chimie</h1>
 
       <div class="mode-list">
-        <button type="button" id="btn-mode1" class="mode-btn mode-btn--molecules">
+        <button type="button" id="btn-mode1" class="mode-btn mode-btn--tier1">
           <span class="mode-btn__label">Les Molécules et<br>les formules chimiques</span>
         </button>
 
@@ -28,16 +28,16 @@
   <!-- ÉCRAN : MODE 1 (sélection des sous-modes) -->
   <section id="screen-mode1" class="screen">
     <div class="glass-panel">
-      <button type="button" class="btn-back" id="btn-back-to-home" aria-label="Retour">&larr;</button>
+      <button type="button" class="btn-back" id="btn-back-to-home">‹ Retour</button>
       <h1 class="app-title app-title--small">Les Molécules et<br>les formules chimiques</h1>
 
       <div class="mode-list">
-        <button type="button" id="btn-mode1-1" class="mode-btn mode-btn--build">
+        <button type="button" id="btn-mode1-1" class="mode-btn mode-btn--tier2">
           <span class="mode-btn__label">Construire<br>une molécule</span>
         </button>
 
-        <button type="button" class="mode-btn mode-btn--soon-dark" aria-disabled="true" tabindex="-1">
-          <span class="mode-btn__label mode-btn__label--soon-dark">Prochainement…</span>
+        <button type="button" id="btn-mode1-2" class="mode-btn mode-btn--tier3">
+          <span class="mode-btn__label">S'exercer avec<br>les formules chimiques</span>
         </button>
       </div>
     </div>
@@ -46,7 +46,7 @@
   <!-- ÉCRAN : MODE 1-1 (bac à sable de construction moléculaire) -->
   <section id="screen-mode1-1" class="screen screen--sandbox">
     <div class="sandbox-shell">
-      <button type="button" class="btn-back" id="btn-back-to-mode1" aria-label="Retour">&larr;</button>
+      <button type="button" class="btn-back" id="btn-back-to-mode1">‹ Retour</button>
       <h1 class="app-title app-title--small">Construire<br>une molécule</h1>
       <p class="sandbox-intro">Construis ta molécule atome par atome et trouve sa formule chimique</p>
 
@@ -66,9 +66,69 @@
     </div>
   </section>
 
+  <!-- ÉCRAN : MODE 1-2 (s'exercer avec les formules chimiques) -->
+  <section id="screen-exercise1-2" class="screen screen--sandbox">
+    <div class="sandbox-shell">
+      <button type="button" class="btn-back" id="btn-back-to-mode1-ex">‹ Retour</button>
+      <h1 class="app-title app-title--small">S'exercer avec<br>les formules chimiques</h1>
+
+      <div class="exercise-topbar">
+        <span class="ex-score" id="ex-score">Score : 0 / 0</span>
+      </div>
+
+      <!-- Question de type "identifier" : molécule schématisée -> l'utilisateur tape la formule -->
+      <div id="ex-identify-panel" class="ex-subpanel">
+        <p class="sandbox-intro">Quelle est la formule chimique de cette molécule ?</p>
+        <div class="ex-preview-zone drop-zone" id="ex-preview-zone" aria-label="Molécule à identifier"></div>
+
+        <div class="ex-formula-preview" id="ex-formula-preview"></div>
+        <input
+          type="text"
+          id="ex-formula-input"
+          class="ex-formula-input"
+          autocomplete="off"
+          autocapitalize="off"
+          autocorrect="off"
+          spellcheck="false"
+          placeholder="Ex : H2O">
+      </div>
+
+      <!-- Question de type "construire" : formule affichée -> l'utilisateur assemble les atomes -->
+      <div id="ex-build-panel" class="ex-subpanel">
+        <p class="sandbox-intro">Construis la molécule suivante</p>
+        <div class="ex-target-formula" id="ex-target-formula"></div>
+
+        <div class="sandbox-layout">
+          <div class="atoms-panel" id="atoms-panel-ex" aria-label="Tableau des 20 premiers atomes"></div>
+          <div class="drop-zone-wrapper">
+            <div class="drop-zone" id="drop-zone-ex" aria-label="Zone de dépôt"></div>
+            <button type="button" class="btn-clear" id="btn-clear-ex">Effacer</button>
+          </div>
+        </div>
+
+        <div class="formula-display">
+          <div class="formula-brute" id="formula-brute-ex"></div>
+        </div>
+      </div>
+
+      <p class="ex-feedback" id="ex-feedback"></p>
+
+      <div class="ex-actions">
+        <button type="button" class="btn-primary" id="btn-ex-validate">Valider</button>
+        <button type="button" class="btn-primary" id="btn-ex-next" style="display:none;">Suivant</button>
+      </div>
+    </div>
+  </section>
+
+  <canvas id="confetti-canvas"></canvas>
+
   <script src="js/units.js"></script>
   <script src="js/molecules.js"></script>
+  <script src="js/molecule-builder.js"></script>
   <script src="js/sandbox.js"></script>
+  <script src="js/generator.js"></script>
+  <script src="js/confetti.js"></script>
+  <script src="js/exercise.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

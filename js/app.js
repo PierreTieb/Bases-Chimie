@@ -7,54 +7,35 @@ window.App = (function () {
       screens[i].classList.remove('active');
     }
     var target = document.getElementById(id);
-    if (target) {
-      target.classList.add('active');
+    if (target) target.classList.add('active');
+  }
+
+  function wireNav(btnId, targetScreenId) {
+    var btn = document.getElementById(btnId);
+    if (btn) {
+      btn.addEventListener('click', function () {
+        showScreen(targetScreenId);
+      });
     }
   }
 
   function init() {
-    var btnMode1 = document.getElementById('btn-mode1');
-    var btnBackHome = document.getElementById('btn-back-to-home');
-    var btnMode1_1 = document.getElementById('btn-mode1-1');
-    var btnBackMode1 = document.getElementById('btn-back-to-mode1');
-    var btnMode1_2 = document.getElementById('btn-mode1-2');
-    var btnBackMode1FromEx = document.getElementById('btn-back-to-mode1-ex');
+    wireNav('btn-mode1', 'screen-mode1');
+    wireNav('btn-back-to-home', 'screen-home');
+    wireNav('btn-mode1-1', 'screen-mode1-1');
+    wireNav('btn-back-to-mode1', 'screen-mode1');
+    wireNav('btn-mode1-2', 'screen-exercise1-2');
+    wireNav('btn-back-to-mode1-ex', 'screen-mode1');
 
-    if (btnMode1) {
-      btnMode1.addEventListener('click', function () {
-        showScreen('screen-mode1');
-      });
-    }
-
-    if (btnBackHome) {
-      btnBackHome.addEventListener('click', function () {
-        showScreen('screen-home');
-      });
-    }
-
-    if (btnMode1_1) {
-      btnMode1_1.addEventListener('click', function () {
-        showScreen('screen-mode1-1');
-      });
-    }
-
-    if (btnBackMode1) {
-      btnBackMode1.addEventListener('click', function () {
-        showScreen('screen-mode1');
-      });
-    }
-
-    if (btnMode1_2) {
-      btnMode1_2.addEventListener('click', function () {
-        showScreen('screen-exercise1-2');
-      });
-    }
-
-    if (btnBackMode1FromEx) {
-      btnBackMode1FromEx.addEventListener('click', function () {
-        showScreen('screen-mode1');
-      });
-    }
+    // Bac à sable du Mode 1-1 (celui de l'exercice Mode 1-2 est initialisé
+    // par exercise.js, qui gère aussi son propre écran).
+    window.Sandbox.create({
+      panelEl: document.getElementById('atoms-panel'),
+      dropZoneEl: document.getElementById('drop-zone'),
+      clearBtnEl: document.getElementById('btn-clear'),
+      formulaEl: document.getElementById('formula-brute'),
+      nameEl: document.getElementById('formula-name')
+    });
   }
 
   document.addEventListener('DOMContentLoaded', init);
