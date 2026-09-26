@@ -5,7 +5,8 @@ window.Exercise = (function () {
   var previewBuilder = null;
   var buildSandbox = null;
   var current = null;
-  var answered = false;
+  var solved = false;
+  var revealing = false;
   var score = { correct: 0, total: 0 };
 
   function countsEqual(a, b) {
@@ -19,24 +20,18 @@ window.Exercise = (function () {
     return true;
   }
 
-  // Place les atomes en commençant par les plus "centraux" (grande valence),
-  // pour un aperçu visuel cohérent (ex: les H s'agglomèrent autour du C).
   function expandCountsByValenceDesc(counts) {
     var symbols = Object.keys(counts);
-    symbols.sort(function (a, b) {
-      return window.Units.getValence(b) - window.Units.getValence(a);
-    });
+    symbols.sort(function (a, b) { return window.Units.getValence(b) - window.Units.getValence(a); });
     var flat = [];
-    symbols.forEach(function (s) {
-      for (var i = 0; i < counts[s]; i++) flat.push(s);
-    });
+    symbols.forEach(function (s) { for (var i = 0; i < counts[s]; i++) flat.push(s); });
     return flat;
   }
 
   function renderIdentifyPreview(counts) {
     previewBuilder.clearAll();
     expandCountsByValenceDesc(counts).forEach(function (sym) {
-      previewBuilder.placeAtomAuto(window.Units.getBySymbol(sym));
+      previewBuilder.addSymbol(sym);
     });
   }
 
@@ -52,13 +47,18 @@ window.Exercise = (function () {
     els.feedback.className = 'ex-feedback';
   }
 
+  function setButtonsEnabled(enabled) {
+    els.validateBtn.disabled = !enabled;
+    els.skipBtn.disabled = !enabled;
+  }
+
   function showQuestion() {
-    answered = false;
+    solved = false;
+    revealing = false;
     current = pickQuestion();
     resetFeedback();
-    els.nextBtn.style.display = 'none';
-    els.validateBtn.style.display = 'inline-block';
-    els.validateBtn.disabled = false;
+    setButtonsEnabled(true);
+    els.skipBtn.textContent = 'Molécule suivante';
 
     if (current.type === 'identify') {
       els.identifyPanel.style.display = '';
@@ -84,39 +84,59 @@ window.Exercise = (function () {
     try {
       var rect = els.validateBtn.getBoundingClientRect();
       window.Confetti.burst(els.confettiCanvas, rect.left + rect.width / 2, rect.top + rect.height / 2);
-    } catch (e) {
-      // Purement décoratif : une erreur ici ne doit jamais bloquer l'exercice.
+    } catch (e) { /* purement décoratif */ }
+  }
+
+  function currentAnswerCounts() {
+    if (current.type === 'identify') {
+      return window.Molecules.parseFormulaInput(els.formulaInput.value);
     }
+    return buildSandbox.getCounts();
   }
 
   function onValidate() {
-    if (answered || !current) return;
-    answered = true;
+    if (!current || solved || revealing) return;
 
-    var correct;
-    if (current.type === 'identify') {
-      var parsed = window.Molecules.parseFormulaInput(els.formulaInput.value);
-      correct = !!parsed && countsEqual(parsed, current.counts);
-      els.formulaInput.disabled = true;
-    } else {
-      correct = countsEqual(buildSandbox.getCounts(), current.counts);
-    }
-
-    score.total++;
-    els.validateBtn.disabled = true;
+    var answer = currentAnswerCounts();
+    var correct = !!answer && countsEqual(answer, current.counts);
 
     if (correct) {
+      solved = true;
       score.correct++;
+      score.total++;
+      updateScoreDisplay();
       els.feedback.textContent = 'Bravo, bonne réponse !';
       els.feedback.className = 'ex-feedback success';
       triggerConfetti();
+      els.validateBtn.disabled = true;
+      if (current.type === 'identify') els.formulaInput.disabled = true;
+      els.skipBtn.textContent = 'Molécule suivante';
     } else {
-      els.feedback.textContent = "Ce n'est pas la bonne formule (réponse : " + current.formula + ').';
+      // Pas de réponse révélée, pas de blocage : on peut réessayer librement.
+      els.feedback.textContent = "Ce n'est pas la bonne formule, réessaie.";
       els.feedback.className = 'ex-feedback error';
     }
+  }
 
+  function onSkip() {
+    if (!current || revealing) return;
+
+    if (solved) {
+      showQuestion();
+      return;
+    }
+
+    // On "passe" sans avoir trouvé : la réponse est révélée quelques secondes,
+    // puis la question suivante démarre automatiquement.
+    revealing = true;
+    score.total++;
     updateScoreDisplay();
-    els.nextBtn.style.display = 'inline-block';
+    setButtonsEnabled(false);
+    if (current.type === 'identify') els.formulaInput.disabled = true;
+    els.feedback.textContent = 'La formule était : ' + current.formula;
+    els.feedback.className = 'ex-feedback reveal';
+
+    setTimeout(function () { showQuestion(); }, 2500);
   }
 
   function onFormulaInput() {
@@ -133,7 +153,7 @@ window.Exercise = (function () {
     els.feedback = document.getElementById('ex-feedback');
     els.score = document.getElementById('ex-score');
     els.validateBtn = document.getElementById('btn-ex-validate');
-    els.nextBtn = document.getElementById('btn-ex-next');
+    els.skipBtn = document.getElementById('btn-ex-skip');
     els.confettiCanvas = document.getElementById('confetti-canvas');
 
     if (!els.identifyPanel || !els.buildPanel || !els.previewZone) return;
@@ -143,13 +163,13 @@ window.Exercise = (function () {
       panelEl: document.getElementById('atoms-panel-ex'),
       dropZoneEl: document.getElementById('drop-zone-ex'),
       clearBtnEl: document.getElementById('btn-clear-ex'),
-      formulaEl: document.getElementById('formula-brute-ex'),
+      formulaEl: null,
       nameEl: null
     });
 
     els.formulaInput.addEventListener('input', onFormulaInput);
     els.validateBtn.addEventListener('click', onValidate);
-    els.nextBtn.addEventListener('click', showQuestion);
+    els.skipBtn.addEventListener('click', onSkip);
 
     updateScoreDisplay();
     showQuestion();

@@ -40,7 +40,7 @@ window.Sandbox = (function () {
       }
     }
 
-    var builder = window.MoleculeBuilder.create(dropZoneEl, { onChange: updateDisplay });
+    var builder = window.MoleculeBuilder.create(dropZoneEl, { onChange: updateDisplay, removable: isCoarsePointer });
 
     function renderPanel() {
       var elements = window.Units.getAll();
@@ -96,7 +96,7 @@ window.Sandbox = (function () {
         var x = upEvt.clientX;
         var y = upEvt.clientY;
         if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
-          builder.placeAtom(el, x - rect.left, y - rect.top);
+          builder.addSymbol(el.symbol);
         }
         ghost.remove();
       }
@@ -115,13 +115,7 @@ window.Sandbox = (function () {
       var symbol = evt.currentTarget.getAttribute('data-symbol');
       var el = window.Units.getBySymbol(symbol);
       if (!el) return;
-      builder.placeAtomAuto(el);
-      var atoms = builder.getPlacedAtoms();
-      var last = atoms[atoms.length - 1];
-      if (last) {
-        last.node.style.pointerEvents = 'auto';
-        last.node.addEventListener('click', function () { builder.removeAtom(last); });
-      }
+      builder.addSymbol(symbol);
     }
 
     if (clearBtnEl) clearBtnEl.addEventListener('click', builder.clearAll);
@@ -131,11 +125,12 @@ window.Sandbox = (function () {
 
     return {
       clearAll: builder.clearAll,
+      addSymbol: builder.addSymbol,
       placeAtom: builder.placeAtom,
       placeAtomAuto: builder.placeAtomAuto,
-      removeAtom: builder.removeAtom,
       getPlacedAtoms: builder.getPlacedAtoms,
       getCounts: builder.getCounts,
+      getSequence: builder.getSequence,
       isTouchMode: function () { return isCoarsePointer; }
     };
   }

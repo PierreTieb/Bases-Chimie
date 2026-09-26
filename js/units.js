@@ -52,6 +52,13 @@ window.Units = (function () {
     return null;
   }
 
+  function getByZ(z) {
+    for (var i = 0; i < ELEMENTS.length; i++) {
+      if (ELEMENTS[i].z === z) return ELEMENTS[i];
+    }
+    return null;
+  }
+
   // Rayon croissant avec le numéro atomique (interpolation linéaire simple).
   function radiusFor(z) {
     var ratio = (z - MIN_Z) / (MAX_Z - MIN_Z);
@@ -61,6 +68,7 @@ window.Units = (function () {
   return {
     getAll: getAll,
     getBySymbol: getBySymbol,
+    getByZ: getByZ,
     radiusFor: radiusFor,
     getValence: getValence
   };

@@ -60,7 +60,7 @@ window.Molecules = (function () {
 
     // --- Sulfates (l'ordre générique convient déjà) ---
     { counts: { Na: 2, S: 1, O: 4 }, name: 'Sulfate de sodium' },
-    { counts: { Ca: 1, S: 1, O: 4 }, name: 'Sulfate de calcium' },
+    { counts: { Ca: 1, S: 1, O: 4 }, name: 'Sulfate de calcium', center: 'S' },
     { counts: { Mg: 1, S: 1, O: 4 }, name: 'Sulfate de magnésium' },
 
     // --- Acides usuels (certains nécessitent un override) ---
@@ -135,9 +135,21 @@ window.Molecules = (function () {
     });
   }
 
+  // Indice de centre explicite pour les rares cas où valence + masse ne
+  // suffisent pas (ex: CaSO4, où le calcium est plus massique que le soufre
+  // mais où c'est bien le soufre qui doit être au centre). Usage interne
+  // uniquement (calcul de placement) : jamais montré à l'utilisateur.
+  function getCenterHint(counts) {
+    var entry = KNOWN_MAP[signature(counts)];
+    return (entry && entry.center) ? entry.center : null;
+  }
+
   // Analyse une saisie utilisateur ("H2O", "Na2CO3"...) en comptage d'atomes.
   // La casse compte : seuls les symboles exacts (parmi les 20 premiers éléments)
-  // sont reconnus. Les espaces sont ignorés. Retourne null si invalide.
+  // sont reconnus. Les espaces sont ignorés. Un même symbole ne peut apparaître
+  // qu'une seule fois (ex: "HHO" est invalide) — mais deux symboles distincts
+  // qui partagent des lettres (ex: "C" et "Ca") restent bien indépendants.
+  // Retourne null si invalide.
   function parseFormulaInput(str) {
     var s = String(str).replace(/\s+/g, '');
     if (!s) return null;
@@ -154,6 +166,7 @@ window.Molecules = (function () {
         if (s.substr(i, sym.length) === sym) { matched = sym; break; }
       }
       if (!matched) return null;
+      if (counts.hasOwnProperty(matched)) return null; // symbole déjà utilisé plus tôt
       i += matched.length;
 
       var numStart = i;
@@ -162,7 +175,7 @@ window.Molecules = (function () {
       var n = numStr.length ? parseInt(numStr, 10) : 1;
       if (!n || n <= 0) return null;
 
-      counts[matched] = (counts[matched] || 0) + n;
+      counts[matched] = n;
     }
     return Object.keys(counts).length ? counts : null;
   }
@@ -171,6 +184,7 @@ window.Molecules = (function () {
     buildFormula: buildFormula,
     lookupName: lookupName,
     getAllKnown: getAllKnown,
+    getCenterHint: getCenterHint,
     parseFormulaInput: parseFormulaInput,
     formatSubscripts: formatSubscripts
   };

@@ -14,8 +14,12 @@
       <h1 class="app-title">Les Bases<br>de la Chimie</h1>
 
       <div class="mode-list">
-        <button type="button" id="btn-mode1" class="mode-btn mode-btn--tier1">
+        <button type="button" id="btn-mode1" class="mode-btn mode-btn--home-strong">
           <span class="mode-btn__label">Les Molécules et<br>les formules chimiques</span>
+        </button>
+
+        <button type="button" id="btn-mode2" class="mode-btn mode-btn--green">
+          <span class="mode-btn__label">Atomes<br>et Ions</span>
         </button>
 
         <button type="button" class="mode-btn mode-btn--soon" aria-disabled="true" tabindex="-1">
@@ -31,20 +35,47 @@
       <button type="button" class="btn-back" id="btn-back-to-home">‹ Retour</button>
       <h1 class="app-title app-title--small">Les Molécules et<br>les formules chimiques</h1>
 
-      <div class="mode-list">
-        <button type="button" id="btn-mode1-1" class="mode-btn mode-btn--tier2">
+      <p class="mode-group-label">Molécules</p>
+      <div class="mode-list mode-list--tight">
+        <button type="button" id="btn-mode1-1" class="mode-btn mode-btn--pink mode-btn--sub">
           <span class="mode-btn__label">Construire<br>une molécule</span>
         </button>
-
-        <button type="button" id="btn-mode1-2" class="mode-btn mode-btn--tier3">
+        <button type="button" id="btn-mode1-2" class="mode-btn mode-btn--pink mode-btn--sub">
           <span class="mode-btn__label">S'exercer avec<br>les formules chimiques</span>
+        </button>
+      </div>
+
+      <p class="mode-group-label">Équations</p>
+      <div class="mode-list mode-list--tight">
+        <button type="button" id="btn-eq-cours" class="mode-btn mode-btn--purple mode-btn--sub">
+          <span class="mode-btn__label">Décrire une<br>transformation chimique</span>
+        </button>
+        <button type="button" id="btn-eq-exercice" class="mode-btn mode-btn--purple mode-btn--sub">
+          <span class="mode-btn__label">S'exercer avec<br>les équations</span>
         </button>
       </div>
     </div>
   </section>
 
-  <!-- ÉCRAN : MODE 1-1 (bac à sable de construction moléculaire) -->
-  <section id="screen-mode1-1" class="screen screen--sandbox">
+  <!-- ÉCRAN : MODE 2 (sélection des sous-modes) -->
+  <section id="screen-mode2" class="screen">
+    <div class="glass-panel">
+      <button type="button" class="btn-back" id="btn-back-to-home-2">‹ Retour</button>
+      <h1 class="app-title app-title--small">Atomes<br>et Ions</h1>
+
+      <div class="mode-list">
+        <button type="button" id="btn-atom-cours-nav" class="mode-btn mode-btn--green mode-btn--sub">
+          <span class="mode-btn__label">Construire<br>ton atome</span>
+        </button>
+        <button type="button" id="btn-atom-exercice-nav" class="mode-btn mode-btn--green mode-btn--sub">
+          <span class="mode-btn__label">S'exercer avec<br>les atomes</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉCRAN : MODE 1-1-COURS (bac à sable de construction moléculaire) -->
+  <section id="screen-mode1-1" class="screen screen--sandbox screen--pink">
     <div class="sandbox-shell">
       <button type="button" class="btn-back" id="btn-back-to-mode1">‹ Retour</button>
       <h1 class="app-title app-title--small">Construire<br>une molécule</h1>
@@ -52,7 +83,6 @@
 
       <div class="sandbox-layout">
         <div class="atoms-panel" id="atoms-panel" aria-label="Tableau des 20 premiers atomes"></div>
-
         <div class="drop-zone-wrapper">
           <div class="drop-zone" id="drop-zone" aria-label="Zone de dépôt"></div>
           <button type="button" class="btn-clear" id="btn-clear">Effacer</button>
@@ -66,8 +96,8 @@
     </div>
   </section>
 
-  <!-- ÉCRAN : MODE 1-2 (s'exercer avec les formules chimiques) -->
-  <section id="screen-exercise1-2" class="screen screen--sandbox">
+  <!-- ÉCRAN : MODE 1-1-EXERCICE (identifier / construire) -->
+  <section id="screen-exercise1-2" class="screen screen--sandbox screen--pink">
     <div class="sandbox-shell">
       <button type="button" class="btn-back" id="btn-back-to-mode1-ex">‹ Retour</button>
       <h1 class="app-title app-title--small">S'exercer avec<br>les formules chimiques</h1>
@@ -76,38 +106,23 @@
         <span class="ex-score" id="ex-score">Score : 0 / 0</span>
       </div>
 
-      <!-- Question de type "identifier" : molécule schématisée -> l'utilisateur tape la formule -->
       <div id="ex-identify-panel" class="ex-subpanel">
         <p class="sandbox-intro">Quelle est la formule chimique de cette molécule ?</p>
         <div class="ex-preview-zone drop-zone" id="ex-preview-zone" aria-label="Molécule à identifier"></div>
-
         <div class="ex-formula-preview" id="ex-formula-preview"></div>
-        <input
-          type="text"
-          id="ex-formula-input"
-          class="ex-formula-input"
-          autocomplete="off"
-          autocapitalize="off"
-          autocorrect="off"
-          spellcheck="false"
-          placeholder="Ex : H2O">
+        <input type="text" id="ex-formula-input" class="ex-formula-input"
+          autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Ex : H2O">
       </div>
 
-      <!-- Question de type "construire" : formule affichée -> l'utilisateur assemble les atomes -->
-      <div id="ex-build-panel" class="ex-subpanel">
+      <div id="ex-build-panel" class="ex-subpanel ex-build-panel">
         <p class="sandbox-intro">Construis la molécule suivante</p>
         <div class="ex-target-formula" id="ex-target-formula"></div>
-
-        <div class="sandbox-layout">
+        <div class="sandbox-layout sandbox-layout--compact">
           <div class="atoms-panel" id="atoms-panel-ex" aria-label="Tableau des 20 premiers atomes"></div>
           <div class="drop-zone-wrapper">
             <div class="drop-zone" id="drop-zone-ex" aria-label="Zone de dépôt"></div>
             <button type="button" class="btn-clear" id="btn-clear-ex">Effacer</button>
           </div>
-        </div>
-
-        <div class="formula-display">
-          <div class="formula-brute" id="formula-brute-ex"></div>
         </div>
       </div>
 
@@ -115,7 +130,170 @@
 
       <div class="ex-actions">
         <button type="button" class="btn-primary" id="btn-ex-validate">Valider</button>
-        <button type="button" class="btn-primary" id="btn-ex-next" style="display:none;">Suivant</button>
+        <button type="button" class="btn-primary btn-primary--alt" id="btn-ex-skip">Molécule suivante</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉCRAN : MODE 1-2-COURS (Décrire une transformation chimique) -->
+  <section id="screen-equations-cours" class="screen screen--sandbox screen--purple">
+    <div class="sandbox-shell">
+      <button type="button" class="btn-back" id="btn-back-to-mode1-eqc">‹ Retour</button>
+      <h1 class="app-title app-title--small">Décrire une<br>transformation chimique</h1>
+      <p class="sandbox-intro" id="eqc-instruction"></p>
+
+      <div class="eq-phrase" id="eqc-phrase"></div>
+      <div class="eq-equation" id="eqc-equation" style="display:none;"></div>
+
+      <p class="ex-feedback" id="eqc-feedback"></p>
+
+      <div class="ex-actions">
+        <button type="button" class="btn-secondary" id="btn-eqc-catalog">Voir le catalogue</button>
+        <button type="button" class="btn-primary" id="btn-eqc-next-step" style="display:none;">Suivant</button>
+        <button type="button" class="btn-primary" id="btn-eqc-validate" style="display:none;">Valider</button>
+        <button type="button" class="btn-primary btn-primary--alt" id="btn-eqc-new" style="display:none;">Nouvelle transformation</button>
+      </div>
+    </div>
+
+    <div class="eq-catalog-overlay" id="eqc-catalog-overlay">
+      <div class="eq-catalog-panel">
+        <h2 class="eq-catalog-title">Catalogue des substances</h2>
+        <input type="text" id="eqc-catalog-search" class="eq-catalog-search" placeholder="Rechercher un nom ou une formule…">
+        <div class="eq-catalog-list" id="eqc-catalog-list"></div>
+        <button type="button" class="btn-primary" id="btn-eqc-catalog-close">Fermer</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉCRAN : MODE 1-2-EXERCICE (équations à compléter) -->
+  <section id="screen-equations-exercice" class="screen screen--sandbox screen--purple">
+    <div class="sandbox-shell">
+      <button type="button" class="btn-back" id="btn-back-to-mode1-eqx">‹ Retour</button>
+      <h1 class="app-title app-title--small">S'exercer avec<br>les équations</h1>
+
+      <div class="exercise-topbar">
+        <span class="ex-score" id="eqx-score">Score : 0 / 0</span>
+      </div>
+
+      <div class="eq-phrase" id="eqx-phrase"></div>
+      <div class="eq-equation" id="eqx-equation"></div>
+
+      <p class="ex-feedback" id="eqx-feedback"></p>
+
+      <div class="ex-actions">
+        <button type="button" class="btn-secondary" id="btn-eqx-catalog">Voir le catalogue</button>
+        <button type="button" class="btn-primary" id="btn-eqx-validate">Valider</button>
+        <button type="button" class="btn-primary btn-primary--alt" id="btn-eqx-skip">Résoudre et passer</button>
+      </div>
+    </div>
+
+    <div class="eq-catalog-overlay" id="eqx-catalog-overlay">
+      <div class="eq-catalog-panel">
+        <h2 class="eq-catalog-title">Catalogue des substances</h2>
+        <input type="text" id="eqx-catalog-search" class="eq-catalog-search" placeholder="Rechercher un nom ou une formule…">
+        <div class="eq-catalog-list" id="eqx-catalog-list"></div>
+        <button type="button" class="btn-primary" id="btn-eqx-catalog-close">Fermer</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉCRAN : MODE 2-1-COURS (Construis ton atome) -->
+  <section id="screen-atom-cours" class="screen screen--sandbox screen--green">
+    <div class="sandbox-shell">
+      <button type="button" class="btn-back" id="btn-back-to-mode2">‹ Retour</button>
+      <h1 class="app-title app-title--small">Construis<br>ton atome</h1>
+      <p class="sandbox-intro">Clique sur des protons, neutrons et électrons pour construire ton atome.</p>
+
+      <div class="atom-layout">
+        <div class="atom-schema">
+          <div class="atom-nucleus-wrap" id="atom-nucleus-wrap"></div>
+          <div class="atom-electrons-wrap" id="atom-electrons-wrap"></div>
+        </div>
+        <div class="atom-info">
+          <div class="atom-cell" id="atom-cell">
+            <span class="element-mass" id="atom-info-mass"></span>
+            <span class="element-number" id="atom-info-number"></span>
+            <span class="element-symbol" id="atom-info-symbol">?</span>
+            <span class="element-name" id="atom-info-name"></span>
+          </div>
+          <p class="atom-proton-msg" id="atom-proton-msg"></p>
+          <p class="atom-neutral-msg" id="atom-neutral-msg"></p>
+        </div>
+      </div>
+
+      <p class="atom-limit-msg" id="atom-limit-msg"></p>
+
+      <div class="atom-particle-bar">
+        <button type="button" class="atom-particle-btn atom-particle-btn--proton" id="btn-add-proton">+ Proton</button>
+        <button type="button" class="atom-particle-btn atom-particle-btn--neutron" id="btn-add-neutron">+ Neutron</button>
+        <button type="button" class="atom-particle-btn atom-particle-btn--electron" id="btn-add-electron">+ Électron</button>
+      </div>
+
+      <div class="ex-actions">
+        <button type="button" class="btn-secondary" id="btn-atom-select">Sélectionner un atome</button>
+        <button type="button" class="btn-clear btn-clear--static" id="btn-atom-clear">Effacer</button>
+      </div>
+    </div>
+
+    <div class="eq-catalog-overlay" id="atom-picker-overlay">
+      <div class="eq-catalog-panel atom-picker-panel">
+        <h2 class="eq-catalog-title">Choisis un atome</h2>
+        <div class="atoms-panel atom-picker-grid" id="atom-picker-grid"></div>
+        <button type="button" class="btn-primary" id="btn-atom-picker-close">Fermer</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉCRAN : MODE 2-1-EXERCICE (construction / identification alternées) -->
+  <section id="screen-atom-exercice" class="screen screen--sandbox screen--green">
+    <div class="sandbox-shell">
+      <button type="button" class="btn-back" id="btn-back-to-mode2-ex">‹ Retour</button>
+      <h1 class="app-title app-title--small">S'exercer avec<br>les atomes</h1>
+
+      <div class="exercise-topbar">
+        <span class="ex-score" id="atx-score">Score : 0 / 0</span>
+      </div>
+
+      <p class="sandbox-intro" id="atx-instruction"></p>
+      <div class="atom-cell atom-cell--target" id="atx-target-cell" style="display:none;"></div>
+
+      <div id="atx-build-zone">
+        <div class="atom-layout atom-layout--compact">
+          <div class="atom-schema atom-schema--compact">
+            <div class="atom-nucleus-wrap" id="atx-nucleus-wrap"></div>
+            <div class="atom-electrons-wrap" id="atx-electrons-wrap"></div>
+          </div>
+        </div>
+        <p class="atom-limit-msg" id="atx-limit-msg"></p>
+        <div class="atom-particle-bar">
+          <button type="button" class="atom-particle-btn atom-particle-btn--proton" id="btn-atx-add-proton">+ Proton</button>
+          <button type="button" class="atom-particle-btn atom-particle-btn--neutron" id="btn-atx-add-neutron">+ Neutron</button>
+          <button type="button" class="atom-particle-btn atom-particle-btn--electron" id="btn-atx-add-electron">+ Électron</button>
+        </div>
+        <button type="button" class="btn-clear btn-clear--static" id="btn-atx-clear">Effacer</button>
+      </div>
+
+      <div id="atx-identify-zone" style="display:none;">
+        <div class="atom-schema atom-schema--compact" id="atx-identify-schema">
+          <div class="atom-nucleus-wrap" id="atx-identify-nucleus"></div>
+        </div>
+        <div class="atom-cell atom-cell--picked" id="atx-identify-picked"></div>
+        <button type="button" class="btn-secondary" id="btn-atx-open-picker">Ouvrir le tableau périodique</button>
+      </div>
+
+      <p class="ex-feedback" id="atx-feedback"></p>
+
+      <div class="ex-actions">
+        <button type="button" class="btn-primary" id="btn-atx-validate">Valider</button>
+        <button type="button" class="btn-primary btn-primary--alt" id="btn-atx-skip">Suivant</button>
+      </div>
+    </div>
+
+    <div class="eq-catalog-overlay" id="atx-picker-overlay">
+      <div class="eq-catalog-panel atom-picker-panel">
+        <h2 class="eq-catalog-title">Choisis un atome</h2>
+        <div class="atoms-panel atom-picker-grid" id="atx-picker-grid"></div>
+        <button type="button" class="btn-primary" id="btn-atx-picker-close">Fermer</button>
       </div>
     </div>
   </section>
@@ -129,6 +307,9 @@
   <script src="js/generator.js"></script>
   <script src="js/confetti.js"></script>
   <script src="js/exercise.js"></script>
+  <script src="js/equations-data.js"></script>
+  <script src="js/equations-app.js"></script>
+  <script src="js/atoms-app.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
