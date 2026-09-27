@@ -35,7 +35,7 @@
   --theme-accent: var(--blue-500);
 }
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 
 html, body {
   margin: 0;
@@ -88,19 +88,22 @@ body {
 /* ---------- Bouton retour (texte, discret) ---------- */
 .btn-back {
   position: absolute;
-  top: 14px;
-  left: 14px;
-  background: none;
-  border: none;
+  top: 12px;
+  left: 12px;
+  z-index: 5;
+  background: rgba(255,255,255,0.65);
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: 999px;
   font-family: var(--font-body);
   font-weight: 800;
-  font-size: 0.95rem;
-  color: var(--ink-soft);
+  font-size: 0.9rem;
+  color: var(--ink);
   cursor: pointer;
-  padding: 8px 6px;
+  padding: 8px 16px;
+  box-shadow: 0 3px 8px rgba(28,59,74,0.15);
 }
-.btn-back:hover { color: var(--ink); }
-.btn-back:active { transform: translateY(1px); }
+.btn-back:hover { background: rgba(255,255,255,0.85); }
+.btn-back:active { transform: translateY(1px); box-shadow: 0 1px 4px rgba(28,59,74,0.15); }
 
 /* ---------- Titre ---------- */
 .app-title {
@@ -116,6 +119,7 @@ body {
   font-size: 1.4rem;
   margin: 4px 0 14px;
 }
+.app-title--tiny { font-size: 1.15rem; }
 
 /* ---------- Liste des modes ---------- */
 .mode-list {
@@ -141,15 +145,17 @@ body {
   position: relative;
   z-index: 2;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
   width: 100%;
   height: 100%;
   padding: 12px 16px;
-  font-size: 1.3rem;
-  line-height: 1.25;
+  gap: 4px;
 }
+.mode-btn__title { font-size: 1.3rem; line-height: 1.25; }
+.mode-btn__subtitle { font-size: 0.75rem; font-weight: 600; opacity: 0.85; line-height: 1.2; max-width: 90%; }
 .mode-btn:active { transform: translateY(4px); }
 
 /* Nuances de bleu pastel : une teinte légèrement différente par bouton */
@@ -536,6 +542,12 @@ body[data-theme="green"] {
   box-shadow: 0 6px 0 #E0568F, 0 12px 20px rgba(224,86,143,0.28), inset 0 2px 0 rgba(255,255,255,0.55);
 }
 .mode-btn--pink:active { box-shadow: 0 2px 0 #E0568F, 0 6px 10px rgba(224,86,143,0.24), inset 0 2px 0 rgba(255,255,255,0.5); }
+.mode-btn--pink-dark {
+  background: linear-gradient(160deg, #FF9AC5, #E0568F);
+  color: #4a0f2c;
+  box-shadow: 0 6px 0 #B03D6B, 0 12px 20px rgba(176,61,107,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
+}
+.mode-btn--pink-dark:active { box-shadow: 0 2px 0 #B03D6B, 0 6px 10px rgba(176,61,107,0.26), inset 0 2px 0 rgba(255,255,255,0.35); }
 
 .mode-btn--purple {
   background: linear-gradient(160deg, #E0CBF7, #B98AF0);
@@ -543,6 +555,12 @@ body[data-theme="green"] {
   box-shadow: 0 6px 0 #7A4BB0, 0 12px 20px rgba(122,75,176,0.28), inset 0 2px 0 rgba(255,255,255,0.55);
 }
 .mode-btn--purple:active { box-shadow: 0 2px 0 #7A4BB0, 0 6px 10px rgba(122,75,176,0.24), inset 0 2px 0 rgba(255,255,255,0.5); }
+.mode-btn--purple-dark {
+  background: linear-gradient(160deg, #B98AF0, #8A4FD1);
+  color: #241238;
+  box-shadow: 0 6px 0 #5E3485, 0 12px 20px rgba(94,52,133,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
+}
+.mode-btn--purple-dark:active { box-shadow: 0 2px 0 #5E3485, 0 6px 10px rgba(94,52,133,0.26), inset 0 2px 0 rgba(255,255,255,0.35); }
 
 .mode-btn--green {
   background: linear-gradient(160deg, #D2F5B8, #9ADE5A);
@@ -550,6 +568,12 @@ body[data-theme="green"] {
   box-shadow: 0 6px 0 #5A9E2A, 0 12px 20px rgba(90,158,42,0.28), inset 0 2px 0 rgba(255,255,255,0.55);
 }
 .mode-btn--green:active { box-shadow: 0 2px 0 #5A9E2A, 0 6px 10px rgba(90,158,42,0.24), inset 0 2px 0 rgba(255,255,255,0.5); }
+.mode-btn--green-dark {
+  background: linear-gradient(160deg, #9ADE5A, #6FB52E);
+  color: #14260a;
+  box-shadow: 0 6px 0 #3D6E1A, 0 12px 20px rgba(61,110,26,0.3), inset 0 2px 0 rgba(255,255,255,0.4);
+}
+.mode-btn--green-dark:active { box-shadow: 0 2px 0 #3D6E1A, 0 6px 10px rgba(61,110,26,0.26), inset 0 2px 0 rgba(255,255,255,0.35); }
 
 .mode-btn--sub { height: 96px; }
 .mode-list--tight { gap: 12px; margin-bottom: 6px; }
@@ -562,6 +586,7 @@ body[data-theme="green"] {
   color: var(--ink-soft);
   margin: 4px 2px 8px;
 }
+.mode-group-label--spaced { margin-top: 22px; }
 
 /* ---------- Bouton secondaire (catalogue, sélection...) ---------- */
 .btn-secondary {
@@ -603,22 +628,38 @@ body[data-theme="green"] {
   margin-bottom: 10px;
 }
 
-.eq-token { border-bottom: 2px dotted var(--ink-faint); padding: 1px 2px; border-radius: 4px; }
-.eq-token--clickable { cursor: pointer; border-bottom-color: var(--blue-500); }
-.eq-token--clickable:hover { background: rgba(82,166,206,0.15); }
-.eq-token--dim { opacity: 0.45; border-bottom-style: solid; }
+.eq-token { padding: 1px 3px; border-radius: 4px; }
+.eq-token--clickable { cursor: pointer; background: rgba(82,166,206,0.12); }
+.eq-token--clickable:hover { background: rgba(82,166,206,0.22); }
+.eq-token--dim { opacity: 0.45; }
 .eq-token--selected-reactif {
   color: #1d6b3f;
   background: rgba(76,175,125,0.22);
-  border-bottom: none;
   font-weight: 800;
 }
 .eq-token--selected-produit {
   color: #a3312c;
   background: rgba(224,85,79,0.18);
-  border-bottom: none;
   font-weight: 800;
 }
+
+.eq-instruction-main {
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--ink);
+  text-align: center;
+  margin: 0 0 4px;
+}
+.eq-instruction-sub {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  text-align: center;
+  margin: 0 0 12px;
+}
+.eq-hl-green { color: #1d6b3f; font-weight: 800; background: rgba(76,175,125,0.2); border-radius: 3px; padding: 0 3px; }
+.eq-hl-red { color: #a3312c; font-weight: 800; background: rgba(224,85,79,0.18); border-radius: 3px; padding: 0 3px; }
 
 .eq-equation {
   display: flex;
@@ -628,20 +669,21 @@ body[data-theme="green"] {
   gap: 8px;
   margin: 12px 0;
 }
-.eq-side { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.eq-side { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; overflow-x: auto; }
 .eq-plus { font-family: var(--font-body); font-weight: 800; color: var(--ink-soft); }
 .eq-arrow { font-family: var(--font-body); font-weight: 800; font-size: 1.3rem; color: var(--ink); margin: 0 6px; }
 
 .eq-blank {
-  width: 96px;
+  width: 62px;
+  flex: 0 0 auto;
   font-family: var(--font-mono);
-  font-size: 1rem;
+  font-size: 0.9rem;
   text-align: center;
   background: rgba(255,255,255,0.6);
   color: var(--ink);
   border: 2px solid transparent;
   border-radius: var(--radius-sm);
-  padding: 9px 6px;
+  padding: 8px 4px;
   outline: none;
 }
 .eq-blank:focus { border-color: var(--blue-500); }
@@ -707,7 +749,6 @@ body[data-theme="green"] {
   border: 2px solid #cbd0d2;
   border-radius: var(--radius-md);
   overflow: hidden;
-  perspective: 500px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -718,10 +759,9 @@ body[data-theme="green"] {
   position: relative;
   width: 10px;
   height: 10px;
-  transform-style: preserve-3d;
-  animation: atom-spin 6s linear infinite;
+  animation: atom-spin-2d 60s linear infinite;
 }
-.atom-nucleus-wrap.atom-nucleus--unstable { animation: atom-spin 6s linear infinite, atom-shake 0.25s infinite; }
+.atom-nucleus-wrap.atom-nucleus--unstable { animation: atom-spin-2d 60s linear infinite, atom-shake 0.25s infinite; }
 
 .nucleon {
   position: absolute;
@@ -739,19 +779,13 @@ body[data-theme="green"] {
 .atom-electrons-wrap {
   position: absolute;
   inset: 0;
-  transform-style: preserve-3d;
-  animation: atom-spin 9s linear infinite reverse;
-}
-.electron-orbit {
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 0; height: 0;
-  transform-style: preserve-3d;
+  animation: atom-spin-2d 60s linear infinite reverse;
 }
 .electron-dot {
   position: absolute;
+  top: 50%; left: 50%;
   width: 14px; height: 14px;
-  transform: translateZ(70px) translate(-7px, -7px);
+  margin: -7px 0 0 -7px;
   border-radius: 50%;
   background: #4a7fd6;
   color: #fff;
@@ -760,7 +794,7 @@ body[data-theme="green"] {
   box-shadow: 0 0 6px rgba(74,127,214,0.6);
 }
 
-@keyframes atom-spin { from { transform: rotateY(0deg) rotateX(15deg); } to { transform: rotateY(360deg) rotateX(15deg); } }
+@keyframes atom-spin-2d { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes atom-shake {
   0%, 100% { margin-left: 0; }
   25% { margin-left: -2px; }
@@ -781,11 +815,18 @@ body[data-theme="green"] {
 
 .atom-proton-msg { font-family: var(--font-body); font-weight: 700; font-size: 0.8rem; color: var(--error); min-height: 18px; }
 .atom-neutral-msg { font-family: var(--font-body); font-weight: 800; font-size: 0.95rem; color: var(--ink); min-height: 20px; }
-.atom-neutral-msg--neg { color: var(--error); }
-.atom-neutral-msg--pos { color: #2e6fd6; }
+/* Rouge (manque d'électrons) : plus pastel proche de la neutralité, plus saturé si l'écart est grand */
+.atom-neutral-msg--neg-1 { color: #e8a19d; }
+.atom-neutral-msg--neg-2 { color: #e0736c; }
+.atom-neutral-msg--neg-3 { color: #c73a32; }
+/* Bleu (trop d'électrons) : même logique */
+.atom-neutral-msg--pos-1 { color: #a8c3ee; }
+.atom-neutral-msg--pos-2 { color: #6f96dd; }
+.atom-neutral-msg--pos-3 { color: #2e5fb8; }
 
 .atom-particle-bar { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
 .atom-particle-btn {
+  touch-action: manipulation;
   font-family: var(--font-body);
   font-weight: 800;
   font-size: 0.85rem;

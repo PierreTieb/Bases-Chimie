@@ -63,7 +63,7 @@
       return group.map(function (idx, k) {
         var plus = k > 0 ? '<span class="eq-plus">+</span>' : '';
         return plus + '<input type="text" class="eq-blank" data-idx="' + idx + '" autocomplete="off" ' +
-          'autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="formule">';
+          'autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="">';
       }).join('');
     }
     return '<div class="eq-side">' + side('reactif') + '</div>' +
@@ -115,11 +115,14 @@
 
     function render() {
       if (step === 1) {
-        els.instruction.textContent = "Les réactifs sont les substances qui seront mélangées pour réaliser la transformation. Clique sur le ou les réactifs dans le texte.";
+        els.instructionMain.textContent = 'Clique sur les réactifs de la transformation';
+        els.instructionSub.innerHTML = "Les <span class=\"eq-hl-green\">réactifs</span> sont les éléments à mélanger pour démarrer la transformation";
       } else if (step === 2) {
-        els.instruction.textContent = "Les produits sont les substances obtenues à la fin de la transformation. Clique sur le ou les produits dans le texte.";
+        els.instructionMain.textContent = 'Clique sur les produits de la transformation';
+        els.instructionSub.innerHTML = "Les <span class=\"eq-hl-red\">produits</span> sont les éléments obtenus à la fin de la transformation";
       } else {
-        els.instruction.textContent = "Écris la formule brute de chaque composé sélectionné : les réactifs avant la flèche, les produits après.";
+        els.instructionMain.textContent = 'Écris la formule brute de chaque composé sélectionné';
+        els.instructionSub.textContent = 'Les réactifs avant la flèche, les produits après.';
       }
       renderPhrase(els.phrase, reaction, {
         interactive: true,
@@ -191,7 +194,8 @@
     }
 
     function init() {
-      els.instruction = document.getElementById('eqc-instruction');
+      els.instructionMain = document.getElementById('eqc-instruction-main');
+      els.instructionSub = document.getElementById('eqc-instruction-sub');
       els.phrase = document.getElementById('eqc-phrase');
       els.equation = document.getElementById('eqc-equation');
       els.feedback = document.getElementById('eqc-feedback');
@@ -233,6 +237,7 @@
       els.equation.innerHTML = buildEquationHTML(reaction.substances);
       els.validateBtn.disabled = false;
       els.skipBtn.disabled = false;
+      els.skipBtn.style.display = 'none';
       els.skipBtn.textContent = 'Résoudre et passer';
     }
 
@@ -290,10 +295,12 @@
         els.feedback.className = 'ex-feedback success';
         triggerConfettiFromButton(els.validateBtn);
         els.validateBtn.disabled = true;
+        els.skipBtn.style.display = 'inline-block';
         els.skipBtn.textContent = 'Transformation suivante';
       } else {
         els.feedback.textContent = "Certaines cases sont en rouge : corrige-les et revalide, ou passe à une autre transformation.";
         els.feedback.className = 'ex-feedback error';
+        els.skipBtn.style.display = 'inline-block';
       }
     }
 

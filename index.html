@@ -15,11 +15,17 @@
 
       <div class="mode-list">
         <button type="button" id="btn-mode1" class="mode-btn mode-btn--home-strong">
-          <span class="mode-btn__label">Les Molécules et<br>les formules chimiques</span>
+          <span class="mode-btn__label">
+            <span class="mode-btn__title">Les molécules</span>
+            <span class="mode-btn__subtitle">Construire des molécules et décrire des transformations</span>
+          </span>
         </button>
 
         <button type="button" id="btn-mode2" class="mode-btn mode-btn--green">
-          <span class="mode-btn__label">Atomes<br>et Ions</span>
+          <span class="mode-btn__label">
+            <span class="mode-btn__title">Atomes et Ions</span>
+            <span class="mode-btn__subtitle">Identifier les atomes et construis des ions</span>
+          </span>
         </button>
 
         <button type="button" class="mode-btn mode-btn--soon" aria-disabled="true" tabindex="-1">
@@ -35,22 +41,22 @@
       <button type="button" class="btn-back" id="btn-back-to-home">‹ Retour</button>
       <h1 class="app-title app-title--small">Les Molécules et<br>les formules chimiques</h1>
 
-      <p class="mode-group-label">Molécules</p>
+      <p class="mode-group-label">Formule chimique</p>
       <div class="mode-list mode-list--tight">
         <button type="button" id="btn-mode1-1" class="mode-btn mode-btn--pink mode-btn--sub">
           <span class="mode-btn__label">Construire<br>une molécule</span>
         </button>
-        <button type="button" id="btn-mode1-2" class="mode-btn mode-btn--pink mode-btn--sub">
+        <button type="button" id="btn-mode1-2" class="mode-btn mode-btn--pink-dark mode-btn--sub">
           <span class="mode-btn__label">S'exercer avec<br>les formules chimiques</span>
         </button>
       </div>
 
-      <p class="mode-group-label">Équations</p>
+      <p class="mode-group-label mode-group-label--spaced">Équations chimiques</p>
       <div class="mode-list mode-list--tight">
         <button type="button" id="btn-eq-cours" class="mode-btn mode-btn--purple mode-btn--sub">
           <span class="mode-btn__label">Décrire une<br>transformation chimique</span>
         </button>
-        <button type="button" id="btn-eq-exercice" class="mode-btn mode-btn--purple mode-btn--sub">
+        <button type="button" id="btn-eq-exercice" class="mode-btn mode-btn--purple-dark mode-btn--sub">
           <span class="mode-btn__label">S'exercer avec<br>les équations</span>
         </button>
       </div>
@@ -67,7 +73,7 @@
         <button type="button" id="btn-atom-cours-nav" class="mode-btn mode-btn--green mode-btn--sub">
           <span class="mode-btn__label">Construire<br>ton atome</span>
         </button>
-        <button type="button" id="btn-atom-exercice-nav" class="mode-btn mode-btn--green mode-btn--sub">
+        <button type="button" id="btn-atom-exercice-nav" class="mode-btn mode-btn--green-dark mode-btn--sub">
           <span class="mode-btn__label">S'exercer avec<br>les atomes</span>
         </button>
       </div>
@@ -78,7 +84,7 @@
   <section id="screen-mode1-1" class="screen screen--sandbox screen--pink">
     <div class="sandbox-shell">
       <button type="button" class="btn-back" id="btn-back-to-mode1">‹ Retour</button>
-      <h1 class="app-title app-title--small">Construire<br>une molécule</h1>
+      <h1 class="app-title app-title--small app-title--tiny">Apprendre à lire et écrire<br>la formule chimique d'une molécule</h1>
       <p class="sandbox-intro">Construis ta molécule atome par atome et trouve sa formule chimique</p>
 
       <div class="sandbox-layout">
@@ -100,7 +106,7 @@
   <section id="screen-exercise1-2" class="screen screen--sandbox screen--pink">
     <div class="sandbox-shell">
       <button type="button" class="btn-back" id="btn-back-to-mode1-ex">‹ Retour</button>
-      <h1 class="app-title app-title--small">S'exercer avec<br>les formules chimiques</h1>
+      <h1 class="app-title app-title--small">S'exercer en autonomie</h1>
 
       <div class="exercise-topbar">
         <span class="ex-score" id="ex-score">Score : 0 / 0</span>
@@ -139,8 +145,9 @@
   <section id="screen-equations-cours" class="screen screen--sandbox screen--purple">
     <div class="sandbox-shell">
       <button type="button" class="btn-back" id="btn-back-to-mode1-eqc">‹ Retour</button>
-      <h1 class="app-title app-title--small">Décrire une<br>transformation chimique</h1>
-      <p class="sandbox-intro" id="eqc-instruction"></p>
+      <h1 class="app-title app-title--small app-title--tiny">Apprendre à décrire<br>une transformation chimique</h1>
+      <p class="eq-instruction-main" id="eqc-instruction-main"></p>
+      <p class="eq-instruction-sub" id="eqc-instruction-sub"></p>
 
       <div class="eq-phrase" id="eqc-phrase"></div>
       <div class="eq-equation" id="eqc-equation" style="display:none;"></div>
@@ -169,7 +176,7 @@
   <section id="screen-equations-exercice" class="screen screen--sandbox screen--purple">
     <div class="sandbox-shell">
       <button type="button" class="btn-back" id="btn-back-to-mode1-eqx">‹ Retour</button>
-      <h1 class="app-title app-title--small">S'exercer avec<br>les équations</h1>
+      <h1 class="app-title app-title--small">S'exercer en autonomie</h1>
 
       <div class="exercise-topbar">
         <span class="ex-score" id="eqx-score">Score : 0 / 0</span>
@@ -201,7 +208,7 @@
   <section id="screen-atom-cours" class="screen screen--sandbox screen--green">
     <div class="sandbox-shell">
       <button type="button" class="btn-back" id="btn-back-to-mode2">‹ Retour</button>
-      <h1 class="app-title app-title--small">Construis<br>ton atome</h1>
+      <h1 class="app-title app-title--small app-title--tiny">Apprends à<br>construire un atome</h1>
       <p class="sandbox-intro">Clique sur des protons, neutrons et électrons pour construire ton atome.</p>
 
       <div class="atom-layout">
@@ -248,7 +255,7 @@
   <section id="screen-atom-exercice" class="screen screen--sandbox screen--green">
     <div class="sandbox-shell">
       <button type="button" class="btn-back" id="btn-back-to-mode2-ex">‹ Retour</button>
-      <h1 class="app-title app-title--small">S'exercer avec<br>les atomes</h1>
+      <h1 class="app-title app-title--small">S'exercer en autonomie</h1>
 
       <div class="exercise-topbar">
         <span class="ex-score" id="atx-score">Score : 0 / 0</span>

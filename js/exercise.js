@@ -58,6 +58,7 @@ window.Exercise = (function () {
     current = pickQuestion();
     resetFeedback();
     setButtonsEnabled(true);
+    els.skipBtn.style.display = 'none';
     els.skipBtn.textContent = 'Molécule suivante';
 
     if (current.type === 'identify') {
@@ -110,11 +111,13 @@ window.Exercise = (function () {
       triggerConfetti();
       els.validateBtn.disabled = true;
       if (current.type === 'identify') els.formulaInput.disabled = true;
+      els.skipBtn.style.display = 'inline-block';
       els.skipBtn.textContent = 'Molécule suivante';
     } else {
       // Pas de réponse révélée, pas de blocage : on peut réessayer librement.
       els.feedback.textContent = "Ce n'est pas la bonne formule, réessaie.";
       els.feedback.className = 'ex-feedback error';
+      els.skipBtn.style.display = 'inline-block';
     }
   }
 

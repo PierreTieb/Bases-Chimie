@@ -27,44 +27,72 @@
     });
   }
 
-  // Nuage de positions "en boule" pour les nucléons (déterministe par index).
-  function nucleonOffset(index, total) {
-    var angle = index * 137.5 * Math.PI / 180; // angle d'or : répartition dense mais non alignée
-    var radius = 3 + Math.sqrt(index) * 6;
-    return { x: Math.cos(angle) * radius, y: Math.sin(angle) * radius };
+  // Nuage de positions "en boule" pour les nucléons, sans chevauchement fort :
+  // on avance sur une spirale (angle d'or) et on recule dès que ça collisionne
+  // avec un nucléon déjà placé. Comme protons et neutrons sont mélangés avant
+  // l'appel (voir renderNucleus), le résultat alterne les deux plutôt que de
+  // former deux paquets séparés.
+  function layoutNucleus(sequence) {
+    var positions = [];
+    var minDist = 20; // ~ diamètre d'un nucléon (22px) avec un léger recouvrement volontaire
+    sequence.forEach(function (type, i) {
+      var angle = i * 137.508 * Math.PI / 180;
+      var radius = 0;
+      var pos = { x: 0, y: 0 };
+      for (var tries = 0; tries < 300; tries++) {
+        pos = { x: Math.cos(angle) * radius, y: Math.sin(angle) * radius };
+        var collides = positions.some(function (p) {
+          var dx = p.x - pos.x, dy = p.y - pos.y;
+          return Math.sqrt(dx * dx + dy * dy) < minDist;
+        });
+        if (!collides) break;
+        radius += 3;
+      }
+      positions.push({ x: pos.x, y: pos.y, type: type });
+    });
+    return positions;
   }
 
-  function renderNucleus(wrapEl, protonCount, neutronCount, size) {
+  function renderNucleus(wrapEl, protonCount, neutronCount) {
     wrapEl.innerHTML = '';
-    var total = protonCount + neutronCount;
     var seq = [];
     for (var i = 0; i < protonCount; i++) seq.push('p');
     for (var j = 0; j < neutronCount; j++) seq.push('n');
-    // Alterne p/n pour un mélange visuel plus naturel plutôt que 2 paquets séparés
-    seq.sort(function (a, b) { return (a === b) ? 0 : (Math.random() - 0.5); });
+    seq.sort(function () { return Math.random() - 0.5; }); // mélange homogène p/n
 
-    seq.forEach(function (type, idx) {
-      var off = nucleonOffset(idx, total);
+    layoutNucleus(seq).forEach(function (pos) {
       var node = document.createElement('div');
-      node.className = 'nucleon nucleon--' + (type === 'p' ? 'proton' : 'neutron');
-      node.style.transform = 'translate(' + off.x + 'px,' + off.y + 'px)';
-      node.textContent = type === 'p' ? '+' : '';
+      node.className = 'nucleon nucleon--' + (pos.type === 'p' ? 'proton' : 'neutron');
+      node.style.transform = 'translate(' + pos.x + 'px,' + pos.y + 'px)';
+      node.textContent = pos.type === 'p' ? '+' : '';
       wrapEl.appendChild(node);
     });
   }
 
+  // Couches électroniques simplifiées (juste pour l'aspect visuel, pas de
+  // règle de chimie quantique) : 2, puis 8, puis 8, puis 8...
+  var SHELL_CAPACITIES = [2, 8, 8, 8, 8, 8];
+
   function renderElectrons(wrapEl, electronCount) {
     wrapEl.innerHTML = '';
-    for (var i = 0; i < electronCount; i++) {
-      var angle = (360 / Math.max(electronCount, 1)) * i;
-      var node = document.createElement('div');
-      node.className = 'electron-orbit';
-      node.style.transform = 'rotateY(' + angle + 'deg)';
-      var dot = document.createElement('div');
-      dot.className = 'electron-dot';
-      dot.textContent = '-';
-      node.appendChild(dot);
-      wrapEl.appendChild(node);
+    var remaining = electronCount;
+    var shellIndex = 0;
+    while (remaining > 0) {
+      var capacity = SHELL_CAPACITIES[Math.min(shellIndex, SHELL_CAPACITIES.length - 1)];
+      var countInShell = Math.min(remaining, capacity);
+      var radius = 34 + shellIndex * 26;
+
+      for (var i = 0; i < countInShell; i++) {
+        var angle = (360 / countInShell) * i;
+        var rad = angle * Math.PI / 180;
+        var node = document.createElement('div');
+        node.className = 'electron-dot';
+        node.style.transform = 'translate(' + (Math.cos(rad) * radius) + 'px,' + (Math.sin(rad) * radius) + 'px)';
+        node.textContent = '-';
+        wrapEl.appendChild(node);
+      }
+      remaining -= countInShell;
+      shellIndex++;
     }
   }
 
@@ -114,22 +142,21 @@
       if (showHelpers && config.neutralMsgEl) {
         var diff = electrons - protons;
         var msg = config.neutralMsgEl;
-        msg.classList.remove('atom-neutral-msg--pos', 'atom-neutral-msg--neg');
+        msg.classList.remove('atom-neutral-msg--pos-1', 'atom-neutral-msg--pos-2', 'atom-neutral-msg--pos-3',
+          'atom-neutral-msg--neg-1', 'atom-neutral-msg--neg-2', 'atom-neutral-msg--neg-3');
         if (protons === 0 && electrons === 0) {
           msg.textContent = '';
         } else if (diff === 0) {
           msg.textContent = "L'atome est neutre.";
-          msg.style.fontSize = '';
         } else {
           var amount = Math.abs(diff);
-          var scale = Math.min(1 + amount * 0.08, 1.6);
-          msg.style.fontSize = scale + 'em';
+          var grade = amount <= 2 ? 1 : (amount <= 6 ? 2 : 3);
+          var sign = diff < 0 ? 'neg' : 'pos';
+          msg.classList.add('atom-neutral-msg--' + sign + '-' + grade);
           if (diff < 0) {
-            msg.textContent = "L'atome n'est pas neutre : il manque " + amount + " électron" + (amount > 1 ? 's' : '') + '.';
-            msg.classList.add('atom-neutral-msg--neg');
+            msg.textContent = "L'atome n'est pas neutre : il manque " + amount + ' électron' + (amount > 1 ? 's' : '') + '.';
           } else {
             msg.textContent = "L'atome n'est pas neutre : il y a " + amount + ' électron' + (amount > 1 ? 's' : '') + ' en trop.';
-            msg.classList.add('atom-neutral-msg--pos');
           }
         }
       }
@@ -247,6 +274,7 @@
       els.feedback.textContent = '';
       els.feedback.className = 'ex-feedback';
       els.validateBtn.disabled = false;
+      els.skipBtn.style.display = 'none';
       els.skipBtn.textContent = 'Suivant';
       els.pickerOverlay.style.display = 'none';
 
@@ -275,22 +303,21 @@
     }
 
     function onValidate() {
-      if (answered || !current) return;
+      if (!current) return;
       var correct = false;
 
       if (current.type === 'construct') {
         var counts = atomCtrl.getCounts();
         correct = counts.protons === current.z &&
-          counts.neutrons === (window.Units.getByZ(current.z).mass - current.z) &&
-          counts.electrons === current.z;
+          counts.neutrons === (window.Units.getByZ(current.z).mass - current.z);
       } else {
         var pickedZ = parseInt(els.identifyPicked.dataset.z || '0', 10);
         correct = pickedZ === current.z;
       }
 
-      answered = true;
-      score.total++;
       if (correct) {
+        if (!answered) { score.total++; }
+        answered = true;
         score.correct++;
         els.feedback.textContent = 'Bravo, bonne réponse !';
         els.feedback.className = 'ex-feedback success';
@@ -298,12 +325,16 @@
           var rect = els.validateBtn.getBoundingClientRect();
           window.Confetti.burst(document.getElementById('confetti-canvas'), rect.left + rect.width / 2, rect.top + rect.height / 2);
         } catch (e) { /* décoratif */ }
+        els.validateBtn.disabled = true;
+        els.skipBtn.style.display = 'inline-block';
+        els.skipBtn.textContent = 'Suivant';
       } else {
-        els.feedback.textContent = "Ce n'est pas la bonne réponse.";
+        if (!answered) { score.total++; answered = true; }
+        els.feedback.textContent = "Ce n'est pas la bonne réponse, réessaie.";
         els.feedback.className = 'ex-feedback error';
+        els.skipBtn.style.display = 'inline-block';
       }
       updateScore();
-      els.validateBtn.disabled = true;
     }
 
     function onSkip() { showQuestion(); }
