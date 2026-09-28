@@ -154,13 +154,13 @@ body[data-theme="green"]  { --bg-top: #F4FBE8; --bg-bottom: #CFE9A9; }
 body:not(.touch-mode) .element-cell { touch-action: none; }
 .element-cell:hover { border-color: var(--acc-mid); }
 .element-mass { position: absolute; top: 3px; left: 5px; font-size: .62rem; font-weight: 800; color: var(--ink-soft); }
-.element-number { position: absolute; top: 3px; right: 5px; font-size: .62rem; font-weight: 800; color: var(--acc-dark); }
+.element-number { position: absolute; bottom: 3px; left: 5px; font-size: .62rem; font-weight: 800; color: var(--acc-dark); }
 .element-symbol { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; line-height: 1.1; }
 .element-name { font-size: .5rem; font-weight: 700; color: var(--ink-soft); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .atom-cell { width: 108px; min-height: 128px; padding-top: 22px; border-radius: 16px; margin: 0 auto; }
-.atom-cell .element-mass, .atom-cell .element-number { font-size: .95rem; top: 7px; }
-.atom-cell .element-mass { left: 10px; } .atom-cell .element-number { right: 10px; }
+.atom-cell .element-mass, .atom-cell .element-number { font-size: .95rem; left: 10px; }
+.atom-cell .element-mass { top: 7px; } .atom-cell .element-number { bottom: 7px; top: auto; }
 .atom-cell .element-symbol { font-size: 2.6rem; }
 .atom-cell .element-name { font-size: .78rem; margin-top: 2px; }
 .atom-cell--target, .atom-cell--picked { margin: 0 auto 16px; }
@@ -349,7 +349,9 @@ body:not(.touch-mode) .element-cell { touch-action: none; }
 }
 .atom-info .atom-cell { grid-row: 1 / span 2; width: 86px; min-height: 102px; padding-top: 18px; margin: 0; }
 .atom-info .atom-cell .element-symbol { font-size: 2.1rem; }
-.atom-info .atom-cell .element-mass, .atom-info .atom-cell .element-number { font-size: .8rem; top: 5px; }
+.atom-info .atom-cell .element-mass, .atom-info .atom-cell .element-number { font-size: .8rem; }
+.atom-info .atom-cell .element-mass { top: 5px; }
+.atom-info .atom-cell .element-number { bottom: 5px; top: auto; }
 .atom-info .atom-cell .element-name { font-size: .68rem; }
 .atom-info .atom-proton-msg, .atom-info .atom-neutral-msg { text-align: left; margin: 0; max-width: none; min-height: 0; }
 .atom-schema { cursor: pointer; }
