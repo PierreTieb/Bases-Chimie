@@ -167,6 +167,7 @@ window.MoleculeBuilder = (function () {
       node.style.left = (pos.x - radius) + 'px';
       node.style.top = (pos.y - radius) + 'px';
       node.style.background = el.color;
+      node.style.color = window.Units.textColorFor(el.color);
       node.textContent = el.symbol;
       if (removable) node.style.pointerEvents = 'auto';
       dropZoneEl.appendChild(node);

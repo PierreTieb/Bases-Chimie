@@ -79,6 +79,7 @@ window.Sandbox = (function () {
       ghost.style.width = (radius * 2) + 'px';
       ghost.style.height = (radius * 2) + 'px';
       ghost.style.background = el.color;
+      ghost.style.color = window.Units.textColorFor(el.color);
       ghost.textContent = el.symbol;
       document.body.appendChild(ghost);
       moveGhost(ghost, evt.clientX, evt.clientY);

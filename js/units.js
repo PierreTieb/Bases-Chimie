@@ -65,7 +65,14 @@ window.Units = (function () {
     return MIN_RADIUS + ratio * (MAX_RADIUS - MIN_RADIUS);
   }
 
+  function textColorFor(hex) {
+    var n = parseInt(hex.slice(1), 16);
+    var lum = 0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255);
+    return lum < 140 ? '#ffffff' : '#1f2a36';
+  }
+
   return {
+    textColorFor: textColorFor,
     getAll: getAll,
     getBySymbol: getBySymbol,
     getByZ: getByZ,
