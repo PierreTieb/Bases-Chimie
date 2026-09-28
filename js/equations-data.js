@@ -149,7 +149,34 @@ window.Equations = (function () {
     }
   ];
 
-  function getCatalog() { return CATALOG.slice(); }
+  function countsSig(c) {
+    return Object.keys(c).filter(function (k) { return c[k] > 0; }).sort()
+      .map(function (k) { return k + ':' + c[k]; }).join(',');
+  }
+
+  // Catalogue = liste d'usage ci-dessus + toutes les molécules connues du
+  // bac à sable (Molecules) qui n'y figurent pas encore : les deux bases
+  // restent ainsi toujours cohérentes.
+  function getCatalog() {
+    var list = CATALOG.slice();
+    if (window.Molecules && window.Molecules.getAllKnown) {
+      var seen = {};
+      CATALOG.forEach(function (c) {
+        var p = window.Molecules.parseFormulaInput(c.formula);
+        if (p) seen[countsSig(p)] = true;
+      });
+      window.Molecules.getAllKnown().forEach(function (m) {
+        var sig = countsSig(m.counts);
+        if (seen[sig]) return;
+        seen[sig] = true;
+        list.push({
+          name: m.name,
+          formula: m.formula.replace(/[\u2080-\u2089]/g, function (d) { return String(d.charCodeAt(0) - 0x2080); })
+        });
+      });
+    }
+    return list;
+  }
   function getReactions() { return REACTIONS.slice(); }
   function getRandomReaction() { return window.Generator.pickRandom(REACTIONS); }
 

@@ -11,6 +11,8 @@
   var NUCLEUS_ZONE_RADIUS = 58;
   var RING_RADII = [80, 112];
   var RING_CAPACITY = [8, 12];
+  var NUCLEUS_CLICK_RADIUS = 68; // au-delà : zone des électrons
+  var EXERCISE_MAX_Z = 15;       // exercices limités au phosphore
   // Ordre des paires d'électrons sur un cercle (angles en degrés) : une paire
   // opposée, puis la paire perpendiculaire, puis les diagonales, etc.
   var PAIR_ANGLES = [0, 90, 45, 135, 22.5, 112.5, 67.5, 157.5];
@@ -27,9 +29,10 @@
       '<span class="element-name">' + el.name + '</span>';
   }
 
-  function renderPickerGrid(gridEl, onPick) {
+  function renderPickerGrid(gridEl, onPick, maxZ) {
     var html = '';
     window.Units.getAll().forEach(function (el) {
+      if (maxZ && el.z > maxZ) return;
       html += '<div class="element-cell" data-z="' + el.z + '">' + cellHTML(el) + '</div>';
     });
     gridEl.innerHTML = html;
@@ -48,7 +51,7 @@
     if (total === 0) return [];
     if (total === 1) return [{ x: 0, y: 0 }];
     if (total === 2) return [{ x: -NUCLEON_SIZE / 2, y: 0 }, { x: NUCLEON_SIZE / 2, y: 0 }];
-    var needed = NUCLEON_SIZE * 0.62 * Math.sqrt(total);
+    var needed = NUCLEON_SIZE * 0.5 * Math.sqrt(total);
     var rMax = Math.min(needed, NUCLEUS_ZONE_RADIUS - NUCLEON_SIZE / 2);
     var golden = 137.508 * Math.PI / 180;
     var out = [];
@@ -79,6 +82,8 @@
       node.className = 'nucleon nucleon--' + (type === 'p' ? 'proton' : 'neutron');
       node.style.setProperty('--x', pos[i].x.toFixed(1));
       node.style.setProperty('--y', pos[i].y.toFixed(1));
+      // Plus un nucléon est proche du centre, plus il passe au-dessus : effet de sphère.
+      node.style.zIndex = String(200 - Math.round(Math.sqrt(pos[i].x * pos[i].x + pos[i].y * pos[i].y)));
       node.textContent = type === 'p' ? '+' : '';
       wrapEl.appendChild(node);
     });
@@ -142,10 +147,19 @@
     var protons = 0, neutrons = 0, electrons = 0;
     var showHelpers = config.showHelpers !== false;
 
+    var nextRemoveProton = true;
+
+    // "Instable" = ne correspond à aucun atome du tableau (Z, A) : le noyau tremble.
     function isUnstable() {
+      if (protons + neutrons === 0) return false;
       if (protons < 1 || protons > 20) return true;
-      var exp = expectedNeutrons(protons);
-      return exp === null || neutrons !== exp;
+      return neutrons !== expectedNeutrons(protons);
+    }
+
+    function updateButtons() {
+      if (config.protonBtn) config.protonBtn.textContent = '+ Proton (' + protons + ')';
+      if (config.neutronBtn) config.neutronBtn.textContent = '+ Neutron (' + neutrons + ')';
+      if (config.electronBtn) config.electronBtn.textContent = '+ Électron (' + electrons + ')';
     }
 
     function renderNeutralMsg() {
@@ -177,7 +191,6 @@
       if (config.nameEl) config.nameEl.textContent = el ? el.name : '';
       if (config.massEl) {
         config.massEl.textContent = protons > 0 ? String(neutrons + protons) : '';
-        config.massEl.classList.toggle('atom-value--unstable', showHelpers && isUnstable() && protons >= 1 && protons <= 20);
       }
       if (config.numberEl) config.numberEl.textContent = protons > 0 ? String(protons) : '';
 
@@ -187,6 +200,7 @@
           : '';
       }
       renderNeutralMsg();
+      updateButtons();
 
       if (config.onChange) config.onChange({ protons: protons, neutrons: neutrons, electrons: electrons });
     }
@@ -212,18 +226,36 @@
       render();
     }
 
-    // Retrait au clic sur une particule (délégation : survit au ré-affichage)
-    config.nucleusEl.addEventListener('click', function (evt) {
-      var target = evt.target.closest ? evt.target.closest('.nucleon') : null;
-      if (!target) return;
-      if (target.classList.contains('nucleon--proton') && protons > 0) protons--;
-      else if (target.classList.contains('nucleon--neutron') && neutrons > 0) neutrons--;
+    function removeNucleon() {
+      if (protons + neutrons === 0) return;
+      var t = nextRemoveProton ? 'p' : 'n';
+      if (t === 'p' && protons === 0) t = 'n';
+      else if (t === 'n' && neutrons === 0) t = 'p';
+      if (t === 'p') protons--; else neutrons--;
+      nextRemoveProton = (t === 'n');
       render();
-    });
-    config.electronsEl.addEventListener('click', function (evt) {
-      var target = evt.target.closest ? evt.target.closest('.electron-dot') : null;
-      if (target && electrons > 0) { electrons--; render(); }
-    });
+    }
+
+    function removeElectron() {
+      if (electrons === 0) return;
+      electrons--;
+      render();
+    }
+
+    // Deux zones tactiles : le noyau (retire un proton puis un neutron,
+    // alternativement) et tout le reste du schéma (retire un électron).
+    var schemaEl = config.nucleusEl.closest ? config.nucleusEl.closest('.atom-schema') : null;
+    if (schemaEl) {
+      schemaEl.addEventListener('click', function (evt) {
+        if (evt.target.closest && evt.target.closest('button')) return;
+        var r = schemaEl.getBoundingClientRect();
+        var u = r.width / 290;
+        var dx = evt.clientX - (r.left + r.width / 2);
+        var dy = evt.clientY - (r.top + r.height / 2);
+        var d = Math.sqrt(dx * dx + dy * dy) / u;
+        if (d <= NUCLEUS_CLICK_RADIUS) removeNucleon(); else removeElectron();
+      });
+    }
 
     render();
 
@@ -253,6 +285,9 @@
         massEl: document.getElementById('atom-info-mass'),
         numberEl: document.getElementById('atom-info-number'),
         protonMsgEl: document.getElementById('atom-proton-msg'),
+        protonBtn: document.getElementById('btn-add-proton'),
+        neutronBtn: document.getElementById('btn-add-neutron'),
+        electronBtn: document.getElementById('btn-add-electron'),
         neutralMsgEl: document.getElementById('atom-neutral-msg'),
         limitMsgEl: document.getElementById('atom-limit-msg'),
         showHelpers: true
@@ -295,7 +330,7 @@
 
     function showQuestion() {
       answered = false;
-      var z = 1 + Math.floor(Math.random() * 20);
+      var z = 1 + Math.floor(Math.random() * EXERCISE_MAX_Z);
       var type = Math.random() < 0.5 ? 'construct' : 'identify';
       current = { type: type, z: z };
 
@@ -384,7 +419,9 @@
       atomCtrl = createAtomController({
         nucleusEl: document.getElementById('atx-nucleus-wrap'),
         electronsEl: document.getElementById('atx-electrons-wrap'),
-        neutralMsgEl: document.getElementById('atx-neutral-msg'),
+        protonBtn: document.getElementById('btn-atx-add-proton'),
+        neutronBtn: document.getElementById('btn-atx-add-neutron'),
+        electronBtn: document.getElementById('btn-atx-add-electron'),
         limitMsgEl: document.getElementById('atx-limit-msg'),
         showHelpers: false
       });
@@ -399,7 +436,7 @@
           els.identifyPicked.dataset.z = String(z);
           els.identifyPicked.innerHTML = cellHTML(window.Units.getByZ(z));
           els.pickerOverlay.style.display = 'none';
-        });
+        }, EXERCISE_MAX_Z);
         els.pickerOverlay.style.display = 'flex';
       });
       document.getElementById('btn-atx-picker-close').addEventListener('click', function () {

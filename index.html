@@ -237,9 +237,9 @@
     <p class="atom-limit-msg" id="atom-limit-msg"></p>
 
     <div class="atom-particle-bar">
-      <button type="button" class="atom-particle-btn atom-particle-btn--proton" id="btn-add-proton">+ Proton</button>
-      <button type="button" class="atom-particle-btn atom-particle-btn--neutron" id="btn-add-neutron">+ Neutron</button>
-      <button type="button" class="atom-particle-btn atom-particle-btn--electron" id="btn-add-electron">+ Électron</button>
+      <button type="button" class="atom-particle-btn atom-particle-btn--proton" id="btn-add-proton">+ Proton (0)</button>
+      <button type="button" class="atom-particle-btn atom-particle-btn--neutron" id="btn-add-neutron">+ Neutron (0)</button>
+      <button type="button" class="atom-particle-btn atom-particle-btn--electron" id="btn-add-electron">+ Électron (0)</button>
     </div>
 
     <div class="ex-actions">
@@ -275,17 +275,14 @@
             <div class="atom-nucleus-wrap" id="atx-nucleus-wrap"></div>
             <div class="atom-electrons-wrap" id="atx-electrons-wrap"></div>
           </div>
+          <button type="button" class="btn-clear btn-clear--mini" id="btn-atx-clear">Effacer</button>
         </div>
       </div>
-      <p class="atom-neutral-msg" id="atx-neutral-msg"></p>
       <p class="atom-limit-msg" id="atx-limit-msg"></p>
       <div class="atom-particle-bar">
-        <button type="button" class="atom-particle-btn atom-particle-btn--proton" id="btn-atx-add-proton">+ Proton</button>
-        <button type="button" class="atom-particle-btn atom-particle-btn--neutron" id="btn-atx-add-neutron">+ Neutron</button>
-        <button type="button" class="atom-particle-btn atom-particle-btn--electron" id="btn-atx-add-electron">+ Électron</button>
-      </div>
-      <div class="ex-actions">
-        <button type="button" class="btn-clear btn-clear--static" id="btn-atx-clear">Effacer</button>
+        <button type="button" class="atom-particle-btn atom-particle-btn--proton" id="btn-atx-add-proton">+ Proton (0)</button>
+        <button type="button" class="atom-particle-btn atom-particle-btn--neutron" id="btn-atx-add-neutron">+ Neutron (0)</button>
+        <button type="button" class="atom-particle-btn atom-particle-btn--electron" id="btn-atx-add-electron">+ Électron (0)</button>
       </div>
     </div>
 
@@ -302,12 +299,12 @@
       </div>
     </div>
 
-    <p class="ex-feedback" id="atx-feedback"></p>
-
     <div class="ex-actions">
       <button type="button" class="btn-primary" id="btn-atx-validate">Valider</button>
       <button type="button" class="btn-primary btn-primary--alt" id="btn-atx-skip">Suivant</button>
     </div>
+
+    <p class="ex-feedback" id="atx-feedback"></p>
 
     <div class="eq-catalog-overlay" id="atx-picker-overlay">
       <div class="eq-catalog-panel atom-picker-panel">

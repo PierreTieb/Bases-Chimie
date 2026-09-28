@@ -15,7 +15,8 @@
   --acc-light: #CDEEFA; --acc-mid: #6FC3E4; --acc-dark: #45A6CC; --acc-text: #0B4E66;
 }
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+button { -webkit-user-select: none; user-select: none; }
 
 html, body { margin: 0; padding: 0; color: var(--ink); font-family: var(--font-body); font-weight: 600; }
 
@@ -165,7 +166,6 @@ body:not(.touch-mode) .element-cell { touch-action: none; }
 .atom-cell--target, .atom-cell--picked { margin: 0 auto 16px; }
 .atom-cell--picked { border-style: dashed; margin-top: 16px; }
 .atom-cell--picked:empty::after { content: '?'; font-family: var(--font-display); font-size: 2.2rem; color: var(--ink-soft); }
-.atom-value--unstable { color: var(--error); }
 
 /* ===== Bac à sable moléculaire ===== */
 .sandbox-layout { display: flex; flex-direction: column; gap: 14px; }
@@ -272,13 +272,13 @@ body:not(.touch-mode) .element-cell { touch-action: none; }
 
 /* Le schéma se met à l'échelle : 290 "unités" = largeur du conteneur */
 .atom-schema {
-  --size: 320px;
+  --size: 280px;
   container-type: inline-size;
   width: 100%; max-width: var(--size); aspect-ratio: 1; margin: 0 auto;
   position: relative; background: rgba(255,255,255,.55); border: 2px solid rgba(46,58,70,.14);
   border-radius: 24px; overflow: hidden;
 }
-.atom-schema--compact { --size: 260px; }
+.atom-schema--compact { --size: 240px; }
 .atom-spin, .atom-nucleus-wrap, .atom-electrons-wrap { position: absolute; inset: 0; --u: calc(100cqw / 290); }
 .atom-spin { animation: atom-spin 50s linear infinite; }
 @keyframes atom-spin { to { transform: rotate(360deg); } }
@@ -296,11 +296,20 @@ body:not(.touch-mode) .element-cell { touch-action: none; }
   transform: translate(calc(-50% + var(--x) * var(--u)), calc(-50% + var(--y) * var(--u)));
   transition: transform .25s ease;
 }
-.nucleon { width: calc(18 * var(--u)); height: calc(18 * var(--u)); font-size: calc(13 * var(--u)); box-shadow: 0 0 0 1.5px rgba(255,255,255,.85); }
-.nucleon--proton { background: #EF6F6C; }
-.nucleon--neutron { background: #59C08A; }
+.nucleon { width: calc(18 * var(--u)); height: calc(18 * var(--u)); font-size: calc(13 * var(--u)); box-shadow: inset -2px -3px 0 rgba(0,0,0,.14), 0 1.5px 3px rgba(0,0,0,.35); }
+.nucleon--proton { background: radial-gradient(circle at 34% 28%, #FFB1AE, #EF6F6C 55%, #C9433E); }
+.nucleon--neutron { background: radial-gradient(circle at 34% 28%, #A6EBC4, #59C08A 55%, #34936A); }
 .electron-dot { width: calc(15 * var(--u)); height: calc(15 * var(--u)); font-size: calc(13 * var(--u)); background: #6C8CE8; box-shadow: 0 0 0 1.5px #fff; }
-.atom-nucleus--unstable .nucleon { outline: 2px solid rgba(217,70,59,.5); }
+/* Noyau qui ne correspond à aucun atome du tableau : il tremble */
+.atom-nucleus--unstable { animation: nucleus-shake .28s linear infinite; }
+@keyframes nucleus-shake {
+  0%   { transform: translate(0, 0); }
+  20%  { transform: translate(calc(2 * var(--u)), calc(-1.5 * var(--u))); }
+  40%  { transform: translate(calc(-2 * var(--u)), calc(1 * var(--u))); }
+  60%  { transform: translate(calc(1.5 * var(--u)), calc(2 * var(--u))); }
+  80%  { transform: translate(calc(-1.5 * var(--u)), calc(-2 * var(--u))); }
+  100% { transform: translate(0, 0); }
+}
 
 .atom-particle-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 16px 0 6px; }
 .atom-particle-btn {
@@ -331,3 +340,30 @@ body:not(.touch-mode) .element-cell { touch-action: none; }
 }
 
 #confetti-canvas { position: fixed; inset: 0; z-index: 50; pointer-events: none; display: none; }
+
+/* ===== Ajustements V3 ===== */
+.atom-layout { gap: 10px; }
+.atom-info {
+  display: grid; grid-template-columns: auto 1fr; align-items: center; column-gap: 14px;
+  width: 100%; max-width: 340px; min-height: 0;
+}
+.atom-info .atom-cell { grid-row: 1 / span 2; width: 86px; min-height: 102px; padding-top: 18px; margin: 0; }
+.atom-info .atom-cell .element-symbol { font-size: 2.1rem; }
+.atom-info .atom-cell .element-mass, .atom-info .atom-cell .element-number { font-size: .8rem; top: 5px; }
+.atom-info .atom-cell .element-name { font-size: .68rem; }
+.atom-info .atom-proton-msg, .atom-info .atom-neutral-msg { text-align: left; margin: 0; max-width: none; min-height: 0; }
+.atom-schema { cursor: pointer; }
+
+/* Message "trop de particules" : bulle flottante, ne prend plus de place dans la page */
+.atom-limit-msg {
+  position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  z-index: 45; margin: 0; min-height: 0; padding: 9px 18px; border-radius: 999px;
+  background: rgba(46,58,70,.92); color: #fff; white-space: nowrap; pointer-events: none;
+}
+
+.btn-clear--mini { min-height: 32px; padding: 4px 12px; font-size: .78rem; right: 8px; top: 8px; box-shadow: 0 3px 0 #45A6CC; }
+
+.atom-particle-bar { margin: 12px 0 4px; }
+.ex-actions { margin: 12px 0 4px; }
+.ex-feedback { margin: 8px 0 0; min-height: 1.4em; }
+.screen--green .app-subtitle { margin-bottom: 14px; }

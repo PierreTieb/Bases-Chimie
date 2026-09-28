@@ -67,7 +67,90 @@ window.Molecules = (function () {
     { counts: { H: 1, N: 1, O: 3 }, name: 'Acide nitrique', formula: 'HNO\u2083' },
     { counts: { H: 2, S: 1, O: 4 }, name: 'Acide sulfurique' },
     { counts: { H: 3, P: 1, O: 4 }, name: 'Acide phosphorique', formula: 'H\u2083PO\u2084' },
-    { counts: { H: 2, C: 1, O: 3 }, name: 'Acide carbonique', formula: 'H\u2082CO\u2083' }
+    { counts: { H: 2, C: 1, O: 3 }, name: 'Acide carbonique', formula: 'H\u2082CO\u2083' },
+
+    // --- Halogénures ---
+    { counts: { Ca: 1, Cl: 2 }, name: 'Chlorure de calcium' },
+    { counts: { Mg: 1, Cl: 2 }, name: 'Chlorure de magnésium' },
+    { counts: { K: 1, Cl: 1 }, name: 'Chlorure de potassium' },
+    { counts: { Li: 1, Cl: 1 }, name: 'Chlorure de lithium' },
+    { counts: { Al: 1, Cl: 3 }, name: "Chlorure d'aluminium" },
+    { counts: { Be: 1, Cl: 2 }, name: 'Chlorure de béryllium' },
+    { counts: { Na: 1, F: 1 }, name: 'Fluorure de sodium' },
+    { counts: { Li: 1, F: 1 }, name: 'Fluorure de lithium' },
+    { counts: { Ca: 1, F: 2 }, name: 'Fluorure de calcium' },
+
+    // --- Oxydes ---
+    { counts: { Na: 2, O: 1 }, name: 'Oxyde de sodium' },
+    { counts: { K: 2, O: 1 }, name: 'Oxyde de potassium' },
+    { counts: { Li: 2, O: 1 }, name: 'Oxyde de lithium' },
+    { counts: { Be: 1, O: 1 }, name: 'Oxyde de béryllium' },
+    { counts: { B: 2, O: 3 }, name: 'Trioxyde de dibore' },
+    { counts: { Si: 1, O: 2 }, name: 'Dioxyde de silicium' },
+    { counts: { P: 2, O: 5 }, name: 'Pentaoxyde de diphosphore' },
+    { counts: { Cl: 2, O: 1 }, name: 'Monoxyde de dichlore' },
+
+    // --- Phosphore, azote, silicium, bore ---
+    { counts: { P: 1, Cl: 3 }, name: 'Trichlorure de phosphore' },
+    { counts: { P: 1, Cl: 5 }, name: 'Pentachlorure de phosphore' },
+    { counts: { P: 1, H: 3 }, name: 'Phosphine' },
+    { counts: { N: 2, H: 4 }, name: 'Hydrazine' },
+    { counts: { N: 1, F: 3 }, name: "Trifluorure d'azote" },
+    { counts: { N: 1, H: 4, Cl: 1 }, name: "Chlorure d'ammonium" },
+    { counts: { Si: 1, H: 4 }, name: 'Silane' },
+    { counts: { Si: 1, Cl: 4 }, name: 'Tétrachlorure de silicium' },
+    { counts: { Si: 1, C: 1 }, name: 'Carbure de silicium' },
+    { counts: { B: 1, F: 3 }, name: 'Trifluorure de bore' },
+    { counts: { B: 1, Cl: 3 }, name: 'Trichlorure de bore' },
+
+    // --- Sulfures, nitrures, hydrures, carbures ---
+    { counts: { H: 2, S: 1 }, name: "Sulfure d'hydrogène" },
+    { counts: { C: 1, S: 2 }, name: 'Disulfure de carbone' },
+    { counts: { Na: 2, S: 1 }, name: 'Sulfure de sodium' },
+    { counts: { Mg: 1, S: 1 }, name: 'Sulfure de magnésium' },
+    { counts: { Ca: 1, S: 1 }, name: 'Sulfure de calcium' },
+    { counts: { Al: 2, S: 3 }, name: "Sulfure d'aluminium" },
+    { counts: { Mg: 3, N: 2 }, name: 'Nitrure de magnésium' },
+    { counts: { Al: 1, N: 1 }, name: "Nitrure d'aluminium" },
+    { counts: { Ca: 1, C: 2 }, name: 'Carbure de calcium' },
+    { counts: { Li: 1, H: 1 }, name: 'Hydrure de lithium' },
+    { counts: { Na: 1, H: 1 }, name: 'Hydrure de sodium' },
+    { counts: { Ca: 1, H: 2 }, name: 'Hydrure de calcium' },
+
+    // --- Chimie organique simple ---
+    { counts: { C: 3, H: 8 }, name: 'Propane' },
+    { counts: { C: 4, H: 10 }, name: 'Butane' },
+    { counts: { C: 3, H: 6 }, name: 'Propène' },
+    { counts: { C: 6, H: 6 }, name: 'Benzène' },
+    { counts: { C: 2, H: 6, O: 1 }, name: 'Éthanol' },
+    { counts: { C: 1, H: 2, O: 1 }, name: 'Méthanal (formaldéhyde)' },
+    { counts: { C: 2, H: 4, O: 2 }, name: 'Acide éthanoïque (acide acétique)' },
+    { counts: { C: 1, H: 3, Cl: 1 }, name: 'Chlorométhane' },
+    { counts: { C: 1, H: 2, Cl: 2 }, name: 'Dichlorométhane' },
+    { counts: { C: 1, H: 1, Cl: 3 }, name: 'Trichlorométhane (chloroforme)' },
+    { counts: { C: 1, Cl: 4 }, name: 'Tétrachlorométhane' },
+    { counts: { C: 1, F: 4 }, name: 'Tétrafluorométhane' },
+    { counts: { H: 1, C: 1, N: 1 }, name: "Cyanure d'hydrogène", formula: 'HCN' },
+
+    // --- Acides supplémentaires ---
+    { counts: { H: 1, Cl: 1, O: 1 }, name: 'Acide hypochloreux' },
+    { counts: { H: 1, Cl: 1, O: 4 }, name: 'Acide perchlorique' },
+    { counts: { H: 2, S: 1, O: 3 }, name: 'Acide sulfureux' },
+    { counts: { H: 1, N: 1, O: 2 }, name: 'Acide nitreux', formula: 'HNO\u2082' },
+
+    // --- Bases et sels supplémentaires ---
+    { counts: { Li: 1, O: 1, H: 1 }, name: 'Hydroxyde de lithium', formula: 'LiOH' },
+    { counts: { Al: 1, O: 3, H: 3 }, name: "Hydroxyde d'aluminium", formula: 'Al(OH)\u2083' },
+    { counts: { Na: 1, H: 1, C: 1, O: 3 }, name: 'Hydrogénocarbonate de sodium', formula: 'NaHCO\u2083' },
+    { counts: { K: 1, N: 1, O: 3 }, name: 'Nitrate de potassium' },
+    { counts: { Na: 1, N: 1, O: 3 }, name: 'Nitrate de sodium' },
+    { counts: { Ca: 1, N: 2, O: 6 }, name: 'Nitrate de calcium', formula: 'Ca(NO\u2083)\u2082' },
+    { counts: { K: 2, S: 1, O: 4 }, name: 'Sulfate de potassium' },
+    { counts: { K: 2, C: 1, O: 3 }, name: 'Carbonate de potassium' },
+    { counts: { Mg: 1, C: 1, O: 3 }, name: 'Carbonate de magnésium' },
+    { counts: { Na: 3, P: 1, O: 4 }, name: 'Phosphate de sodium' },
+    { counts: { Na: 1, Cl: 1, O: 1 }, name: 'Hypochlorite de sodium' },
+    { counts: { K: 1, Cl: 1, O: 3 }, name: 'Chlorate de potassium' }
   ];
 
   function signature(counts) {
@@ -151,33 +234,60 @@ window.Molecules = (function () {
   // qui partagent des lettres (ex: "C" et "Ca") restent bien indépendants.
   // Retourne null si invalide.
   function parseFormulaInput(str) {
-    var s = String(str).replace(/\s+/g, '');
+    var s = String(str).replace(/\s+/g, '').replace(/[\u2080-\u2089]/g, function (d) {
+      return String(d.charCodeAt(0) - 0x2080);
+    });
     if (!s) return null;
 
     var symbols = window.Units.getAll().map(function (e) { return e.symbol; });
     symbols.sort(function (a, b) { return b.length - a.length; });
 
-    var i = 0;
-    var counts = {};
-    while (i < s.length) {
-      var matched = null;
-      for (var k = 0; k < symbols.length; k++) {
-        var sym = symbols[k];
-        if (s.substr(i, sym.length) === sym) { matched = sym; break; }
-      }
-      if (!matched) return null;
-      if (counts.hasOwnProperty(matched)) return null; // symbole déjà utilisé plus tôt
-      i += matched.length;
+    var pos = 0;
 
-      var numStart = i;
-      while (i < s.length && s[i] >= '0' && s[i] <= '9') i++;
-      var numStr = s.slice(numStart, i);
-      var n = numStr.length ? parseInt(numStr, 10) : 1;
-      if (!n || n <= 0) return null;
-
-      counts[matched] = n;
+    function readNumber() {
+      var start = pos;
+      while (pos < s.length && s[pos] >= '0' && s[pos] <= '9') pos++;
+      if (pos === start) return 1;
+      return parseInt(s.slice(start, pos), 10);
     }
-    return Object.keys(counts).length ? counts : null;
+
+    // Lit une suite de symboles / groupes entre parenthèses jusqu'à ')' ou la fin.
+    // Un même symbole ne peut apparaître qu'une fois (ex: "HHO" est invalide).
+    function parseGroup() {
+      var counts = {};
+      while (pos < s.length && s[pos] !== ')') {
+        var part = {};
+        if (s[pos] === '(') {
+          pos++;
+          var inner = parseGroup();
+          if (!inner || s[pos] !== ')') return null;
+          pos++;
+          var m = readNumber();
+          if (!m || m <= 0) return null;
+          Object.keys(inner).forEach(function (k) { part[k] = inner[k] * m; });
+        } else {
+          var matched = null;
+          for (var k = 0; k < symbols.length; k++) {
+            if (s.substr(pos, symbols[k].length) === symbols[k]) { matched = symbols[k]; break; }
+          }
+          if (!matched) return null;
+          pos += matched.length;
+          var n = readNumber();
+          if (!n || n <= 0) return null;
+          part[matched] = n;
+        }
+        var keys = Object.keys(part);
+        for (var i = 0; i < keys.length; i++) {
+          if (counts.hasOwnProperty(keys[i])) return null;
+          counts[keys[i]] = part[keys[i]];
+        }
+      }
+      return counts;
+    }
+
+    var result = parseGroup();
+    if (!result || pos !== s.length) return null;
+    return Object.keys(result).length ? result : null;
   }
 
   return {
