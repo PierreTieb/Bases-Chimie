@@ -101,7 +101,8 @@ body[data-theme="green"]  { --bg-top: #F4FBE8; --bg-bottom: #CFE9A9; }
 .mode-btn--pink        { --c-light: #FFD3E6; --c-mid: #FF9DC8; --c-dark: #D9558F; --c-text: #6E1A48; }
 .mode-btn--pink-dark   { --c-light: #FF9CC6; --c-mid: #E35B93; --c-dark: #B23A70; --c-text: #3F0A25; }
 .mode-btn--purple      { --c-light: #E3CFF8; --c-mid: #C098EE; --c-dark: #7B4DAE; --c-text: #3E1F6B; }
-.mode-btn--purple-dark { --c-light: #B98AEF; --c-mid: #8E55D3; --c-dark: #5A3288; --c-text: #1F0D38; }
+.mode-btn--purple-mid  { --c-light: #B98AEF; --c-mid: #8E55D3; --c-dark: #5A3288; --c-text: #1F0D38; }
+.mode-btn--purple-dark { --c-light: #9564D8; --c-mid: #6A3BB0; --c-dark: #3E2068; --c-text: #FFFFFF; }
 .mode-btn--green       { --c-light: #E7F5C7; --c-mid: #A4D65E; --c-dark: #82B83E; --c-text: #3E5E1A; }
 .mode-btn--green-dark  { --c-light: #A4E0A0; --c-mid: #4FBE7A; --c-dark: #2F9459; --c-text: #10391F; }
 .mode-btn--soon {
@@ -369,3 +370,40 @@ body:not(.touch-mode) .element-cell { touch-action: none; }
 .ex-actions { margin: 12px 0 4px; }
 .ex-feedback { margin: 8px 0 0; min-height: 1.4em; }
 .screen--green .app-subtitle { margin-bottom: 14px; }
+
+/* ===== Mode "Équilibrer une transformation" (tuto) ===== */
+.bal-text { text-align: center; color: var(--ink-soft); font-weight: 700; font-size: .98rem; line-height: 1.45; margin: 0 0 12px; min-height: 5.8em; }
+.bal-text strong { color: var(--ink); font-weight: 800; }
+
+.bal-scene {
+  background: rgba(255,255,255,.8); border: 2px dashed var(--acc-mid); border-radius: 22px;
+  padding: 6px 6px 8px; margin: 0 0 10px;
+}
+.bal-row { display: flex; align-items: center; height: 150px; }
+.bal-group { flex: 1 1 0; min-width: 0; height: 100%; display: grid; place-content: center; }
+.bal-sign { flex: 0 0 22px; text-align: center; font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; color: var(--ink-soft); line-height: 1; }
+.bal-cell { position: relative; }
+.bal-mol { position: relative; width: 76px; height: 76px; transform-origin: 0 0; }
+.bal-pop { animation: bal-pop .38s cubic-bezier(.34,1.56,.64,1); }
+@keyframes bal-pop { 0% { transform: scale(.2); opacity: 0; } 60% { opacity: 1; } 100% { transform: scale(1); } }
+
+.bal-chips { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; min-height: 28px; }
+.bal-chip { font-family: var(--font-display); font-weight: 600; font-size: .85rem; padding: 3px 10px; border-radius: 999px; }
+.bal-chip--ok { background: #E5F7EC; color: #1E7A45; }
+.bal-chip--bad { background: #FDECEA; color: #B0362C; }
+
+.bal-equation {
+  background: #fff; border-radius: 24px; box-shadow: var(--shadow-card);
+  padding: 16px 6px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: nowrap;
+}
+.bal-term { display: flex; align-items: center; gap: 4px; }
+.bal-formula { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.25rem, 6vw, 1.7rem); white-space: nowrap; }
+.bal-eqsign { font-family: var(--font-display); font-size: clamp(1.2rem, 5vw, 1.6rem); font-weight: 600; color: var(--ink-soft); }
+.bal-coef {
+  width: 40px; height: 52px; padding: 0; text-align: center;
+  font-family: var(--font-display); font-weight: 600; font-size: 1.6rem; color: var(--ink);
+  background: rgba(255,255,255,.9); border: 3px dashed var(--acc-mid); border-radius: 14px;
+}
+.bal-coef:focus { outline: none; border-color: var(--acc-dark); background: #F6F3FC; }
+.bal-coef--ok { border-style: solid; border-color: #4FBE7A; background: #E5F7EC; }
+.bal-coef--bad { border-color: #E9756B; background: #FDECEA; }

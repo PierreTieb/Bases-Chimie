@@ -9,6 +9,7 @@ window.App = (function () {
     'screen-exercise1-2': 'pink',
     'screen-equations-cours': 'purple',
     'screen-equations-exercice': 'purple',
+    'screen-balance': 'purple',
     'screen-atom-cours': 'green',
     'screen-atom-exercice': 'green'
   };
@@ -41,6 +42,13 @@ window.App = (function () {
     wireNav('btn-back-to-mode1-eqc', 'screen-mode1');
     wireNav('btn-eq-exercice', 'screen-equations-exercice');
     wireNav('btn-back-to-mode1-eqx', 'screen-mode1');
+
+    var btnBalance = document.getElementById('btn-balance');
+    if (btnBalance) btnBalance.addEventListener('click', function () {
+      showScreen('screen-balance');
+      if (window.Balance) window.Balance.start(); // après l'affichage : les tailles doivent être mesurables
+    });
+    wireNav('btn-back-to-mode1-bal', 'screen-mode1');
 
     wireNav('btn-atom-cours-nav', 'screen-atom-cours');
     wireNav('btn-back-to-mode2', 'screen-mode2');

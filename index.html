@@ -63,6 +63,10 @@
         <span class="mode-btn__title">Décrire une transformation</span>
         <span class="mode-btn__subtitle">Repère réactifs et produits, écris les formules</span>
       </button>
+      <button type="button" id="btn-balance" class="mode-btn mode-btn--purple-mid">
+        <span class="mode-btn__title">Équilibrer une transformation</span>
+        <span class="mode-btn__subtitle">Équilibre l'équation chimique pour la rendre correcte</span>
+      </button>
       <button type="button" id="btn-eq-exercice" class="mode-btn mode-btn--purple-dark">
         <span class="mode-btn__title">S'exercer avec les équations</span>
         <span class="mode-btn__subtitle">Complète l'équation d'une transformation</span>
@@ -209,6 +213,28 @@
     </div>
   </section>
 
+  <!-- ÉCRAN : MODE 1-2-ÉQUILIBRER (tuto pas à pas) -->
+  <section id="screen-balance" class="screen screen--sandbox screen--purple">
+    <button type="button" class="btn-back" id="btn-back-to-mode1-bal">← Retour</button>
+    <h1 class="app-title app-title--small">Équilibrer une équation chimique</h1>
+    <p class="bal-text" id="bal-text"></p>
+
+    <div class="bal-scene">
+      <div class="bal-row" id="bal-row"></div>
+      <div class="bal-chips" id="bal-chips"></div>
+    </div>
+    <div class="bal-equation" id="bal-equation"></div>
+
+    <p class="ex-feedback" id="bal-feedback"></p>
+
+    <div class="ex-actions">
+      <button type="button" class="btn-secondary" id="btn-bal-prev">Précédent</button>
+      <button type="button" class="btn-primary" id="btn-bal-next">Suivant</button>
+      <button type="button" class="btn-primary btn-primary--alt" id="btn-bal-redo" style="display:none;">Refaire le tuto</button>
+      <button type="button" class="btn-primary" id="btn-bal-menu" style="display:none;">Choisir un autre mode</button>
+    </div>
+  </section>
+
   <!-- ÉCRAN : MODE 2-1-COURS (Construis ton atome) -->
   <section id="screen-atom-cours" class="screen screen--sandbox screen--green">
     <button type="button" class="btn-back" id="btn-back-to-mode2">← Retour</button>
@@ -326,6 +352,7 @@
   <script src="js/exercise.js"></script>
   <script src="js/equations-data.js"></script>
   <script src="js/equations-app.js"></script>
+  <script src="js/balance-app.js"></script>
   <script src="js/atoms-app.js"></script>
   <script src="js/app.js"></script>
 </body>
