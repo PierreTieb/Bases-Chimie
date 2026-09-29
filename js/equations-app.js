@@ -236,7 +236,7 @@
     }
 
     function startNewReaction() {
-      reaction = window.Equations.getRandomReaction();
+      reaction = window.Equations.getRandomReaction('cours');
       step = 1;
       selected = { reactif: new Set(), produit: new Set() };
       els.equation.style.display = 'none';
@@ -285,7 +285,7 @@
     function updateScore() { els.score.textContent = 'Score : ' + score.correct + ' / ' + score.total; }
 
     function pickNew() {
-      reaction = window.Equations.getRandomReaction();
+      reaction = window.Equations.getRandomReaction('exercice');
       solved = false;
       revealing = false;
       els.feedback.textContent = '';

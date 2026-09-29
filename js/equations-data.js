@@ -56,7 +56,8 @@ window.Equations = (function () {
     { name: "Bore", formula: 'B' },
     { name: "Alcool (éthanol)", formula: 'C2H6O' },
     { name: "Sulfate de magnésium", formula: 'MgSO4' },
-    { name: "Sulfate de calcium (plâtre)", formula: 'CaSO4' }
+    { name: "Sulfate de calcium (plâtre)", formula: 'CaSO4' },
+    { name: "Glucose", formula: 'C6H12O6' }
   ];
 
   // Réactions (non-équilibrées, comme convenu). "template" utilise {0},{1}...
@@ -147,6 +148,280 @@ window.Equations = (function () {
         { label: "de l'oxyde d'aluminium", type: 'produit', formula: 'Al2O3' }
       ]
     }
+,
+    {
+      template: "Un morceau de {0} jeté dans {1} produit {2} et {3}.",
+      substances: [
+        { label: "sodium", type: 'reactif', formula: 'Na' },
+        { label: "l'eau", type: 'reactif', formula: 'H2O' },
+        { label: "de la soude", type: 'produit', formula: 'NaOH' },
+        { label: "du dihydrogène", type: 'produit', formula: 'H2' }
+      ]
+    },
+    {
+      template: "Dans un briquet, {0} brûle avec {1} pour former {2} et {3}.",
+      substances: [
+        { label: "le butane", type: 'reactif', formula: 'C4H10' },
+        { label: "le dioxygène", type: 'reactif', formula: 'O2' },
+        { label: "du dioxyde de carbone", type: 'produit', formula: 'CO2' },
+        { label: "de l'eau", type: 'produit', formula: 'H2O' }
+      ]
+    },
+    {
+      template: "Au barbecue, la combustion {0} avec {1} produit {2} et {3}.",
+      substances: [
+        { label: "du propane", type: 'reactif', formula: 'C3H8' },
+        { label: "le dioxygène", type: 'reactif', formula: 'O2' },
+        { label: "du dioxyde de carbone", type: 'produit', formula: 'CO2' },
+        { label: "de l'eau", type: 'produit', formula: 'H2O' }
+      ]
+    },
+    {
+      template: "Pendant la photosynthèse, les plantes transforment {0} et {1} en {2} et en {3}.",
+      substances: [
+        { label: "le dioxyde de carbone", type: 'reactif', formula: 'CO2' },
+        { label: "l'eau", type: 'reactif', formula: 'H2O' },
+        { label: "glucose", type: 'produit', formula: 'C6H12O6' },
+        { label: "dioxygène", type: 'produit', formula: 'O2' }
+      ]
+    },
+    {
+      template: "Lors de la respiration, {0} réagit avec {1} et libère {2} et {3}.",
+      substances: [
+        { label: "le glucose", type: 'reactif', formula: 'C6H12O6' },
+        { label: "le dioxygène", type: 'reactif', formula: 'O2' },
+        { label: "du dioxyde de carbone", type: 'produit', formula: 'CO2' },
+        { label: "de l'eau", type: 'produit', formula: 'H2O' }
+      ]
+    },
+    {
+      template: "Pendant la fermentation, {0} se transforme en {1} et en {2}.",
+      substances: [
+        { label: "le glucose", type: 'reactif', formula: 'C6H12O6' },
+        { label: "éthanol", type: 'produit', formula: 'C2H6O' },
+        { label: "dioxyde de carbone", type: 'produit', formula: 'CO2' }
+      ]
+    },
+    {
+      template: "{0} se décompose en {1} et en {2}.",
+      substances: [
+        { label: "L'eau oxygénée", type: 'reactif', formula: 'H2O2' },
+        { label: "eau", type: 'produit', formula: 'H2O' },
+        { label: "dioxygène", type: 'produit', formula: 'O2' }
+      ]
+    },
+    {
+      template: "Par électrolyse, {0} se sépare en {1} et en {2}.",
+      substances: [
+        { label: "l'eau", type: 'reactif', formula: 'H2O' },
+        { label: "dihydrogène", type: 'produit', formula: 'H2' },
+        { label: "dioxygène", type: 'produit', formula: 'O2' }
+      ]
+    },
+    {
+      template: "Quand on chauffe fortement {0}, on obtient {1} et {2}.",
+      substances: [
+        { label: "le calcaire", type: 'reactif', formula: 'CaCO3' },
+        { label: "de la chaux vive", type: 'produit', formula: 'CaO' },
+        { label: "du dioxyde de carbone", type: 'produit', formula: 'CO2' }
+      ]
+    },
+    {
+      template: "Si on verse {0} sur {1}, on obtient {2}.",
+      substances: [
+        { label: "de l'eau", type: 'reactif', formula: 'H2O' },
+        { label: "de la chaux vive", type: 'reactif', formula: 'CaO' },
+        { label: "de la chaux éteinte", type: 'produit', formula: 'Ca(OH)2' }
+      ]
+    },
+    {
+      template: "{0} plongé dans {1} libère {2} et forme {3}.",
+      substances: [
+        { label: "Le magnésium", type: 'reactif', formula: 'Mg' },
+        { label: "l'acide chlorhydrique", type: 'reactif', formula: 'HCl' },
+        { label: "du dihydrogène", type: 'produit', formula: 'H2' },
+        { label: "du chlorure de magnésium", type: 'produit', formula: 'MgCl2' }
+      ]
+    },
+    {
+      template: "{0} attaqué par {1} donne {2} et {3}.",
+      substances: [
+        { label: "L'aluminium", type: 'reactif', formula: 'Al' },
+        { label: "l'acide chlorhydrique", type: 'reactif', formula: 'HCl' },
+        { label: "du chlorure d'aluminium", type: 'produit', formula: 'AlCl3' },
+        { label: "du dihydrogène", type: 'produit', formula: 'H2' }
+      ]
+    },
+    {
+      template: "On fait réagir {0} avec {1} : on obtient {2}.",
+      substances: [
+        { label: "le dihydrogène", type: 'reactif', formula: 'H2' },
+        { label: "le dichlore", type: 'reactif', formula: 'Cl2' },
+        { label: "du chlorure d'hydrogène", type: 'produit', formula: 'HCl' }
+      ]
+    },
+    {
+      template: "{0} brûle dans {1} en donnant {2} et {3}.",
+      substances: [
+        { label: "L'ammoniac", type: 'reactif', formula: 'NH3' },
+        { label: "le dioxygène", type: 'reactif', formula: 'O2' },
+        { label: "du monoxyde d'azote", type: 'produit', formula: 'NO' },
+        { label: "de l'eau", type: 'produit', formula: 'H2O' }
+      ]
+    },
+    {
+      template: "{0} brûle dans {1} et forme {2}.",
+      substances: [
+        { label: "Le monoxyde de carbone", type: 'reactif', formula: 'CO' },
+        { label: "le dioxygène", type: 'reactif', formula: 'O2' },
+        { label: "du dioxyde de carbone", type: 'produit', formula: 'CO2' }
+      ]
+    },
+    {
+      template: "{0} s'oxyde au contact {1} et devient {2}.",
+      substances: [
+        { label: "Le dioxyde de soufre", type: 'reactif', formula: 'SO2' },
+        { label: "du dioxygène", type: 'reactif', formula: 'O2' },
+        { label: "du trioxyde de soufre", type: 'produit', formula: 'SO3' }
+      ]
+    },
+    {
+      template: "{0} chauffé dans {1} produit {2}.",
+      substances: [
+        { label: "Le phosphore", type: 'reactif', formula: 'P' },
+        { label: "le dioxygène", type: 'reactif', formula: 'O2' },
+        { label: "du pentaoxyde de diphosphore", type: 'produit', formula: 'P2O5' }
+      ]
+    },
+    {
+      template: "{0} brûle à l'air : il se combine avec {1} pour former {2}.",
+      substances: [
+        { label: "Le lithium", type: 'reactif', formula: 'Li' },
+        { label: "le dioxygène", type: 'reactif', formula: 'O2' },
+        { label: "de l'oxyde de lithium", type: 'produit', formula: 'Li2O' }
+      ]
+    },
+    {
+      template: "Sous l'effet de la chaleur, {0} et {1} se combinent pour donner {2}.",
+      substances: [
+        { label: "le calcium", type: 'reactif', formula: 'Ca' },
+        { label: "le dioxygène", type: 'reactif', formula: 'O2' },
+        { label: "de l'oxyde de calcium", type: 'produit', formula: 'CaO' }
+      ]
+    },
+    {
+      template: "On mélange {0} et {1} : il se forme {2} et {3}.",
+      substances: [
+        { label: "de la soude", type: 'reactif', formula: 'NaOH' },
+        { label: "de l'acide sulfurique", type: 'reactif', formula: 'H2SO4' },
+        { label: "du sulfate de sodium", type: 'produit', formula: 'Na2SO4' },
+        { label: "de l'eau", type: 'produit', formula: 'H2O' }
+      ]
+    },
+    {
+      template: "Verser {0} dans {1} donne {2} et {3}.",
+      substances: [
+        { label: "de la chaux éteinte", type: 'reactif', formula: 'Ca(OH)2' },
+        { label: "de l'acide chlorhydrique", type: 'reactif', formula: 'HCl' },
+        { label: "du chlorure de calcium", type: 'produit', formula: 'CaCl2' },
+        { label: "de l'eau", type: 'produit', formula: 'H2O' }
+      ]
+    },
+    {
+      template: "En chauffant {0}, on obtient {1} et {2}.",
+      substances: [
+        { label: "du chlorate de potassium", type: 'reactif', formula: 'KClO3' },
+        { label: "du chlorure de potassium", type: 'produit', formula: 'KCl' },
+        { label: "du dioxygène", type: 'produit', formula: 'O2' }
+      ]
+    },
+    {
+      template: "La combustion de {0} avec {1} libère {2} et {3}.",
+      substances: [
+        { label: "l'éthanol", type: 'reactif', formula: 'C2H6O' },
+        { label: "le dioxygène", type: 'reactif', formula: 'O2' },
+        { label: "du dioxyde de carbone", type: 'produit', formula: 'CO2' },
+        { label: "de l'eau", type: 'produit', formula: 'H2O' }
+      ]
+    },
+    {
+      template: "Quand {0} s'enflamme dans {1}, il se forme {2} et {3}.",
+      substances: [
+        { label: "l'éthane", type: 'reactif', formula: 'C2H6' },
+        { label: "le dioxygène", type: 'reactif', formula: 'O2' },
+        { label: "du dioxyde de carbone", type: 'produit', formula: 'CO2' },
+        { label: "de l'eau", type: 'produit', formula: 'H2O' }
+      ]
+    },
+    {
+      template: "Lors d'un orage, l'éclair fait réagir {0} et {1} de l'air pour former {2}.",
+      substances: [
+        { label: "le diazote", type: 'reactif', formula: 'N2' },
+        { label: "le dioxygène", type: 'reactif', formula: 'O2' },
+        { label: "du monoxyde d'azote", type: 'produit', formula: 'NO' }
+      ]
+    },
+    {
+      template: "À haute température, {0} et {1} donnent {2}.",
+      substances: [
+        { label: "le silicium", type: 'reactif', formula: 'Si' },
+        { label: "le dioxygène", type: 'reactif', formula: 'O2' },
+        { label: "du dioxyde de silicium", type: 'produit', formula: 'SiO2' }
+      ]
+    },
+    {
+      template: "Quand le gaz {0} rencontre le gaz {1}, il apparaît une fumée blanche de {2}.",
+      substances: [
+        { label: "ammoniac", type: 'reactif', formula: 'NH3' },
+        { label: "chlorure d'hydrogène", type: 'reactif', formula: 'HCl' },
+        { label: "chlorure d'ammonium", type: 'produit', formula: 'NH4Cl' }
+      ]
+    },
+    {
+      template: "Contre les aigreurs, {0} réagit avec {1} de l'estomac pour donner {2}, {3} et {4}.",
+      substances: [
+        { label: "le bicarbonate de sodium", type: 'reactif', formula: 'NaHCO3' },
+        { label: "l'acide chlorhydrique", type: 'reactif', formula: 'HCl' },
+        { label: "du chlorure de sodium", type: 'produit', formula: 'NaCl' },
+        { label: "de l'eau", type: 'produit', formula: 'H2O' },
+        { label: "du dioxyde de carbone", type: 'produit', formula: 'CO2' }
+      ]
+    },
+    {
+      template: "Dans un antiacide, {0} réagit avec {1} et forme {2} et {3}.",
+      substances: [
+        { label: "l'hydroxyde de magnésium", type: 'reactif', formula: 'Mg(OH)2' },
+        { label: "l'acide chlorhydrique", type: 'reactif', formula: 'HCl' },
+        { label: "du chlorure de magnésium", type: 'produit', formula: 'MgCl2' },
+        { label: "de l'eau", type: 'produit', formula: 'H2O' }
+      ]
+    },
+    {
+      template: "Dans l'atmosphère, {0} se dissout dans {1} et forme {2}.",
+      substances: [
+        { label: "le dioxyde de carbone", type: 'reactif', formula: 'CO2' },
+        { label: "l'eau", type: 'reactif', formula: 'H2O' },
+        { label: "de l'acide carbonique", type: 'produit', formula: 'H2CO3' }
+      ]
+    },
+    {
+      template: "Pluies acides : {0} réagit avec {1} pour former {2}.",
+      substances: [
+        { label: "le trioxyde de soufre", type: 'reactif', formula: 'SO3' },
+        { label: "l'eau", type: 'reactif', formula: 'H2O' },
+        { label: "de l'acide sulfurique", type: 'produit', formula: 'H2SO4' }
+      ]
+    },
+    {
+      template: "{0} et {1} réagissent : on obtient {2}, {3} et {4}.",
+      substances: [
+        { label: "Le carbonate de sodium", type: 'reactif', formula: 'Na2CO3' },
+        { label: "l'acide chlorhydrique", type: 'reactif', formula: 'HCl' },
+        { label: "du chlorure de sodium", type: 'produit', formula: 'NaCl' },
+        { label: "de l'eau", type: 'produit', formula: 'H2O' },
+        { label: "du dioxyde de carbone", type: 'produit', formula: 'CO2' }
+      ]
+    }
   ];
 
   // Banque du Niveau 2 (équilibrage) : [formule, coefficient attendu]. Coefficients <= 9.
@@ -180,7 +455,6 @@ window.Equations = (function () {
     { r: [['SO2', 2], ['O2', 1]], p: [['SO3', 2]] },
     { r: [['Ca', 2], ['O2', 1]], p: [['CaO', 2]] }
   ];
-  var lastBalance = -1;
 
   function countsSig(c) {
     return Object.keys(c).filter(function (k) { return c[k] > 0; }).sort()
@@ -211,14 +485,27 @@ window.Equations = (function () {
     return list;
   }
   function getReactions() { return REACTIONS.slice(); }
-  function getRandomReaction() { return window.Generator.pickRandom(REACTIONS); }
+  function getRandomReaction(channel) { return draw(REACTIONS, 'reaction:' + (channel || '')); }
 
-  // Équation d'équilibrage aléatoire (jamais deux fois de suite la même).
-  function getRandomBalance() {
-    var i;
-    do { i = Math.floor(Math.random() * BALANCE.length); } while (BALANCE.length > 1 && i === lastBalance);
-    lastBalance = i;
-    var b = BALANCE[i];
+  // Tirage sans doublon : chaque "canal" (mode) parcourt toute la banque mélangée avant de
+  // recommencer, et la première carte d'un nouveau tour n'est jamais la dernière du précédent.
+  var bags = {};
+  function draw(list, key) {
+    var b = bags[key] || (bags[key] = { queue: [], last: null });
+    if (!b.queue.length) {
+      b.queue = window.Generator.shuffle(list);
+      var n = b.queue.length;
+      if (n > 1 && b.queue[n - 1] === b.last) {
+        var t = b.queue[0]; b.queue[0] = b.queue[n - 1]; b.queue[n - 1] = t;
+      }
+    }
+    b.last = b.queue.pop();
+    return b.last;
+  }
+
+  // Équation d'équilibrage aléatoire.
+  function getRandomBalance(channel) {
+    var b = draw(BALANCE, 'balance:' + (channel || ''));
     var subs = [];
     b.r.forEach(function (x) { subs.push({ formula: x[0], coef: x[1], type: 'reactif' }); });
     b.p.forEach(function (x) { subs.push({ formula: x[0], coef: x[1], type: 'produit' }); });
