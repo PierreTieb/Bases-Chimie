@@ -8,7 +8,9 @@ window.App = (function () {
     'screen-mode1-1': 'pink',
     'screen-exercise1-2': 'pink',
     'screen-equations-cours': 'purple',
-    'screen-equations-exercice': 'purple',
+    'screen-eq-practice': 'home',
+    'screen-equations-exercice': 'yellow',
+    'screen-balance-exercice': 'orange',
     'screen-balance': 'purple',
     'screen-atom-cours': 'green',
     'screen-atom-exercice': 'green'
@@ -40,8 +42,16 @@ window.App = (function () {
 
     wireNav('btn-eq-cours', 'screen-equations-cours');
     wireNav('btn-back-to-mode1-eqc', 'screen-mode1');
-    wireNav('btn-eq-exercice', 'screen-equations-exercice');
-    wireNav('btn-back-to-mode1-eqx', 'screen-mode1');
+    wireNav('btn-eq-exercice', 'screen-eq-practice');
+    wireNav('btn-back-to-mode1-practice', 'screen-mode1');
+    wireNav('btn-eq-lvl1', 'screen-equations-exercice');
+    wireNav('btn-back-to-mode1-eqx', 'screen-eq-practice');
+    var btnLvl2 = document.getElementById('btn-eq-lvl2');
+    if (btnLvl2) btnLvl2.addEventListener('click', function () {
+      showScreen('screen-balance-exercice');
+      if (window.BalanceExercise) window.BalanceExercise.start(); // écran visible : tailles mesurables
+    });
+    wireNav('btn-back-to-practice-bx', 'screen-eq-practice');
 
     var btnBalance = document.getElementById('btn-balance');
     if (btnBalance) btnBalance.addEventListener('click', function () {

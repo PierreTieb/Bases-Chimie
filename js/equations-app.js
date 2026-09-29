@@ -56,6 +56,61 @@
     }
   }
 
+  // ---------- Saisie des formules : indices automatiques + équation sur une ligne ----------
+  var EQ_BASE_FONT = 22, EQ_MIN_FONT = 10;
+
+  // Les chiffres tapés deviennent des indices (CO2 -> CO₂) directement dans la case.
+  // parseFormulaInput comprend déjà les indices Unicode : la validation ne change pas.
+  function subscriptify(inp) {
+    var v = inp.value;
+    var nv = v.replace(/[0-9]/g, function (d) { return String.fromCharCode(0x2080 + parseInt(d, 10)); });
+    if (nv === v) return;
+    var s = inp.selectionStart, e = inp.selectionEnd;
+    inp.value = nv;                                   // même longueur : le curseur ne bouge pas
+    try { inp.setSelectionRange(s, e); } catch (x) { /* ignoré */ }
+  }
+
+  // La case grandit avec ce qu'on y écrit (largeur en em, relative à sa propre police).
+  function sizeBlank(inp) {
+    inp.style.width = Math.max(2.6, inp.value.length * 0.6 + 1.1) + 'em';
+  }
+
+  // Réduit la police de l'équation (cases, signes, flèche : tout est en em) jusqu'à
+  // ce qu'elle tienne sur une ligne. Les cases gardent 16 px minimum (sinon iOS zoome la page).
+  function fitEquation(container) {
+    var inner = container && container.querySelector('.eq-inner');
+    if (!inner || !container.clientWidth) return;
+    var cs = window.getComputedStyle(container);
+    var avail = container.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    var size = EQ_BASE_FONT;
+    for (var k = 0; k < 3; k++) {
+      container.style.fontSize = size + 'px';
+      var w = inner.getBoundingClientRect().width;
+      if (!w || w <= avail) return;
+      size = Math.max(EQ_MIN_FONT, size * (avail / w) * 0.985);
+    }
+  }
+
+  // À appeler une fois par conteneur d'équation (écouteurs délégués : ils survivent aux innerHTML).
+  function setupEquation(container) {
+    if (!container || container._eqSetup) return;
+    container._eqSetup = true;
+    container.addEventListener('input', function (e) {
+      var t = e.target;
+      if (!t.classList || !t.classList.contains('eq-blank')) return;
+      subscriptify(t);
+      sizeBlank(t);
+      fitEquation(container);
+    });
+    var lastW = 0;
+    var refit = function () {
+      var w = container.clientWidth;
+      if (w !== lastW) { lastW = w; fitEquation(container); }
+    };
+    if (window.ResizeObserver) new ResizeObserver(refit).observe(container);   // aussi quand l'écran devient visible
+    else window.addEventListener('resize', refit);
+  }
+
   function buildEquationHTML(substances) {
     function side(type) {
       var group = [];
@@ -66,9 +121,9 @@
           'autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="">';
       }).join('');
     }
-    return '<div class="eq-side">' + side('reactif') + '</div>' +
+    return '<div class="eq-inner"><div class="eq-side">' + side('reactif') + '</div>' +
       '<span class="eq-arrow">&rarr;</span>' +
-      '<div class="eq-side">' + side('produit') + '</div>';
+      '<div class="eq-side">' + side('produit') + '</div></div>';
   }
 
   function setupCatalog(prefix) {
@@ -152,6 +207,7 @@
         render();
         els.equation.style.display = '';
         els.equation.innerHTML = buildEquationHTML(reaction.substances);
+        fitEquation(els.equation);
         els.validateBtn.style.display = 'inline-block';
       }
     }
@@ -207,6 +263,7 @@
       els.nextStepBtn.addEventListener('click', onNextStep);
       els.validateBtn.addEventListener('click', onValidateFormulas);
       els.newBtn.addEventListener('click', startNewReaction);
+      setupEquation(els.equation);
       setupCatalog('eqc');
       startNewReaction();
     }
@@ -235,6 +292,7 @@
       els.feedback.className = 'ex-feedback';
       renderPhrase(els.phrase, reaction, { interactive: false });
       els.equation.innerHTML = buildEquationHTML(reaction.substances);
+      fitEquation(els.equation);
       els.validateBtn.disabled = false;
       els.skipBtn.disabled = false;
       els.skipBtn.style.display = 'none';
@@ -256,7 +314,8 @@
         group.forEach(function (inp) {
           var idx = parseInt(inp.getAttribute('data-idx'), 10);
           if (reveal) {
-            inp.value = reaction.substances[idx].formula;
+            inp.value = window.Molecules.formatSubscripts(reaction.substances[idx].formula);
+            sizeBlank(inp);
             inp.classList.remove('eq-blank--bad');
             inp.classList.add('eq-blank--ok');
             inp.disabled = true;
@@ -314,6 +373,7 @@
       els.validateBtn.disabled = true;
       els.skipBtn.disabled = true;
       checkAnswers(true);
+      fitEquation(els.equation);
       els.feedback.textContent = 'Voici la bonne équation.';
       els.feedback.className = 'ex-feedback reveal';
 
@@ -331,6 +391,7 @@
 
       els.validateBtn.addEventListener('click', onValidate);
       els.skipBtn.addEventListener('click', onSkip);
+      setupEquation(els.equation);
       setupCatalog('eqx');
       updateScore();
       pickNew();

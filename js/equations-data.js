@@ -149,6 +149,39 @@ window.Equations = (function () {
     }
   ];
 
+  // Banque du Niveau 2 (équilibrage) : [formule, coefficient attendu]. Coefficients <= 9.
+  // "r" = réactifs, "p" = produits. Chaque équation est vérifiée équilibrée.
+  var BALANCE = [
+    { r: [['H2', 2], ['O2', 1]], p: [['H2O', 2]] },
+    { r: [['C', 1], ['O2', 1]], p: [['CO2', 1]] },
+    { r: [['CH4', 1], ['O2', 2]], p: [['CO2', 1], ['H2O', 2]] },
+    { r: [['Mg', 2], ['O2', 1]], p: [['MgO', 2]] },
+    { r: [['Na', 2], ['Cl2', 1]], p: [['NaCl', 2]] },
+    { r: [['CaCO3', 1], ['HCl', 2]], p: [['CaCl2', 1], ['H2O', 1], ['CO2', 1]] },
+    { r: [['N2', 1], ['H2', 3]], p: [['NH3', 2]] },
+    { r: [['S', 1], ['O2', 1]], p: [['SO2', 1]] },
+    { r: [['Al', 4], ['O2', 3]], p: [['Al2O3', 2]] },
+    { r: [['C3H8', 1], ['O2', 5]], p: [['CO2', 3], ['H2O', 4]] },
+    { r: [['C2H6O', 1], ['O2', 3]], p: [['CO2', 2], ['H2O', 3]] },
+    { r: [['H2O2', 2]], p: [['H2O', 2], ['O2', 1]] },
+    { r: [['Al', 2], ['HCl', 6]], p: [['AlCl3', 2], ['H2', 3]] },
+    { r: [['Ca(OH)2', 1], ['HCl', 2]], p: [['CaCl2', 1], ['H2O', 2]] },
+    { r: [['NaOH', 2], ['H2SO4', 1]], p: [['Na2SO4', 1], ['H2O', 2]] },
+    { r: [['NH3', 4], ['O2', 5]], p: [['NO', 4], ['H2O', 6]] },
+    { r: [['KClO3', 2]], p: [['KCl', 2], ['O2', 3]] },
+    { r: [['C2H6', 2], ['O2', 7]], p: [['CO2', 4], ['H2O', 6]] },
+    { r: [['CO', 2], ['O2', 1]], p: [['CO2', 2]] },
+    { r: [['H2', 1], ['Cl2', 1]], p: [['HCl', 2]] },
+    { r: [['Li', 4], ['O2', 1]], p: [['Li2O', 2]] },
+    { r: [['Na', 2], ['H2O', 2]], p: [['NaOH', 2], ['H2', 1]] },
+    { r: [['Mg', 1], ['HCl', 2]], p: [['MgCl2', 1], ['H2', 1]] },
+    { r: [['N2', 1], ['O2', 1]], p: [['NO', 2]] },
+    { r: [['P', 4], ['O2', 5]], p: [['P2O5', 2]] },
+    { r: [['SO2', 2], ['O2', 1]], p: [['SO3', 2]] },
+    { r: [['Ca', 2], ['O2', 1]], p: [['CaO', 2]] }
+  ];
+  var lastBalance = -1;
+
   function countsSig(c) {
     return Object.keys(c).filter(function (k) { return c[k] > 0; }).sort()
       .map(function (k) { return k + ':' + c[k]; }).join(',');
@@ -180,9 +213,24 @@ window.Equations = (function () {
   function getReactions() { return REACTIONS.slice(); }
   function getRandomReaction() { return window.Generator.pickRandom(REACTIONS); }
 
+  // Équation d'équilibrage aléatoire (jamais deux fois de suite la même).
+  function getRandomBalance() {
+    var i;
+    do { i = Math.floor(Math.random() * BALANCE.length); } while (BALANCE.length > 1 && i === lastBalance);
+    lastBalance = i;
+    var b = BALANCE[i];
+    var subs = [];
+    b.r.forEach(function (x) { subs.push({ formula: x[0], coef: x[1], type: 'reactif' }); });
+    b.p.forEach(function (x) { subs.push({ formula: x[0], coef: x[1], type: 'produit' }); });
+    return { substances: subs };
+  }
+  function getBalanceBank() { return BALANCE.slice(); }
+
   return {
     getCatalog: getCatalog,
     getReactions: getReactions,
-    getRandomReaction: getRandomReaction
+    getRandomReaction: getRandomReaction,
+    getRandomBalance: getRandomBalance,
+    getBalanceBank: getBalanceBank
   };
 })();

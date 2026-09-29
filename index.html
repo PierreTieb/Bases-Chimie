@@ -184,9 +184,9 @@
   </section>
 
   <!-- ÉCRAN : MODE 1-2-EXERCICE (équations à compléter) -->
-  <section id="screen-equations-exercice" class="screen screen--sandbox screen--purple">
+  <section id="screen-equations-exercice" class="screen screen--sandbox screen--yellow">
     <button type="button" class="btn-back" id="btn-back-to-mode1-eqx">← Retour</button>
-    <h1 class="app-title app-title--small">S'exercer avec les équations</h1>
+    <h1 class="app-title app-title--small">Écrire une équation chimique</h1>
 
     <div class="exercise-topbar">
       <span class="ex-score" id="eqx-score">Score : 0 / 0</span>
@@ -210,6 +210,51 @@
         <div class="eq-catalog-list" id="eqx-catalog-list"></div>
         <button type="button" class="btn-primary" id="btn-eqx-catalog-close">Fermer</button>
       </div>
+    </div>
+  </section>
+
+  <!-- ÉCRAN : SOUS-MENU S'EXERCER AVEC LES ÉQUATIONS -->
+  <section id="screen-eq-practice" class="screen">
+    <button type="button" class="btn-back" id="btn-back-to-mode1-practice">← Retour</button>
+    <h1 class="app-title">S'exercer avec les équations</h1>
+    <p class="app-subtitle">Choisis ton niveau</p>
+
+    <div class="mode-list">
+      <button type="button" id="btn-eq-lvl1" class="mode-btn mode-btn--yellow">
+        <span class="mode-btn__title">Écrire une équation chimique</span>
+        <span class="mode-btn__level">Niveau 1</span>
+      </button>
+      <button type="button" id="btn-eq-lvl2" class="mode-btn mode-btn--orange">
+        <span class="mode-btn__title">Équilibrer une équation</span>
+        <span class="mode-btn__level">Niveau 2</span>
+      </button>
+      <button type="button" id="btn-eq-lvl3" class="mode-btn mode-btn--red" disabled>
+        <span class="mode-btn__title">Mode Expert</span>
+        <span class="mode-btn__level">Niveau 3 · Bientôt disponible</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ÉCRAN : NIVEAU 2 (Équilibrer une équation) -->
+  <section id="screen-balance-exercice" class="screen screen--sandbox screen--orange">
+    <button type="button" class="btn-back" id="btn-back-to-practice-bx">← Retour</button>
+    <h1 class="app-title app-title--small">Équilibrer une équation</h1>
+    <div class="exercise-topbar">
+      <span class="ex-score" id="bx-score">Score : 0 / 0</span>
+    </div>
+    <p class="app-subtitle">Équilibre l'équation chimique pour la rendre correcte</p>
+
+    <div class="bal-scene">
+      <div class="bal-row" id="bx-row"></div>
+      <div class="bal-chips" id="bx-chips"></div>
+    </div>
+    <div class="bal-equation bal-equation--fit" id="bx-equation"></div>
+
+    <p class="ex-feedback" id="bx-feedback"></p>
+
+    <div class="ex-actions">
+      <button type="button" class="btn-primary" id="btn-bx-validate">Valider</button>
+      <button type="button" class="btn-primary btn-primary--alt" id="btn-bx-skip" style="display:none;">Résoudre et passer</button>
     </div>
   </section>
 
@@ -353,6 +398,7 @@
   <script src="js/equations-data.js"></script>
   <script src="js/equations-app.js"></script>
   <script src="js/balance-app.js"></script>
+  <script src="js/balance-exercise.js"></script>
   <script src="js/atoms-app.js"></script>
   <script src="js/app.js"></script>
 </body>

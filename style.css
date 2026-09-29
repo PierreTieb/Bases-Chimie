@@ -39,11 +39,17 @@ body::before {
 body[data-theme="pink"]   { --bg-top: #FFF1F7; --bg-bottom: #FBCFE3; }
 body[data-theme="purple"] { --bg-top: #F7F0FD; --bg-bottom: #DCC8F3; }
 body[data-theme="green"]  { --bg-top: #F4FBE8; --bg-bottom: #CFE9A9; }
+body[data-theme="yellow"] { --bg-top: #FFFBE3; --bg-bottom: #FBE58E; }
+body[data-theme="orange"] { --bg-top: #FFF3E5; --bg-bottom: #FBC792; }
+body[data-theme="red"]    { --bg-top: #FFEDEA; --bg-bottom: #F5A9A0; }
 
 /* Couleurs d'accent par écran (boutons primaires, cellules…) */
 .screen--pink   { --acc-light: #FFD3E6; --acc-mid: #FF9DC8; --acc-dark: #D9558F; --acc-text: #6E1A48; }
 .screen--purple { --acc-light: #E3CFF8; --acc-mid: #B98AEF; --acc-dark: #7B4DAE; --acc-text: #3E1F6B; }
 .screen--green  { --acc-light: #E7F5C7; --acc-mid: #A4D65E; --acc-dark: #82B83E; --acc-text: #3E5E1A; }
+.screen--yellow { --acc-light: #FFF0A6; --acc-mid: #F2CB3F; --acc-dark: #C99B12; --acc-text: #5C4400; }
+.screen--orange { --acc-light: #FFD9B0; --acc-mid: #FFA85C; --acc-dark: #D2701A; --acc-text: #5E2E00; }
+.screen--red    { --acc-light: #FFB8AE; --acc-mid: #EE6A5D; --acc-dark: #A92A20; --acc-text: #4A0B06; }
 
 /* ===== Écrans ===== */
 .screen {
@@ -52,7 +58,7 @@ body[data-theme="green"]  { --bg-top: #F4FBE8; --bg-bottom: #CFE9A9; }
 }
 .screen.active { display: block; }
 .screen--sandbox { max-width: 720px; }
-.screen--purple.screen--sandbox { max-width: 680px; }
+.screen--purple.screen--sandbox, .screen--yellow.screen--sandbox, .screen--orange.screen--sandbox { max-width: 680px; }
 
 /* ===== Titres et textes (repris de l'appli de conversions) ===== */
 .app-title {
@@ -103,6 +109,9 @@ body[data-theme="green"]  { --bg-top: #F4FBE8; --bg-bottom: #CFE9A9; }
 .mode-btn--purple      { --c-light: #E3CFF8; --c-mid: #C098EE; --c-dark: #7B4DAE; --c-text: #3E1F6B; }
 .mode-btn--purple-mid  { --c-light: #B98AEF; --c-mid: #8E55D3; --c-dark: #5A3288; --c-text: #1F0D38; }
 .mode-btn--purple-dark { --c-light: #9564D8; --c-mid: #6A3BB0; --c-dark: #3E2068; --c-text: #FFFFFF; }
+.mode-btn--yellow      { --c-light: #FFF3B0; --c-mid: #FFD84D; --c-dark: #D2A616; --c-text: #5C4400; }
+.mode-btn--orange      { --c-light: #FFD3A0; --c-mid: #FF9C42; --c-dark: #D2701A; --c-text: #5E2E00; }
+.mode-btn--red         { --c-light: #FFA99E; --c-mid: #E5483C; --c-dark: #A32A20; --c-text: #3F0906; }
 .mode-btn--green       { --c-light: #E7F5C7; --c-mid: #A4D65E; --c-dark: #82B83E; --c-text: #3E5E1A; }
 .mode-btn--green-dark  { --c-light: #A4E0A0; --c-mid: #4FBE7A; --c-dark: #2F9459; --c-text: #10391F; }
 .mode-btn--soon {
@@ -230,24 +239,23 @@ body:not(.touch-mode) .element-cell { touch-action: none; }
 
 .eq-equation {
   background: #fff; border-radius: 24px; box-shadow: var(--shadow-card);
-  padding: 34px 16px; margin: 0 0 8px; min-height: 280px;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+  padding: 26px 8px; margin: 0 0 8px; min-height: 110px;
+  display: flex; align-items: center;
+  font-size: 22px;           /* base : ajustée en JS pour que l'équation tienne sur UNE ligne */
+  overflow-x: auto;          /* filet de sécurité si même la taille minimale ne suffit pas */
 }
-.eq-side { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.eq-plus { font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; color: var(--ink-soft); line-height: 1; }
-.eq-arrow { font-size: 2.2rem; color: var(--ink-soft); transform: rotate(90deg); line-height: 1; }
+.eq-inner { display: inline-flex; align-items: center; white-space: nowrap; gap: .45em; margin: 0 auto; }
+.eq-side { display: flex; flex-direction: row; align-items: center; gap: .4em; }
+.eq-plus { font-family: var(--font-display); font-size: .95em; font-weight: 600; color: var(--ink-soft); line-height: 1; }
+.eq-arrow { font-size: 1.3em; color: var(--ink-soft); line-height: 1; }
 .eq-blank {
-  width: 138px; height: 60px; padding: 0 8px; text-align: center;
-  font-family: var(--font-display); font-size: 1.3rem; color: var(--ink);
-  background: #F6F3FC; border: 3px solid #D9C8F1; border-radius: 16px;
+  width: 2.6em; height: 1.9em; padding: 0 .25em; text-align: center;
+  font-family: var(--font-display); font-size: max(16px, 1em); color: var(--ink);   /* 16 px mini : évite le zoom auto d'iOS */
+  background: #F6F3FC; border: .13em solid #D9C8F1; border-radius: .5em;
 }
 .eq-blank:focus { outline: none; border-color: var(--acc-dark); background: #fff; }
 .eq-blank--ok { border-color: #4FBE7A; background: #E5F7EC; }
 .eq-blank--bad { border-color: #E9756B; background: #FDECEA; }
-@media (min-width: 600px) {
-  .eq-equation { flex-direction: row; align-items: center; gap: 32px; }
-  .eq-arrow { transform: none; }
-}
 
 .eq-catalog-overlay {
   display: none; position: fixed; inset: 0; z-index: 40; padding: 16px;
@@ -407,3 +415,23 @@ body:not(.touch-mode) .element-cell { touch-action: none; }
 .bal-coef:focus { outline: none; border-color: var(--acc-dark); background: #F6F3FC; }
 .bal-coef--ok { border-style: solid; border-color: #4FBE7A; background: #E5F7EC; }
 .bal-coef--bad { border-color: #E9756B; background: #FDECEA; }
+
+/* ===== Sous-menu "S'exercer avec les équations" (niveaux) ===== */
+.mode-btn__level { font-size: .74rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; opacity: .75; }
+.mode-btn:disabled { opacity: .55; filter: saturate(.6); cursor: default; pointer-events: none; }
+
+/* Niveau 1 (jaune) : ce qui était violet en dur */
+.screen--yellow .eq-catalog-panel { --acc-light: #FFF0A6; --acc-mid: #F2CB3F; --acc-dark: #C99B12; --acc-text: #5C4400; }
+.screen--yellow .eq-blank { background: #FFFBE6; border-color: #F2DC85; }
+.screen--yellow .eq-blank:focus { background: #fff; border-color: var(--acc-dark); }
+.screen--yellow .eq-blank--ok { border-color: #4FBE7A; background: #E5F7EC; }
+.screen--yellow .eq-blank--bad { border-color: #E9756B; background: #FDECEA; }
+
+/* Niveau 2 (orange) : équation toujours sur une ligne, tout en em (la police est ajustée en JS) */
+.bal-free { position: absolute; left: 0; top: 0; width: 300px; height: 300px; transform-origin: 0 0; pointer-events: none; }
+.bal-equation--fit { min-height: 92px; padding: 16px 8px; overflow: hidden; font-size: 28px; }
+.bal-eq-inner { display: inline-flex; align-items: center; white-space: nowrap; gap: .4em; }
+.bal-equation--fit .bal-term { gap: .2em; }
+.bal-equation--fit .bal-formula { font-size: 1em; }
+.bal-equation--fit .bal-eqsign { font-size: .9em; }
+.bal-equation--fit .bal-coef { width: 1.3em; height: 1.7em; font-size: 1em; border-width: .1em; border-radius: .35em; }
