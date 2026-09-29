@@ -209,7 +209,10 @@ body:not(.touch-mode) .element-cell { touch-action: none; }
 .formula-name { font-size: 1.05rem; font-weight: 800; color: var(--ink-soft); }
 .formula-name--error { color: var(--error); }
 
-.ex-formula-preview { text-align: center; font-family: var(--font-display); font-size: 1.7rem; min-height: 2.4rem; color: var(--ink-soft); }
+.ex-formula-preview { text-align: center; font-family: var(--font-display); font-size: 1.35rem; font-weight: 600; line-height: 1.25; min-height: 2.4rem; padding: 0 8px; color: var(--acc-text); }
+.ex-build-name { margin: -6px 0 12px; }
+.ex-name--show { animation: ex-name-in .35s ease-out; }
+@keyframes ex-name-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 .ex-formula-input {
   display: block; width: 100%; max-width: 360px; margin: 6px auto 0; padding: 14px;
   font-family: var(--font-display); font-size: 1.6rem; text-align: center; color: var(--ink);
@@ -477,3 +480,16 @@ body:not(.touch-mode) .element-cell { touch-action: none; }
 .exp-final { font-family: var(--font-display); font-weight: 700; font-size: 3.4rem; line-height: 1.1; color: var(--ink); margin: 4px 0 2px; }
 .exp-time { font-weight: 800; font-size: 1.05rem; color: var(--ink-soft); margin-bottom: 14px; }
 .exp-message { font-weight: 800; font-size: 1.1rem; line-height: 1.4; margin: 0 4px 6px; }
+
+/* ===== Menu Molécules : séparateur + bouton "verre" pour l'Évaluation ===== */
+.mode-caption--sep { margin-top: 34px; padding-top: 20px; border-top: 2px dashed rgba(46,58,70,.16); }
+.mode-btn--glass {
+  --c-text: #3B1466;
+  background: linear-gradient(160deg, rgba(255,255,255,.62), rgba(255,255,255,.18));
+  -webkit-backdrop-filter: blur(12px) saturate(1.5); backdrop-filter: blur(12px) saturate(1.5);
+  border: 1.5px solid rgba(255,255,255,.8);
+  box-shadow: 0 6px 0 rgba(255,255,255,.5), 0 12px 24px rgba(46,58,70,.12), inset 0 2px 0 rgba(255,255,255,.85);
+}
+.mode-btn--glass:active {
+  box-shadow: 0 2px 0 rgba(255,255,255,.5), 0 6px 12px rgba(46,58,70,.12), inset 0 2px 0 rgba(255,255,255,.85);
+}

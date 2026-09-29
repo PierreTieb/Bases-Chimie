@@ -57,6 +57,7 @@ window.Exercise = (function () {
     revealing = false;
     current = pickQuestion();
     resetFeedback();
+    hideName();
     setButtonsEnabled(true);
     els.skipBtn.style.display = 'none';
     els.skipBtn.textContent = 'Molécule suivante';
@@ -66,7 +67,6 @@ window.Exercise = (function () {
       els.buildPanel.style.display = 'none';
       renderIdentifyPreview(current.counts);
       els.formulaInput.value = '';
-      els.formulaPreview.textContent = '';
       els.formulaInput.disabled = false;
     } else {
       els.identifyPanel.style.display = 'none';
@@ -74,6 +74,25 @@ window.Exercise = (function () {
       els.targetFormula.textContent = current.formula;
       buildSandbox.clearAll();
     }
+  }
+
+  // La ligne sous le schéma (mode "identifier") et sous la formule cible (mode "construire")
+  // affiche le NOM de la molécule une fois la question validée.
+  function hideName() {
+    [els.formulaPreview, els.buildName].forEach(function (el) {
+      if (!el) return;
+      el.textContent = '';
+      el.classList.remove('ex-name--show');
+    });
+  }
+
+  function showName() {
+    var el = current.type === 'identify' ? els.formulaPreview : els.buildName;
+    if (!el) return;
+    el.textContent = current.name;
+    el.classList.remove('ex-name--show');
+    void el.offsetWidth;                               // relance l'animation d'apparition
+    el.classList.add('ex-name--show');
   }
 
   function updateScoreDisplay() {
@@ -106,6 +125,7 @@ window.Exercise = (function () {
       score.correct++;
       score.total++;
       updateScoreDisplay();
+      showName();
       els.feedback.textContent = 'Bravo, bonne réponse !';
       els.feedback.className = 'ex-feedback success';
       triggerConfetti();
@@ -136,6 +156,7 @@ window.Exercise = (function () {
     updateScoreDisplay();
     setButtonsEnabled(false);
     if (current.type === 'identify') els.formulaInput.disabled = true;
+    showName();
     els.feedback.textContent = 'La formule était : ' + current.formula;
     els.feedback.className = 'ex-feedback reveal';
 
@@ -143,7 +164,7 @@ window.Exercise = (function () {
   }
 
   function onFormulaInput() {
-    els.formulaPreview.textContent = window.Molecules.formatSubscripts(els.formulaInput.value);
+    window.Molecules.subscriptInput(els.formulaInput);   // CO2 -> CO₂ directement dans la case
   }
 
   function init() {
@@ -152,6 +173,7 @@ window.Exercise = (function () {
     els.previewZone = document.getElementById('ex-preview-zone');
     els.formulaInput = document.getElementById('ex-formula-input');
     els.formulaPreview = document.getElementById('ex-formula-preview');
+    els.buildName = document.getElementById('ex-build-name');
     els.targetFormula = document.getElementById('ex-target-formula');
     els.feedback = document.getElementById('ex-feedback');
     els.score = document.getElementById('ex-score');

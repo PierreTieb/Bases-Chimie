@@ -290,12 +290,24 @@ window.Molecules = (function () {
     return Object.keys(result).length ? result : null;
   }
 
+  // Transforme en indices (H2O -> H₂O) les chiffres tapés dans un <input>, en gardant le curseur.
+  // parseFormulaInput comprend déjà les indices Unicode : la validation ne change pas.
+  function subscriptInput(inp) {
+    var v = inp.value;
+    var nv = v.replace(/[0-9]/g, function (d) { return SUBSCRIPTS[d]; });
+    if (nv === v) return;
+    var s = inp.selectionStart, e = inp.selectionEnd;
+    inp.value = nv;                                   // même longueur : le curseur ne bouge pas
+    try { inp.setSelectionRange(s, e); } catch (x) { /* ignoré */ }
+  }
+
   return {
     buildFormula: buildFormula,
     lookupName: lookupName,
     getAllKnown: getAllKnown,
     getCenterHint: getCenterHint,
     parseFormulaInput: parseFormulaInput,
-    formatSubscripts: formatSubscripts
+    formatSubscripts: formatSubscripts,
+    subscriptInput: subscriptInput
   };
 })();

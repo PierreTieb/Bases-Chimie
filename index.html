@@ -67,7 +67,11 @@
         <span class="mode-btn__title">Équilibre une équation chimique</span>
         <span class="mode-btn__subtitle">Ajuste une écriture scientifique</span>
       </button>
-      <button type="button" id="btn-eq-exercice" class="mode-btn mode-btn--vivid mode-btn--trophy">
+    </div>
+
+    <p class="mode-caption mode-caption--sep">Mets en œuvre tes connaissances dans ce challenge</p>
+    <div class="mode-list">
+      <button type="button" id="btn-eq-exercice" class="mode-btn mode-btn--glass mode-btn--trophy">
         <span class="mode-btn__title">Évaluation</span>
         <span class="mode-btn__subtitle">Teste ta maîtrise de l'écriture chimique</span>
         <span class="mode-btn__trophy" aria-hidden="true">🏆</span>
@@ -132,12 +136,13 @@
       <div class="ex-preview-zone drop-zone" id="ex-preview-zone" aria-label="Molécule à identifier"></div>
       <div class="ex-formula-preview" id="ex-formula-preview"></div>
       <input type="text" id="ex-formula-input" class="ex-formula-input"
-        autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Ex : H2O">
+        autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Ex : H₂O">
     </div>
 
     <div id="ex-build-panel" class="ex-subpanel ex-build-panel">
       <p class="app-subtitle">Construis la molécule suivante</p>
       <div class="ex-target-formula" id="ex-target-formula"></div>
+      <div class="ex-formula-preview ex-build-name" id="ex-build-name"></div>
       <div class="sandbox-layout sandbox-layout--compact">
         <div class="atoms-panel" id="atoms-panel-ex" aria-label="Tableau des 20 premiers atomes"></div>
         <div class="drop-zone-wrapper">
