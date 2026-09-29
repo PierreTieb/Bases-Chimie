@@ -11,6 +11,7 @@ window.App = (function () {
     'screen-eq-practice': 'home',
     'screen-equations-exercice': 'yellow',
     'screen-balance-exercice': 'orange',
+    'screen-expert': 'red',
     'screen-balance': 'purple',
     'screen-atom-cours': 'green',
     'screen-atom-exercice': 'green'
@@ -52,6 +53,12 @@ window.App = (function () {
       if (window.BalanceExercise) window.BalanceExercise.start(); // écran visible : tailles mesurables
     });
     wireNav('btn-back-to-practice-bx', 'screen-eq-practice');
+    var btnLvl3 = document.getElementById('btn-eq-lvl3');
+    if (btnLvl3) btnLvl3.addEventListener('click', function () {
+      showScreen('screen-expert');
+      if (window.Expert) window.Expert.start(); // écran visible : tailles mesurables
+    });
+    wireNav('btn-back-to-practice-exp', 'screen-eq-practice');
 
     var btnBalance = document.getElementById('btn-balance');
     if (btnBalance) btnBalance.addEventListener('click', function () {

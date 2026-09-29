@@ -155,6 +155,17 @@
     searchInput.addEventListener('input', function () { renderList(searchInput.value); });
   }
 
+  // Outils partagés avec le mode Expert.
+  window.EqUI = {
+    renderPhrase: renderPhrase,
+    setupEquation: setupEquation,
+    fitEquation: fitEquation,
+    sizeBlank: sizeBlank,
+    countsEqual: countsEqual,
+    setupCatalog: setupCatalog,
+    confetti: triggerConfettiFromButton
+  };
+
   // ============================================================
   // Mode "Cours" : Décrire une transformation chimique
   // ============================================================

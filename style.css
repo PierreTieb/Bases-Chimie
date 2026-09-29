@@ -89,6 +89,7 @@ body[data-theme="red"]    { --bg-top: #FFEDEA; --bg-bottom: #F5A9A0; }
 .mode-list--spaced { margin-top: 34px; }
 
 .mode-btn {
+  position: relative;
   --c-light: #CDEEFA; --c-mid: #6FC3E4; --c-dark: #45A6CC; --c-text: #0B4E66;
   font-family: var(--font-body); cursor: pointer; border: none; width: 100%;
   border-radius: var(--radius-lg); padding: 20px 22px; min-height: 88px;
@@ -109,6 +110,12 @@ body[data-theme="red"]    { --bg-top: #FFEDEA; --bg-bottom: #F5A9A0; }
 .mode-btn--purple      { --c-light: #E3CFF8; --c-mid: #C098EE; --c-dark: #7B4DAE; --c-text: #3E1F6B; }
 .mode-btn--purple-mid  { --c-light: #B98AEF; --c-mid: #8E55D3; --c-dark: #5A3288; --c-text: #1F0D38; }
 .mode-btn--purple-dark { --c-light: #9564D8; --c-mid: #6A3BB0; --c-dark: #3E2068; --c-text: #FFFFFF; }
+/* Menu Molécules : palette de la maquette, textes toujours plus foncés que le bouton */
+.mode-btn--lav      { --c-light: #E6E1FE; --c-mid: #CDC4FB; --c-dark: #A597E6; --c-text: #2B1C73; }
+.mode-btn--lav-dark { --c-light: #9A84FA; --c-mid: #7657F6; --c-dark: #4E34C4; --c-text: #150A52; }
+.mode-btn--rose     { --c-light: #FBD3F2; --c-mid: #F8B3E8; --c-dark: #D07DBD; --c-text: #5C1350; }
+.mode-btn--magenta  { --c-light: #F58BF7; --c-mid: #EE45F1; --c-dark: #B822BB; --c-text: #4A0650; }
+.mode-btn--vivid    { --c-light: #E24BFF; --c-mid: #D200FF; --c-dark: #9800BD; --c-text: #240030; }
 .mode-btn--yellow      { --c-light: #FFF3B0; --c-mid: #FFD84D; --c-dark: #D2A616; --c-text: #5C4400; }
 .mode-btn--orange      { --c-light: #FFD3A0; --c-mid: #FF9C42; --c-dark: #D2701A; --c-text: #5E2E00; }
 .mode-btn--red         { --c-light: #FFA99E; --c-mid: #E5483C; --c-dark: #A32A20; --c-text: #3F0906; }
@@ -435,3 +442,38 @@ body:not(.touch-mode) .element-cell { touch-action: none; }
 .bal-equation--fit .bal-formula { font-size: 1em; }
 .bal-equation--fit .bal-eqsign { font-size: .9em; }
 .bal-equation--fit .bal-coef { width: 1.3em; height: 1.7em; font-size: 1em; border-width: .1em; border-radius: .35em; }
+
+/* ===== Trophée sur les boutons Évaluation / Mode Expert ===== */
+.mode-btn--trophy { padding-right: 76px; }
+.mode-btn__trophy { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 2.2rem; line-height: 1; }
+
+/* ===== Mode Expert ===== */
+.exp-progress { text-align: center; font-weight: 800; font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; color: var(--acc-dark); margin: 0 0 4px; }
+.exp-instruction { text-align: center; font-family: var(--font-body); font-weight: 800; font-size: 1.2rem; line-height: 1.35; color: var(--ink); margin: 0 0 14px; }
+.exp-scene-foot { display: flex; justify-content: flex-end; min-height: 8px; padding: 2px 4px 0; }
+.exp-cat-q1 { display: flex; justify-content: center; margin: 4px 0 0; }
+
+/* Cases de l'équation (coefficients + formules fixes) */
+.eq-term { display: inline-flex; align-items: center; gap: .2em; }
+.eq-static { font-family: var(--font-display); font-weight: 600; font-size: 1em; color: var(--ink); }
+.eq-coef {
+  width: 1.4em; height: 1.9em; padding: 0; text-align: center;
+  font-family: var(--font-display); font-size: max(16px, 1em); color: var(--ink);
+  background: rgba(255,255,255,.9); border: .13em dashed var(--acc-mid); border-radius: .5em;
+}
+.eq-coef:focus { outline: none; border-color: var(--acc-dark); background: #fff7f5; }
+.eq-coef--ok { border-style: solid; border-color: #4FBE7A; background: #E5F7EC; }
+.eq-coef--bad { border-color: #E9756B; background: #FDECEA; }
+.screen--red .eq-blank { background: #FFF6F4; border-color: #F5B7AE; }
+.screen--red .eq-blank:focus { background: #fff; border-color: var(--acc-dark); }
+.screen--red .eq-blank--ok { border-color: #4FBE7A; background: #E5F7EC; }
+.screen--red .eq-blank--bad { border-color: #E9756B; background: #FDECEA; }
+.screen--red .eq-catalog-panel { --acc-light: #FFB8AE; --acc-mid: #EE6A5D; --acc-dark: #A92A20; --acc-text: #4A0B06; }
+.screen--red.screen--sandbox { max-width: 680px; }
+
+/* Récapitulatif */
+.exp-recap-card { background: #fff; border-radius: 28px; box-shadow: var(--shadow-card); padding: 26px 20px 20px; text-align: center; margin-top: 8px; }
+.exp-trophy { font-size: 4.2rem; line-height: 1; animation: bal-pop .5s cubic-bezier(.34,1.56,.64,1); }
+.exp-final { font-family: var(--font-display); font-weight: 700; font-size: 3.4rem; line-height: 1.1; color: var(--ink); margin: 4px 0 2px; }
+.exp-time { font-weight: 800; font-size: 1.05rem; color: var(--ink-soft); margin-bottom: 14px; }
+.exp-message { font-weight: 800; font-size: 1.1rem; line-height: 1.4; margin: 0 4px 6px; }

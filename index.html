@@ -45,31 +45,32 @@
     <h1 class="app-title">Les molécules</h1>
     <p class="app-subtitle">Choisis ton mode pour commencer</p>
 
-    <p class="mode-caption">Pour apprendre les formules chimiques</p>
+    <p class="mode-caption">Pour découvrir les formules chimiques</p>
     <div class="mode-list">
-      <button type="button" id="btn-mode1-1" class="mode-btn mode-btn--pink">
-        <span class="mode-btn__title">Construire une molécule</span>
-        <span class="mode-btn__subtitle">Assemble des atomes et découvre sa formule</span>
+      <button type="button" id="btn-mode1-1" class="mode-btn mode-btn--lav">
+        <span class="mode-btn__title">Construis ta molécule</span>
+        <span class="mode-btn__subtitle">Assemble des atomes et construis tes molécules</span>
       </button>
-      <button type="button" id="btn-mode1-2" class="mode-btn mode-btn--pink-dark">
-        <span class="mode-btn__title">S'exercer avec les formules</span>
-        <span class="mode-btn__subtitle">Trouve ou construis la molécule demandée</span>
+      <button type="button" id="btn-mode1-2" class="mode-btn mode-btn--lav-dark">
+        <span class="mode-btn__title">Teste-toi</span>
+        <span class="mode-btn__subtitle">Identifie et construis des molécules existantes</span>
       </button>
     </div>
 
-    <p class="mode-caption">Pour apprendre les équations chimiques</p>
+    <p class="mode-caption">Pour apprendre à maîtriser les équations chimiques</p>
     <div class="mode-list">
-      <button type="button" id="btn-eq-cours" class="mode-btn mode-btn--purple">
-        <span class="mode-btn__title">Décrire une transformation</span>
-        <span class="mode-btn__subtitle">Repère réactifs et produits, écris les formules</span>
+      <button type="button" id="btn-eq-cours" class="mode-btn mode-btn--rose">
+        <span class="mode-btn__title">Décris une transformation</span>
+        <span class="mode-btn__subtitle">Identifie les réactifs et les produits</span>
       </button>
-      <button type="button" id="btn-balance" class="mode-btn mode-btn--purple-mid">
-        <span class="mode-btn__title">Équilibrer une transformation</span>
-        <span class="mode-btn__subtitle">Équilibre l'équation chimique pour la rendre correcte</span>
+      <button type="button" id="btn-balance" class="mode-btn mode-btn--magenta">
+        <span class="mode-btn__title">Équilibre une équation chimique</span>
+        <span class="mode-btn__subtitle">Ajuste une écriture scientifique</span>
       </button>
-      <button type="button" id="btn-eq-exercice" class="mode-btn mode-btn--purple-dark">
-        <span class="mode-btn__title">S'exercer avec les équations</span>
-        <span class="mode-btn__subtitle">Complète l'équation d'une transformation</span>
+      <button type="button" id="btn-eq-exercice" class="mode-btn mode-btn--vivid mode-btn--trophy">
+        <span class="mode-btn__title">Évaluation</span>
+        <span class="mode-btn__subtitle">Teste ta maîtrise de l'écriture chimique</span>
+        <span class="mode-btn__trophy" aria-hidden="true">🏆</span>
       </button>
     </div>
   </section>
@@ -213,10 +214,10 @@
     </div>
   </section>
 
-  <!-- ÉCRAN : SOUS-MENU S'EXERCER AVEC LES ÉQUATIONS -->
+  <!-- ÉCRAN : SOUS-MENU ÉVALUATION (niveaux 1, 2, 3) -->
   <section id="screen-eq-practice" class="screen">
     <button type="button" class="btn-back" id="btn-back-to-mode1-practice">← Retour</button>
-    <h1 class="app-title">S'exercer avec les équations</h1>
+    <h1 class="app-title">Évaluation</h1>
     <p class="app-subtitle">Choisis ton niveau</p>
 
     <div class="mode-list">
@@ -228,9 +229,10 @@
         <span class="mode-btn__title">Équilibrer une équation</span>
         <span class="mode-btn__level">Niveau 2</span>
       </button>
-      <button type="button" id="btn-eq-lvl3" class="mode-btn mode-btn--red" disabled>
+      <button type="button" id="btn-eq-lvl3" class="mode-btn mode-btn--red mode-btn--trophy">
         <span class="mode-btn__title">Mode Expert</span>
-        <span class="mode-btn__level">Niveau 3 · Bientôt disponible</span>
+        <span class="mode-btn__level">Niveau 3</span>
+        <span class="mode-btn__trophy" aria-hidden="true">🏆</span>
       </button>
     </div>
   </section>
@@ -255,6 +257,58 @@
     <div class="ex-actions">
       <button type="button" class="btn-primary" id="btn-bx-validate">Valider</button>
       <button type="button" class="btn-primary btn-primary--alt" id="btn-bx-skip" style="display:none;">Résoudre et passer</button>
+    </div>
+  </section>
+
+  <!-- ÉCRAN : NIVEAU 3 (Mode Expert) -->
+  <section id="screen-expert" class="screen screen--sandbox screen--red">
+    <button type="button" class="btn-back" id="btn-back-to-practice-exp">← Retour</button>
+    <p class="exp-progress" id="exp-progress"></p>
+    <h1 class="exp-instruction" id="exp-instruction"></h1>
+
+    <div id="exp-run">
+      <div class="eq-phrase" id="exp-phrase"></div>
+
+      <div class="bal-scene" id="exp-scene">
+        <div class="bal-row" id="exp-row"></div>
+        <div class="exp-scene-foot" id="exp-scene-foot"></div>
+      </div>
+
+      <div class="eq-equation" id="exp-equation"></div>
+      <div class="exp-cat-q1" id="exp-cat-q1">
+        <button type="button" class="btn-secondary" id="btn-exp-catalog">Voir le catalogue</button>
+      </div>
+
+      <p class="ex-feedback" id="exp-feedback"></p>
+
+      <div class="ex-actions">
+        <button type="button" class="btn-primary" id="btn-exp-validate">Valider</button>
+        <button type="button" class="btn-primary btn-primary--alt" id="btn-exp-new" style="display:none;">Nouvelle transformation</button>
+        <button type="button" class="btn-primary" id="btn-exp-next" style="display:none;">Question suivante</button>
+      </div>
+    </div>
+
+    <div class="exp-recap" id="exp-recap" style="display:none;">
+      <div class="exp-recap-card">
+        <div class="exp-trophy" id="exp-trophy">🏆</div>
+        <div class="exp-final" id="exp-final"></div>
+        <div class="exp-time" id="exp-time"></div>
+        <p class="exp-message" id="exp-message"></p>
+        <div class="ex-actions">
+          <button type="button" class="btn-primary btn-primary--alt" id="btn-exp-tuto" style="display:none;">Revoir le tuto</button>
+          <button type="button" class="btn-primary" id="btn-exp-replay">Rejouer</button>
+          <button type="button" class="btn-secondary" id="btn-exp-menu">Retour au menu</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="eq-catalog-overlay" id="exp-catalog-overlay">
+      <div class="eq-catalog-panel">
+        <h2 class="eq-catalog-title">Catalogue des substances</h2>
+        <input type="text" id="exp-catalog-search" class="eq-catalog-search" placeholder="Rechercher un nom ou une formule…">
+        <div class="eq-catalog-list" id="exp-catalog-list"></div>
+        <button type="button" class="btn-primary" id="btn-exp-catalog-close">Fermer</button>
+      </div>
     </div>
   </section>
 
@@ -399,6 +453,8 @@
   <script src="js/equations-app.js"></script>
   <script src="js/balance-app.js"></script>
   <script src="js/balance-exercise.js"></script>
+  <script src="js/balance-scene.js"></script>
+  <script src="js/expert-app.js"></script>
   <script src="js/atoms-app.js"></script>
   <script src="js/app.js"></script>
 </body>

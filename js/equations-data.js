@@ -485,7 +485,9 @@ window.Equations = (function () {
     return list;
   }
   function getReactions() { return REACTIONS.slice(); }
-  function getRandomReaction(channel) { return draw(REACTIONS, 'reaction:' + (channel || '')); }
+  function getRandomReaction(channel, exclude) {
+    return drawExcluding(REACTIONS, 'reaction:' + (channel || ''), function (x) { return sigOf(x.substances); }, exclude);
+  }
 
   // Tirage sans doublon : chaque "canal" (mode) parcourt toute la banque mélangée avant de
   // recommencer, et la première carte d'un nouveau tour n'est jamais la dernière du précédent.
@@ -503,13 +505,118 @@ window.Equations = (function () {
     return b.last;
   }
 
+  // Signature d'une équation (formules normalisées, réactifs et produits triés) : sert à
+  // vérifier que deux questions ne portent jamais sur la même transformation.
+  function normFormula(f) {
+    var p = window.Molecules.parseFormulaInput(f);
+    return p ? countsSig(p) : f;
+  }
+  function sigOf(subs) {
+    var side = function (t) {
+      return subs.filter(function (s) { return s.type === t; })
+        .map(function (s) { return normFormula(s.formula); }).sort().join('+');
+    };
+    return side('reactif') + '>' + side('produit');
+  }
+  function drawExcluding(list, key, sigFn, exclude) {
+    exclude = exclude || [];
+    var x;
+    for (var t = 0; t <= list.length; t++) {
+      x = draw(list, key);
+      if (exclude.indexOf(sigFn(x)) < 0) return x;
+    }
+    return x;
+  }
+
+  // --- Équilibrage automatique (plus petits coefficients entiers) ---
+  function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { var t = a % b; a = b; b = t; } return a || 1; }
+  function frac(n, d) { if (d < 0) { n = -n; d = -d; } var g = gcd(n, d); return [n / g, d / g]; }
+  function fmul(a, b) { return frac(a[0] * b[0], a[1] * b[1]); }
+  function fdiv(a, b) { return frac(a[0] * b[1], a[1] * b[0]); }
+  function fsub(a, b) { return frac(a[0] * b[1] - b[0] * a[1], a[1] * b[1]); }
+
+  // Renvoie les coefficients (dans l'ordre des substances) ou null si l'équation n'a pas
+  // une solution unique en entiers de 1 à 9.
+  function solveCoefs(subs) {
+    var cs = subs.map(function (s) { return window.Molecules.parseFormulaInput(s.formula); });
+    if (cs.some(function (c) { return !c; })) return null;
+    var els = [];
+    cs.forEach(function (c) { Object.keys(c).forEach(function (k) { if (els.indexOf(k) < 0) els.push(k); }); });
+    var n = subs.length;
+    var M = els.map(function (el) {
+      return subs.map(function (s, j) { return frac((s.type === 'reactif' ? 1 : -1) * (cs[j][el] || 0), 1); });
+    });
+    var piv = [], r = 0;
+    for (var c = 0; c < n && r < M.length; c++) {
+      var p = -1, i;
+      for (i = r; i < M.length; i++) if (M[i][c][0] !== 0) { p = i; break; }
+      if (p < 0) continue;
+      var tmp = M[r]; M[r] = M[p]; M[p] = tmp;
+      var pv = M[r][c];
+      M[r] = M[r].map(function (x) { return fdiv(x, pv); });
+      for (i = 0; i < M.length; i++) {
+        if (i !== r && M[i][c][0] !== 0) {
+          var f = M[i][c], row = M[r];
+          M[i] = M[i].map(function (x, k) { return fsub(x, fmul(f, row[k])); });
+        }
+      }
+      piv.push(c); r++;
+    }
+    if (n - piv.length !== 1) return null;
+    var free = -1;
+    for (var k = 0; k < n; k++) if (piv.indexOf(k) < 0) free = k;
+    var x = [];
+    for (var j = 0; j < n; j++) x.push(frac(0, 1));
+    x[free] = frac(1, 1);
+    piv.forEach(function (pc, ri) { x[pc] = fmul(frac(-1, 1), M[ri][free]); });
+    var L = 1;
+    x.forEach(function (v) { L = L * v[1] / gcd(L, v[1]); });
+    var ints = x.map(function (v) { return v[0] * (L / v[1]); });
+    var g = ints.reduce(gcd, 0);
+    ints = ints.map(function (v) { return v / g; });
+    if (ints.every(function (v) { return v < 0; })) ints = ints.map(function (v) { return -v; });
+    if (ints.some(function (v) { return v < 1 || v > 9; })) return null;
+    return ints;
+  }
+
+  // Phrases de REACTIONS avec coefficients calculés, limitées à celles qu'on sait représenter
+  // (toutes les substances connues du bac à sable) et qui tiennent sur une ligne (<= 4 substances).
+  var solvedCache = null;
+  function getSolved() {
+    if (solvedCache) return solvedCache;
+    solvedCache = [];
+    REACTIONS.forEach(function (rx) {
+      if (rx.substances.length > 4) return;
+      var co = solveCoefs(rx.substances);
+      if (!co) return;
+      var known = rx.substances.every(function (s) {
+        var nm = window.Molecules.lookupName(window.Molecules.parseFormulaInput(s.formula));
+        return nm !== undefined && nm !== null;
+      });
+      if (!known) return;
+      solvedCache.push({
+        template: rx.template,
+        substances: rx.substances.map(function (s, i) {
+          return { label: s.label, type: s.type, formula: s.formula, coef: co[i] };
+        })
+      });
+    });
+    return solvedCache;
+  }
+  function getRandomSolvedReaction(channel, exclude) {
+    return drawExcluding(getSolved(), 'solved:' + (channel || ''), function (x) { return sigOf(x.substances); }, exclude);
+  }
+
   // Équation d'équilibrage aléatoire.
-  function getRandomBalance(channel) {
-    var b = draw(BALANCE, 'balance:' + (channel || ''));
-    var subs = [];
-    b.r.forEach(function (x) { subs.push({ formula: x[0], coef: x[1], type: 'reactif' }); });
-    b.p.forEach(function (x) { subs.push({ formula: x[0], coef: x[1], type: 'produit' }); });
-    return { substances: subs };
+  function getRandomBalance(channel, exclude) {
+    var toSubs = function (b) {
+      var subs = [];
+      b.r.forEach(function (x) { subs.push({ formula: x[0], coef: x[1], type: 'reactif' }); });
+      b.p.forEach(function (x) { subs.push({ formula: x[0], coef: x[1], type: 'produit' }); });
+      return subs;
+    };
+    var b = drawExcluding(BALANCE, 'balance:' + (channel || ''), function (x) { return sigOf(toSubs(x)); }, exclude);
+    return { substances: toSubs(b) };
   }
   function getBalanceBank() { return BALANCE.slice(); }
 
@@ -518,6 +625,10 @@ window.Equations = (function () {
     getReactions: getReactions,
     getRandomReaction: getRandomReaction,
     getRandomBalance: getRandomBalance,
+    getRandomSolvedReaction: getRandomSolvedReaction,
+    getSolved: getSolved,
+    sigOf: sigOf,
+    solveCoefs: solveCoefs,
     getBalanceBank: getBalanceBank
   };
 })();
