@@ -559,17 +559,56 @@ sup.ion-charge { font-size: .45em; line-height: 1; vertical-align: top; margin-l
 .ion-built-caption { margin: 10px 0 8px; font-weight: 800; color: var(--ink-soft); font-size: .95rem; }
 
 /* ===== Tableau périodique compact ===== */
-.atom-picker-panel--table { width: min(100%, 740px); }
 .pt-scroll { overflow-x: auto; padding-bottom: 4px; }
-.pt-grid { --pt-cell: 36px; display: grid; grid-template-columns: repeat(18, var(--pt-cell)); grid-auto-rows: var(--pt-cell); gap: 2px; width: max-content; margin: 0 auto; }
+.pt-grid { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 3px; width: 100%; max-width: 440px; margin: 0 auto; }
 .pt-cell {
-  position: relative; display: flex; align-items: center; justify-content: center; background: #fff;
-  border: 1.5px solid rgba(46,58,70,.15); border-radius: 6px; user-select: none; -webkit-user-select: none;
+  position: relative; display: flex; align-items: center; justify-content: center; background: #fff; aspect-ratio: 1;
+  border: 1.5px solid rgba(46,58,70,.15); border-radius: 7px; user-select: none; -webkit-user-select: none;
 }
 .pt-cell--noble { background: #EAF7F6; }
 .pt-cell--click { cursor: pointer; }
 .pt-cell--click:hover { border-color: var(--acc-mid); background: var(--acc-light); }
-.pt-sym { font-family: var(--font-display); font-size: .85rem; font-weight: 600; line-height: 1; }
-.pt-mass, .pt-z { position: absolute; left: 2px; font-size: .56rem; font-weight: 800; line-height: 1; }
+.pt-sym { font-family: var(--font-display); font-size: clamp(.8rem, 3.6vw, 1.1rem); font-weight: 600; line-height: 1; }
+.pt-mass, .pt-z { position: absolute; left: 3px; font-size: clamp(.56rem, 2.3vw, .7rem); font-weight: 800; line-height: 1; }
 .pt-mass { top: 2px; color: var(--ink-soft); }
 .pt-z { bottom: 2px; color: var(--acc-dark); }
+
+/* ===== Nouvelles palettes des menus ===== */
+/* Molécules : bleus, du plus pâle au plus soutenu */
+.mode-btn--b1 { --c-light: #F5FBFE; --c-mid: #DDF1FA; --c-dark: #B5DBEE; --c-text: #0B4E66; }
+.mode-btn--b2 { --c-light: #D8EFFB; --c-mid: #9FD6F1; --c-dark: #6DB6DA; --c-text: #0B4E66; }
+.mode-btn--b3 { --c-light: #D7DFF8; --c-mid: #B5C3EF; --c-dark: #8B9ED9; --c-text: #1B2E6B; }
+.mode-btn--b4 { --c-light: #A0B2EC; --c-mid: #7189DD; --c-dark: #4B63B8; --c-text: #10204F; }
+/* Atomes et Ions : verts, du plus pâle au vert militaire */
+.mode-btn--g1 { --c-light: #F7FCEB; --c-mid: #E5F5C4; --c-dark: #C6DF95; --c-text: #3E5E1A; }
+.mode-btn--g2 { --c-light: #E4F5BA; --c-mid: #C3E47E; --c-dark: #A0C654; --c-text: #3E5E1A; }
+.mode-btn--g3 { --c-light: #D5ECDC; --c-mid: #ABD6BA; --c-dark: #80B895; --c-text: #1B4A2B; }
+.mode-btn--g4 { --c-light: #A9D9B9; --c-mid: #6FBC8C; --c-dark: #4B9B69; --c-text: #0F3A21; }
+.mode-btn--g5 { --c-light: #CBD1A8; --c-mid: #A6AE7A; --c-dark: #80885A; --c-text: #2E3318; }
+.mode-btn--locked-soft { opacity: .8; cursor: default; pointer-events: none; }
+
+/* ===== Écrans intérieurs : mêmes couleurs que leurs boutons de menu ===== */
+body[data-theme="b1"] { --bg-top: #F6FBFE; --bg-bottom: #D5EBF6; }
+.screen--b1, .screen--b1 .eq-catalog-panel { --acc-light: #E6F5FC; --acc-mid: #B7DEF1; --acc-dark: #7FBCDA; --acc-text: #0B4E66; }
+body[data-theme="b2"] { --bg-top: #EAF6FD; --bg-bottom: #B5DCF2; }
+.screen--b2, .screen--b2 .eq-catalog-panel { --acc-light: #D8EFFB; --acc-mid: #8FCFEF; --acc-dark: #5FAED6; --acc-text: #0B4E66; }
+body[data-theme="b3"] { --bg-top: #F2F5FD; --bg-bottom: #C8D3F3; }
+.screen--b3, .screen--b3 .eq-catalog-panel { --acc-light: #D7DFF8; --acc-mid: #A9B9EC; --acc-dark: #7D92D4; --acc-text: #1B2E6B; }
+body[data-theme="b4"] { --bg-top: #EEF1FD; --bg-bottom: #A9B9EC; }
+.screen--b4, .screen--b4 .eq-catalog-panel { --acc-light: #A0B2EC; --acc-mid: #7189DD; --acc-dark: #4B63B8; --acc-text: #10204F; }
+body[data-theme="g1"] { --bg-top: #F9FDEF; --bg-bottom: #DCEFB8; }
+.screen--g1, .screen--g1 .eq-catalog-panel { --acc-light: #EEF8D4; --acc-mid: #CFE9A0; --acc-dark: #A9CB72; --acc-text: #3E5E1A; }
+body[data-theme="g2"] { --bg-top: #F3FAE0; --bg-bottom: #C8E68F; }
+.screen--g2, .screen--g2 .eq-catalog-panel { --acc-light: #E4F5BA; --acc-mid: #B6DE6E; --acc-dark: #92BC48; --acc-text: #3E5E1A; }
+body[data-theme="g3"] { --bg-top: #F1F9F4; --bg-bottom: #BCDFC8; }
+.screen--g3, .screen--g3 .eq-catalog-panel { --acc-light: #D5ECDC; --acc-mid: #9ACFAE; --acc-dark: #6FB088; --acc-text: #1B4A2B; }
+body[data-theme="g4"] { --bg-top: #EAF6EE; --bg-bottom: #93CDA8; }
+.screen--g4, .screen--g4 .eq-catalog-panel { --acc-light: #A9D9B9; --acc-mid: #6FBC8C; --acc-dark: #4B9B69; --acc-text: #0F3A21; }
+.screen--g1 .app-subtitle, .screen--g2 .app-subtitle { margin-bottom: 14px; }
+.screen--b3.screen--sandbox, .screen--b4.screen--sandbox { max-width: 680px; }
+.screen--b3 .eq-token--clickable, .screen--b4 .eq-token--clickable { background: #E3E9FA; border-bottom-color: #8B9ED9; }
+.screen--b3 .eq-blank, .screen--b4 .eq-blank { background: #F3F6FD; border-color: #C3CFF2; }
+.screen--b3 .eq-blank:focus, .screen--b4 .eq-blank:focus { background: #fff; border-color: var(--acc-dark); }
+.screen--b3 .eq-blank--ok, .screen--b4 .eq-blank--ok { border-color: #4FBE7A; background: #E5F7EC; }
+.screen--b3 .eq-blank--bad, .screen--b4 .eq-blank--bad { border-color: #E9756B; background: #FDECEA; }
+.screen--b4 .bal-coef:focus { background: #EEF2FD; }

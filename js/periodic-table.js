@@ -5,17 +5,15 @@
 window.PeriodicTable = (function () {
   'use strict';
 
-  var TABLE_MIN_W = 760;   // en dessous : liste défilante (cases de tableau trop petites pour le doigt)
   var NOBLE = { He: 1, Ne: 1, Ar: 1 };
 
+  // Tableau compact : on supprime le "vide" entre les deux blocs (8 colonnes au lieu de 18).
   // z -> [ligne, colonne]
   function pos(z) {
     if (z === 1) return [1, 1];
-    if (z === 2) return [1, 18];
-    if (z <= 4) return [2, z - 2];
-    if (z <= 10) return [2, z + 8];
-    if (z <= 12) return [3, z - 10];
-    if (z <= 18) return [3, z];
+    if (z === 2) return [1, 8];
+    if (z <= 10) return [2, z - 2];
+    if (z <= 18) return [3, z - 10];
     return [4, z - 18];                 // K, Ca : 4e ligne
   }
 
@@ -36,37 +34,16 @@ window.PeriodicTable = (function () {
     return html + '</div>';
   }
 
-  function listHTML(maxZ) {
-    var html = '';
-    window.Units.getAll().forEach(function (el) {
-      if (maxZ && el.z > maxZ) return;
-      html += '<div class="element-cell" data-z="' + el.z + '">' +
-        '<span class="element-mass">' + el.mass + '</span>' +
-        '<span class="element-number">' + el.z + '</span>' +
-        '<span class="element-symbol">' + el.symbol + '</span>' +
-        '<span class="element-name">' + el.name + '</span></div>';
-    });
-    return html;
-  }
-
   function bindClicks(gridEl, onPick) {
     gridEl.querySelectorAll('[data-z]').forEach(function (c) {
       c.addEventListener('click', function () { onPick(parseInt(c.getAttribute('data-z'), 10)); });
     });
   }
 
-  // Sélecteur cliquable : tableau (grand écran) ou liste défilante (petit écran).
+  // Sélecteur cliquable : même tableau compact, cases cliquables.
   function renderPicker(gridEl, onPick, maxZ, opts) {
-    var panel = gridEl.closest ? gridEl.closest('.eq-catalog-panel') : null;
-    var asTable = window.innerWidth >= TABLE_MIN_W;
-    if (panel) panel.classList.toggle('atom-picker-panel--table', asTable);
-    if (asTable) {
-      gridEl.className = 'pt-scroll';
-      gridEl.innerHTML = tableHTML(maxZ, true, !!(opts && opts.row4));
-    } else {
-      gridEl.className = 'atoms-panel atom-picker-grid';
-      gridEl.innerHTML = listHTML(maxZ);
-    }
+    gridEl.className = 'pt-scroll';
+    gridEl.innerHTML = tableHTML(maxZ, true, !!(opts && opts.row4));
     bindClicks(gridEl, onPick);
   }
 

@@ -47,11 +47,11 @@
 
     <p class="mode-caption">Pour découvrir les formules chimiques</p>
     <div class="mode-list">
-      <button type="button" id="btn-mode1-1" class="mode-btn mode-btn--lav">
+      <button type="button" id="btn-mode1-1" class="mode-btn mode-btn--b1">
         <span class="mode-btn__title">Construis ta molécule</span>
         <span class="mode-btn__subtitle">Assemble des atomes et construis tes molécules</span>
       </button>
-      <button type="button" id="btn-mode1-2" class="mode-btn mode-btn--lav-dark">
+      <button type="button" id="btn-mode1-2" class="mode-btn mode-btn--b2">
         <span class="mode-btn__title">Teste-toi</span>
         <span class="mode-btn__subtitle">Identifie et construis des molécules existantes</span>
       </button>
@@ -59,11 +59,11 @@
 
     <p class="mode-caption">Pour apprendre à maîtriser les équations chimiques</p>
     <div class="mode-list">
-      <button type="button" id="btn-eq-cours" class="mode-btn mode-btn--rose">
+      <button type="button" id="btn-eq-cours" class="mode-btn mode-btn--b3">
         <span class="mode-btn__title">Décris une transformation</span>
         <span class="mode-btn__subtitle">Identifie les réactifs et les produits</span>
       </button>
-      <button type="button" id="btn-balance" class="mode-btn mode-btn--magenta">
+      <button type="button" id="btn-balance" class="mode-btn mode-btn--b4">
         <span class="mode-btn__title">Équilibre une équation chimique</span>
         <span class="mode-btn__subtitle">Ajuste une écriture scientifique</span>
       </button>
@@ -87,11 +87,11 @@
 
     <p class="mode-caption">Pour travailler les atomes</p>
     <div class="mode-list">
-      <button type="button" id="btn-atom-cours-nav" class="mode-btn mode-btn--green">
+      <button type="button" id="btn-atom-cours-nav" class="mode-btn mode-btn--g1">
         <span class="mode-btn__title">Construire ton atome</span>
         <span class="mode-btn__subtitle">Ajoute protons, neutrons et électrons</span>
       </button>
-      <button type="button" id="btn-atom-exercice-nav" class="mode-btn mode-btn--green-dark">
+      <button type="button" id="btn-atom-exercice-nav" class="mode-btn mode-btn--g2">
         <span class="mode-btn__title">S'exercer avec les atomes</span>
         <span class="mode-btn__subtitle">Construis ou identifie l'atome demandé</span>
       </button>
@@ -99,15 +99,15 @@
 
     <p class="mode-caption">Pour découvrir ce que sont les ions</p>
     <div class="mode-list">
-      <button type="button" id="btn-ion-cours-nav" class="mode-btn mode-btn--peach">
+      <button type="button" id="btn-ion-cours-nav" class="mode-btn mode-btn--g3">
         <span class="mode-btn__title">Découvrir les ions</span>
         <span class="mode-btn__subtitle">Transforme un atome en ion, pas à pas</span>
       </button>
-      <button type="button" id="btn-ion-exercice-nav" class="mode-btn mode-btn--orange">
+      <button type="button" id="btn-ion-exercice-nav" class="mode-btn mode-btn--g4">
         <span class="mode-btn__title">Exerce-toi avec les ions</span>
         <span class="mode-btn__subtitle">Construis ou identifie l'ion demandé</span>
       </button>
-      <button type="button" class="mode-btn mode-btn--soon mode-btn--soon-sub" aria-disabled="true" tabindex="-1">
+      <button type="button" class="mode-btn mode-btn--g5 mode-btn--locked-soft" aria-disabled="true" tabindex="-1">
         <span class="mode-btn__title">Identifier les ions</span>
         <span class="mode-btn__subtitle">Disponible prochainement</span>
       </button>
@@ -124,7 +124,7 @@
   </section>
 
   <!-- ÉCRAN : MODE 1-1-COURS (bac à sable de construction moléculaire) -->
-  <section id="screen-mode1-1" class="screen screen--sandbox screen--pink">
+  <section id="screen-mode1-1" class="screen screen--sandbox screen--b1">
     <button type="button" class="btn-back" id="btn-back-to-mode1">← Retour</button>
     <h1 class="app-title app-title--small">Construire une molécule</h1>
     <p class="app-subtitle">Construis ta molécule atome par atome et trouve sa formule chimique</p>
@@ -144,7 +144,7 @@
   </section>
 
   <!-- ÉCRAN : MODE 1-1-EXERCICE (identifier / construire) -->
-  <section id="screen-exercise1-2" class="screen screen--sandbox screen--pink">
+  <section id="screen-exercise1-2" class="screen screen--sandbox screen--b2">
     <button type="button" class="btn-back" id="btn-back-to-mode1-ex">← Retour</button>
     <h1 class="app-title app-title--small">S'exercer avec les formules</h1>
 
@@ -182,7 +182,7 @@
   </section>
 
   <!-- ÉCRAN : MODE 1-2-COURS (Décrire une transformation chimique) -->
-  <section id="screen-equations-cours" class="screen screen--sandbox screen--purple">
+  <section id="screen-equations-cours" class="screen screen--sandbox screen--b3">
     <button type="button" class="btn-back" id="btn-back-to-mode1-eqc">← Retour</button>
     <h1 class="app-title app-title--small">Décrire une transformation</h1>
     <p class="eq-instruction-main" id="eqc-instruction-main"></p>
@@ -339,7 +339,7 @@
   </section>
 
   <!-- ÉCRAN : MODE 1-2-ÉQUILIBRER (tuto pas à pas) -->
-  <section id="screen-balance" class="screen screen--sandbox screen--purple">
+  <section id="screen-balance" class="screen screen--sandbox screen--b4">
     <button type="button" class="btn-back" id="btn-back-to-mode1-bal">← Retour</button>
     <h1 class="app-title app-title--small">Équilibrer une équation chimique</h1>
     <p class="bal-text" id="bal-text"></p>
@@ -361,7 +361,7 @@
   </section>
 
   <!-- ÉCRAN : MODE 2-1-COURS (Construis ton atome) -->
-  <section id="screen-atom-cours" class="screen screen--sandbox screen--green">
+  <section id="screen-atom-cours" class="screen screen--sandbox screen--g1">
     <button type="button" class="btn-back" id="btn-back-to-mode2">← Retour</button>
     <h1 class="app-title app-title--small">Construire un atome</h1>
     <p class="app-subtitle">Clique sur des protons, neutrons et électrons pour construire ton atome.</p>
@@ -407,67 +407,11 @@
     </div>
   </section>
 
-  <!-- ÉCRAN : MODE 2-1-EXERCICE (construction / identification alternées) -->
-  <section id="screen-atom-exercice" class="screen screen--sandbox screen--green">
-    <button type="button" class="btn-back" id="btn-back-to-mode2-ex">← Retour</button>
-    <h1 class="app-title app-title--small">S'exercer avec les atomes</h1>
-
-    <div class="exercise-topbar">
-      <span class="ex-score" id="atx-score">Score : 0 / 0</span>
-    </div>
-
-    <p class="app-subtitle" id="atx-instruction"></p>
-    <div class="atom-cell atom-cell--target" id="atx-target-cell" style="display:none;"></div>
-
-    <div id="atx-build-zone">
-      <div class="atom-layout atom-layout--compact">
-        <div class="atom-schema atom-schema--compact">
-          <div class="atom-spin">
-            <div class="atom-nucleus-wrap" id="atx-nucleus-wrap"></div>
-            <div class="atom-electrons-wrap" id="atx-electrons-wrap"></div>
-          </div>
-          <button type="button" class="btn-clear btn-clear--mini" id="btn-atx-clear">Effacer</button>
-        </div>
-      </div>
-      <p class="atom-limit-msg" id="atx-limit-msg"></p>
-      <div class="atom-particle-bar">
-        <button type="button" class="atom-particle-btn atom-particle-btn--proton" id="btn-atx-add-proton">+ Proton (0)</button>
-        <button type="button" class="atom-particle-btn atom-particle-btn--neutron" id="btn-atx-add-neutron">+ Neutron (0)</button>
-        <button type="button" class="atom-particle-btn atom-particle-btn--electron" id="btn-atx-add-electron">+ Électron (0)</button>
-      </div>
-    </div>
-
-    <div id="atx-identify-zone" style="display:none;">
-      <div class="atom-schema atom-schema--compact" id="atx-identify-schema">
-        <div class="atom-spin">
-          <div class="atom-nucleus-wrap" id="atx-identify-nucleus"></div>
-          <div class="atom-electrons-wrap" id="atx-identify-electrons"></div>
-        </div>
-      </div>
-      <div class="atom-cell atom-cell--picked" id="atx-identify-picked"></div>
-      <div class="ex-actions">
-        <button type="button" class="btn-secondary" id="btn-atx-open-picker">Ouvrir le tableau périodique</button>
-      </div>
-    </div>
-
-    <div class="ex-actions">
-      <button type="button" class="btn-primary" id="btn-atx-validate">Valider</button>
-      <button type="button" class="btn-primary btn-primary--alt" id="btn-atx-skip">Suivant</button>
-    </div>
-
-    <p class="ex-feedback" id="atx-feedback"></p>
-
-    <div class="eq-catalog-overlay" id="atx-picker-overlay">
-      <div class="eq-catalog-panel atom-picker-panel">
-        <h2 class="eq-catalog-title">Choisis un atome</h2>
-        <div class="atoms-panel atom-picker-grid" id="atx-picker-grid"></div>
-        <button type="button" class="btn-primary" id="btn-atx-picker-close">Fermer</button>
-      </div>
-    </div>
-  </section>
+  <!-- ÉCRAN : S'EXERCER AVEC LES ATOMES (contenu généré par ions-app.js) -->
+  <section id="screen-atom-exercice" class="screen screen--sandbox screen--g2"></section>
 
   <!-- ÉCRAN : TUTO DES IONS (Découvrir les ions) -->
-  <section id="screen-ion-cours" class="screen screen--sandbox screen--orange">
+  <section id="screen-ion-cours" class="screen screen--sandbox screen--g3">
     <button type="button" class="btn-back" id="btn-back-to-mode2-ion">← Retour</button>
     <h1 class="app-title app-title--small">Découvrir les ions</h1>
 
@@ -535,14 +479,14 @@
   </section>
 
   <!-- ÉCRANS : exercice ions et challenges (contenu généré par ions-app.js) -->
-  <section id="screen-ion-exercice" class="screen screen--sandbox screen--orange"></section>
+  <section id="screen-ion-exercice" class="screen screen--sandbox screen--g4"></section>
 
   <section id="screen-atom-challenge" class="screen">
     <button type="button" class="btn-back" id="btn-back-to-mode2-ch">← Retour</button>
     <h1 class="app-title">Challenge</h1>
     <p class="app-subtitle">Choisis ton niveau</p>
     <div class="mode-list">
-      <button type="button" id="btn-ach-lvl1" class="mode-btn mode-btn--green">
+      <button type="button" id="btn-ach-lvl1" class="mode-btn mode-btn--yellow">
         <span class="mode-btn__title">Atomes neutres</span>
         <span class="mode-btn__level">Niveau 1</span>
       </button>
@@ -558,7 +502,7 @@
     </div>
   </section>
 
-  <section id="screen-atom-ch1" class="screen screen--sandbox screen--green"></section>
+  <section id="screen-atom-ch1" class="screen screen--sandbox screen--yellow"></section>
   <section id="screen-atom-ch2" class="screen screen--sandbox screen--orange"></section>
 
   <canvas id="confetti-canvas"></canvas>

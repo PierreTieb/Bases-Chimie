@@ -237,7 +237,7 @@
           '<button type="button" class="btn-primary btn-primary--alt" id="' + p + '-skip">Résoudre et passer</button>' +
         '</div>' +
 
-        '<div class="eq-catalog-overlay" id="' + p + '-ptover"><div class="eq-catalog-panel atom-picker-panel atom-picker-panel--table">' +
+        '<div class="eq-catalog-overlay" id="' + p + '-ptover"><div class="eq-catalog-panel atom-picker-panel">' +
           '<h2 class="eq-catalog-title">Tableau périodique</h2><div class="pt-scroll" id="' + p + '-ptview"></div>' +
           '<button type="button" class="btn-primary" id="' + p + '-ptclose">Fermer</button></div></div>';
     }
@@ -315,6 +315,15 @@
       return { ok: true, value: m[2] === '+' ? n : -n };
     }
 
+    // Mode S'exercer avec les atomes : retour selon ce qui a été écrit
+    function atomIdentifyMsg(it) {
+      var raw = els.sym.value, low = raw.toLowerCase();
+      var same = U.getAll().filter(function (e) { return e.symbol.toLowerCase() === low; })[0];
+      if (!same) return "Écris le symbole d'un atome du tableau périodique.";
+      if (same.z === it.z) return 'Fais attention à la manière dont un atome est symbolisé (majuscule/minuscule) c\'est important.';
+      return 'Pour identifier un atome on compte ses protons, et on lit ce nombre en bas de la case de l\'atome correspondant. Ressaye !';
+    }
+
     // ---------- Validation ----------
     function onValidate() {
       if (solved || revealing) return;
@@ -344,7 +353,8 @@
         var ch = els.chg ? parseCharge(els.chg.value) : { ok: true, value: 0 };
         ok = !!el && el.z === item.z && ch.ok && ch.value === item.charge;
         if (!ok) {
-          if (!cfg.detailed) msg = generic;
+          if (cfg.atomFeedback) msg = atomIdentifyMsg(item);
+          else if (!cfg.detailed) msg = generic;
           else if (!el) msg = "Écris le symbole d'un atome du tableau périodique (attention aux majuscules et aux minuscules).";
           else if (el.z !== item.z) msg = "Ce n'est pas le bon atome : le nombre de protons du noyau donne le numéro atomique.";
           else if (!ch.ok) msg = "Écris la charge avec le chiffre puis le signe, par exemple 2" + pos('+') + " (ou juste le signe pour une charge de 1).";
@@ -355,7 +365,11 @@
 
       if (ok) {
         solved = true; score.correct++; score.total++; updateScore();
-        if (!cfg.ions) setFeedback('Bravo, bonne réponse !', 'success');
+        if (cfg.atomFeedback) {
+          var lbl = "l'atome " + deName(x.el) + ' (' + x.el.symbol + ')';
+          if (type === 'identify') setFeedback('Il s\'agit bien de ' + lbl + ' car il a bien ' + x.p + ' proton' + (x.p > 1 ? 's' : '') + '.', 'success');
+          else setFeedback('Bravo, tu as construit ' + lbl + ' !', 'success');
+        } else if (!cfg.ions) setFeedback('Bravo, bonne réponse !', 'success');
         else if (type === 'construct') setFeedback("Bravo, tu as construit l'ion " + ionHTML(x.el, item.charge) + ' !', 'success');
         else setFeedback("Bravo, c'est bien l'ion " + ionHTML(x.el, item.charge) + " : l'atome " + deName(x.el) +
           ' qui a ' + changeHTML(item.charge) + '.', 'success');
@@ -449,13 +463,17 @@
     sectionId: 'screen-ion-exercice', prefix: 'ionx', title: "S'exercer avec les ions", backTo: 'screen-mode2',
     pool: EX_IONS, ions: true, shake: true, detailed: true, sentence: true, skipAlways: false
   });
+  var atomEx = createQuiz({
+    sectionId: 'screen-atom-exercice', prefix: 'atx', title: "S'exercer avec les atomes", backTo: 'screen-mode2',
+    pool: ATOMS, ions: false, shake: true, detailed: false, atomFeedback: true, sentence: false, skipAlways: false
+  });
   var ch1 = createQuiz({
     sectionId: 'screen-atom-ch1', prefix: 'ch1', title: 'Challenge : atomes neutres', backTo: 'screen-atom-challenge',
-    pool: ATOMS, ions: false, shake: true, detailed: false, sentence: false, skipAlways: true
+    pool: ATOMS, ions: false, shake: true, detailed: false, sentence: false, skipAlways: false
   });
   var ch2 = createQuiz({
     sectionId: 'screen-atom-ch2', prefix: 'ch2', title: 'Challenge : les ions', backTo: 'screen-atom-challenge',
-    pool: CH2_IONS, ions: true, shake: false, detailed: false, sentence: false, skipAlways: true
+    pool: CH2_IONS, ions: true, shake: false, detailed: false, sentence: false, skipAlways: false
   });
 
   // ---------- Navigation ----------
@@ -464,6 +482,7 @@
     if (b) b.addEventListener('click', function () { window.App.showScreen(screenId); if (startFn) startFn(); });
   }
   document.addEventListener('DOMContentLoaded', function () {
+    go('btn-atom-exercice-nav', 'screen-atom-exercice', atomEx.start);
     go('btn-ion-cours-nav', 'screen-ion-cours', IonCours.start);
     go('btn-ion-exercice-nav', 'screen-ion-exercice', ionEx.start);
     go('btn-atom-challenge', 'screen-atom-challenge');
@@ -473,5 +492,5 @@
     go('btn-back-to-mode2-ch', 'screen-mode2');
   });
 
-  window.Ions = { cours: IonCours, exercice: ionEx, challenge1: ch1, challenge2: ch2 };
+  window.Ions = { atomExercice: atomEx, cours: IonCours, exercice: ionEx, challenge1: ch1, challenge2: ch2 };
 })();
