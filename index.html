@@ -72,7 +72,7 @@
     <p class="mode-caption mode-caption--sep">Mets en œuvre tes connaissances dans ce challenge</p>
     <div class="mode-list">
       <button type="button" id="btn-eq-exercice" class="mode-btn mode-btn--glass mode-btn--trophy">
-        <span class="mode-btn__title">Évaluation</span>
+        <span class="mode-btn__title">Challenge</span>
         <span class="mode-btn__subtitle">Teste ta maîtrise de l'écriture chimique</span>
         <span class="mode-btn__trophy" aria-hidden="true">🏆</span>
       </button>
@@ -85,19 +85,40 @@
     <h1 class="app-title">Atomes et Ions</h1>
     <p class="app-subtitle">Choisis ton mode pour commencer</p>
 
-    <p class="mode-caption">Pour découvrir l'atome</p>
+    <p class="mode-caption">Pour travailler les atomes</p>
     <div class="mode-list">
       <button type="button" id="btn-atom-cours-nav" class="mode-btn mode-btn--green">
         <span class="mode-btn__title">Construire ton atome</span>
         <span class="mode-btn__subtitle">Ajoute protons, neutrons et électrons</span>
       </button>
-    </div>
-
-    <p class="mode-caption">Pour s'exercer à son rythme</p>
-    <div class="mode-list">
       <button type="button" id="btn-atom-exercice-nav" class="mode-btn mode-btn--green-dark">
         <span class="mode-btn__title">S'exercer avec les atomes</span>
         <span class="mode-btn__subtitle">Construis ou identifie l'atome demandé</span>
+      </button>
+    </div>
+
+    <p class="mode-caption">Pour découvrir ce que sont les ions</p>
+    <div class="mode-list">
+      <button type="button" id="btn-ion-cours-nav" class="mode-btn mode-btn--peach">
+        <span class="mode-btn__title">Découvrir les ions</span>
+        <span class="mode-btn__subtitle">Transforme un atome en ion, pas à pas</span>
+      </button>
+      <button type="button" id="btn-ion-exercice-nav" class="mode-btn mode-btn--orange">
+        <span class="mode-btn__title">Exerce-toi avec les ions</span>
+        <span class="mode-btn__subtitle">Construis ou identifie l'ion demandé</span>
+      </button>
+      <button type="button" class="mode-btn mode-btn--soon mode-btn--soon-sub" aria-disabled="true" tabindex="-1">
+        <span class="mode-btn__title">Identifier les ions</span>
+        <span class="mode-btn__subtitle">Disponible prochainement</span>
+      </button>
+    </div>
+
+    <p class="mode-caption mode-caption--sep">Mets en œuvre tes connaissances dans ce challenge</p>
+    <div class="mode-list">
+      <button type="button" id="btn-atom-challenge" class="mode-btn mode-btn--glass mode-btn--trophy">
+        <span class="mode-btn__title">Challenge</span>
+        <span class="mode-btn__subtitle">Teste ta maîtrise des atomes et des ions</span>
+        <span class="mode-btn__trophy" aria-hidden="true">🏆</span>
       </button>
     </div>
   </section>
@@ -219,10 +240,10 @@
     </div>
   </section>
 
-  <!-- ÉCRAN : SOUS-MENU ÉVALUATION (niveaux 1, 2, 3) -->
+  <!-- ÉCRAN : SOUS-MENU CHALLENGE (niveaux 1, 2, 3) -->
   <section id="screen-eq-practice" class="screen">
     <button type="button" class="btn-back" id="btn-back-to-mode1-practice">← Retour</button>
-    <h1 class="app-title">Évaluation</h1>
+    <h1 class="app-title">Challenge</h1>
     <p class="app-subtitle">Choisis ton niveau</p>
 
     <div class="mode-list">
@@ -445,6 +466,101 @@
     </div>
   </section>
 
+  <!-- ÉCRAN : TUTO DES IONS (Découvrir les ions) -->
+  <section id="screen-ion-cours" class="screen screen--sandbox screen--orange">
+    <button type="button" class="btn-back" id="btn-back-to-mode2-ion">← Retour</button>
+    <h1 class="app-title app-title--small">Découvrir les ions</h1>
+
+    <div id="ionc-main">
+      <p class="ion-text" id="ionc-text"></p>
+      <p class="ion-instruction" id="ionc-instruction"></p>
+      <p class="ion-tip" id="ionc-tip"></p>
+      <div class="atom-cell atom-cell--target" id="ionc-target"></div>
+
+      <div class="atom-layout">
+        <div class="atom-schema">
+          <div class="atom-spin">
+            <div class="atom-nucleus-wrap" id="ionc-nucleus-wrap"></div>
+            <div class="atom-electrons-wrap" id="ionc-electrons-wrap"></div>
+          </div>
+        </div>
+        <div class="atom-info">
+          <div class="atom-cell">
+            <span class="element-mass" id="ionc-info-mass"></span>
+            <span class="element-number" id="ionc-info-number"></span>
+            <span class="element-symbol" id="ionc-info-symbol">?</span>
+            <span class="element-name" id="ionc-info-name"></span>
+          </div>
+          <p class="atom-neutral-msg" id="ionc-neutral"></p>
+        </div>
+      </div>
+      <p class="atom-limit-msg" id="ionc-limit"></p>
+
+      <div class="atom-particle-bar">
+        <button type="button" class="atom-particle-btn atom-particle-btn--proton" id="btn-ionc-add-proton">+ Proton (0)</button>
+        <button type="button" class="atom-particle-btn atom-particle-btn--neutron" id="btn-ionc-add-neutron">+ Neutron (0)</button>
+        <button type="button" class="atom-particle-btn atom-particle-btn--electron" id="btn-ionc-add-electron">+ Électron (0)</button>
+      </div>
+
+      <p class="ex-feedback" id="ionc-feedback"></p>
+
+      <div class="ex-actions">
+        <button type="button" class="btn-clear btn-clear--static" id="btn-ionc-clear">Effacer</button>
+        <button type="button" class="btn-secondary" id="btn-ionc-prev">Précédent</button>
+        <button type="button" class="btn-primary" id="btn-ionc-next">Suivant</button>
+      </div>
+    </div>
+
+    <div id="ionc-recap" style="display:none;">
+      <div class="ion-recap-card">
+        <h2 class="ion-recap-title">À retenir</h2>
+        <p class="ion-text">Un ion est un atome qui a gagné ou perdu des électrons, on indique ce changement par un signe et un chiffre en haut du symbole</p>
+        <p class="ion-recap-bold">Il y a deux cas possibles</p>
+        <div class="ion-cases">
+          <div class="ion-case">
+            <p>Un ion avec un « <span class="ion-pos">+</span> » est <span class="ion-pos">positif</span>, il a <span class="ion-pos">perdu</span> 1, 2, 3… électrons.</p>
+            <div class="ion-examples ion-pos"><span>Na<sup class="ion-charge">+</sup></span><span>Fe<sup class="ion-charge">2+</sup></span><span>Al<sup class="ion-charge">3+</sup></span></div>
+          </div>
+          <div class="ion-case ion-case--right">
+            <p>Un ion avec un « <span class="ion-neg">&minus;</span> » est <span class="ion-neg">négatif</span>, il a <span class="ion-neg">gagné</span> 1, 2, 3… électrons.</p>
+            <div class="ion-examples ion-neg"><span>Cl<sup class="ion-charge">&minus;</sup></span><span>O<sup class="ion-charge">2&minus;</sup></span><span>N<sup class="ion-charge">3&minus;</sup></span></div>
+          </div>
+        </div>
+        <div class="ex-actions">
+          <button type="button" class="btn-primary btn-primary--alt" id="btn-ionc-again">Essayer un autre ion</button>
+          <button type="button" class="btn-primary" id="btn-ionc-menu">Choisir un autre mode</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ÉCRANS : exercice ions et challenges (contenu généré par ions-app.js) -->
+  <section id="screen-ion-exercice" class="screen screen--sandbox screen--orange"></section>
+
+  <section id="screen-atom-challenge" class="screen">
+    <button type="button" class="btn-back" id="btn-back-to-mode2-ch">← Retour</button>
+    <h1 class="app-title">Challenge</h1>
+    <p class="app-subtitle">Choisis ton niveau</p>
+    <div class="mode-list">
+      <button type="button" id="btn-ach-lvl1" class="mode-btn mode-btn--green">
+        <span class="mode-btn__title">Atomes neutres</span>
+        <span class="mode-btn__level">Niveau 1</span>
+      </button>
+      <button type="button" id="btn-ach-lvl2" class="mode-btn mode-btn--orange">
+        <span class="mode-btn__title">Les ions</span>
+        <span class="mode-btn__level">Niveau 2</span>
+      </button>
+      <button type="button" class="mode-btn mode-btn--red mode-btn--trophy mode-btn--locked" aria-disabled="true" tabindex="-1">
+        <span class="mode-btn__title">Mode Expert</span>
+        <span class="mode-btn__level">Niveau 3 · Disponible prochainement</span>
+        <span class="mode-btn__trophy" aria-hidden="true">🏆</span>
+      </button>
+    </div>
+  </section>
+
+  <section id="screen-atom-ch1" class="screen screen--sandbox screen--green"></section>
+  <section id="screen-atom-ch2" class="screen screen--sandbox screen--orange"></section>
+
   <canvas id="confetti-canvas"></canvas>
 
   <script src="js/units.js"></script>
@@ -460,7 +576,9 @@
   <script src="js/balance-exercise.js"></script>
   <script src="js/balance-scene.js"></script>
   <script src="js/expert-app.js"></script>
+  <script src="js/periodic-table.js"></script>
   <script src="js/atoms-app.js"></script>
+  <script src="js/ions-app.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

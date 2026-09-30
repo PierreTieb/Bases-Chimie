@@ -493,3 +493,83 @@ body:not(.touch-mode) .element-cell { touch-action: none; }
 .mode-btn--glass:active {
   box-shadow: 0 2px 0 rgba(255,255,255,.5), 0 6px 12px rgba(46,58,70,.12), inset 0 2px 0 rgba(255,255,255,.85);
 }
+
+/* ===== Ions : code couleur (rouge = positif, bleu foncé = négatif) ===== */
+.ion-pos { color: #D9463B; font-weight: 800; }
+.ion-neg { color: #1F3FA8; font-weight: 800; }
+sup.ion-charge { font-size: .45em; line-height: 1; vertical-align: top; margin-left: 1px; position: relative; top: .1em; }
+.element-symbol sup.ion-charge { font-size: .42em; }
+.ex-feedback .ion-pos, .ex-feedback .ion-neg, .ion-sentence .ion-pos, .ion-sentence .ion-neg { font-weight: 800; }
+
+.mode-btn--peach { --c-light: #FFF0E0; --c-mid: #FFCF9E; --c-dark: #E3A466; --c-text: #5E2E00; }
+.mode-btn--soon-sub { align-items: flex-start; min-height: 88px; }
+.mode-btn--locked { opacity: .55; filter: saturate(.6); cursor: default; pointer-events: none; }
+.screen--orange .eq-catalog-panel { --acc-light: #FFD9B0; --acc-mid: #FFA85C; --acc-dark: #D2701A; --acc-text: #5E2E00; }
+
+/* ===== Tuto des ions ===== */
+.ion-text { text-align: center; font-weight: 700; font-size: 1.02rem; line-height: 1.5; margin: 0 auto 8px; max-width: 46ch; }
+.ion-instruction { text-align: center; font-weight: 800; font-size: 1.08rem; line-height: 1.45; margin: 0 auto 6px; max-width: 46ch; }
+.ion-tip { text-align: center; color: var(--ink-soft); font-size: .88rem; font-weight: 700; margin: 0 0 8px; min-height: 0; }
+.ion-tip:empty { display: none; }
+#ionc-main .atom-cell--target { margin-bottom: 12px; }
+#ionc-main .atom-cell--target[style*="none"] { display: none; }
+
+.ion-recap-card { background: #fff; border-radius: 28px; box-shadow: var(--shadow-card); padding: 24px 18px 18px; margin-top: 8px; }
+.ion-recap-title { font-family: var(--font-display); font-size: 1.7rem; text-align: center; margin: 0 0 12px; }
+.ion-recap-bold { text-align: center; font-weight: 800; font-size: 1.1rem; margin: 14px 0 12px; }
+.ion-cases { display: grid; grid-template-columns: 1fr 1fr; }
+.ion-case { padding: 4px 14px; text-align: center; }
+.ion-case p { margin: 0 0 14px; line-height: 1.5; font-weight: 700; }
+.ion-case--right { border-left: 2px dashed #9AA5B1; }
+.ion-examples { display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; font-family: var(--font-display); font-size: 2rem; font-weight: 600; }
+@media (max-width: 480px) {
+  .ion-cases { grid-template-columns: 1fr; }
+  .ion-case--right { border-left: none; border-top: 2px dashed #9AA5B1; margin-top: 12px; padding-top: 16px; }
+}
+
+/* ===== Questions sur les ions ===== */
+.ion-target-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 16px; margin-bottom: 10px; }
+.ion-target-row .atom-cell--target { margin: 0; }
+.ion-sentence { margin: 0; max-width: 26ch; font-weight: 800; font-size: 1rem; line-height: 1.45; }
+.ion-sentence:empty { display: none; }
+.atom-schema--static, .atom-schema--static .nucleon, .atom-schema--static .electron-dot { cursor: default; }
+
+.atom-cell--answer { width: 140px; min-height: 140px; padding-top: 26px; margin: 14px auto 10px; border-style: dashed; }
+.ion-symbol-input {
+  width: 2.4em; padding: 0; text-align: center; font-family: var(--font-display); font-size: 2.4rem; font-weight: 600;
+  color: var(--ink); background: transparent; border: none; border-bottom: 3px dashed var(--acc-mid); border-radius: 0;
+}
+.ion-symbol-input:focus { outline: none; border-bottom-color: var(--acc-dark); }
+.ion-charge-input {
+  position: absolute; top: 8px; right: 6px; width: 2.6em; height: 1.9em; padding: 0; text-align: center;
+  font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; color: var(--ink);
+  background: #fff; border: 2px dashed var(--acc-mid); border-radius: 8px; caret-color: transparent;
+}
+.ion-charge-input:focus { outline: none; border-color: var(--acc-dark); }
+.ion-keypad { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 320px; margin: 0 auto 8px; }
+.ion-key {
+  width: 54px; height: 44px; border: none; border-radius: 12px; cursor: pointer; background: #fff;
+  box-shadow: inset 0 0 0 2px var(--acc-mid); font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; color: var(--ink);
+}
+.ion-key:active { background: var(--acc-light); }
+.ion-key--pos { color: #D9463B; } .ion-key--neg { color: #1F3FA8; }
+
+.ion-built { text-align: center; }
+.ion-built:empty { display: none; }
+.ion-built-caption { margin: 10px 0 8px; font-weight: 800; color: var(--ink-soft); font-size: .95rem; }
+
+/* ===== Tableau périodique compact ===== */
+.atom-picker-panel--table { width: min(100%, 740px); }
+.pt-scroll { overflow-x: auto; padding-bottom: 4px; }
+.pt-grid { --pt-cell: 36px; display: grid; grid-template-columns: repeat(18, var(--pt-cell)); grid-auto-rows: var(--pt-cell); gap: 2px; width: max-content; margin: 0 auto; }
+.pt-cell {
+  position: relative; display: flex; align-items: center; justify-content: center; background: #fff;
+  border: 1.5px solid rgba(46,58,70,.15); border-radius: 6px; user-select: none; -webkit-user-select: none;
+}
+.pt-cell--noble { background: #EAF7F6; }
+.pt-cell--click { cursor: pointer; }
+.pt-cell--click:hover { border-color: var(--acc-mid); background: var(--acc-light); }
+.pt-sym { font-family: var(--font-display); font-size: .85rem; font-weight: 600; line-height: 1; }
+.pt-mass, .pt-z { position: absolute; left: 2px; font-size: .56rem; font-weight: 800; line-height: 1; }
+.pt-mass { top: 2px; color: var(--ink-soft); }
+.pt-z { bottom: 2px; color: var(--acc-dark); }

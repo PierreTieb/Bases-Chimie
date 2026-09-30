@@ -22,25 +22,23 @@
     return el ? (el.mass - el.z) : null;
   }
 
-  function cellHTML(el) {
+  // Charge en exposant : "+", "2\u2212"... (rouge si positive, bleu fonce si negative)
+  function chargeSup(charge) {
+    if (!charge) return '';
+    var n = Math.abs(charge);
+    return '<sup class="ion-charge ' + (charge > 0 ? 'ion-pos' : 'ion-neg') + '">' +
+      (n > 1 ? n : '') + (charge > 0 ? '+' : '\u2212') + '</sup>';
+  }
+
+  function cellHTML(el, charge) {
     return '<span class="element-mass">' + el.mass + '</span>' +
       '<span class="element-number">' + el.z + '</span>' +
-      '<span class="element-symbol">' + el.symbol + '</span>' +
+      '<span class="element-symbol">' + el.symbol + chargeSup(charge) + '</span>' +
       '<span class="element-name">' + el.name + '</span>';
   }
 
   function renderPickerGrid(gridEl, onPick, maxZ) {
-    var html = '';
-    window.Units.getAll().forEach(function (el) {
-      if (maxZ && el.z > maxZ) return;
-      html += '<div class="element-cell" data-z="' + el.z + '">' + cellHTML(el) + '</div>';
-    });
-    gridEl.innerHTML = html;
-    gridEl.querySelectorAll('.element-cell').forEach(function (cell) {
-      cell.addEventListener('click', function () {
-        onPick(parseInt(cell.getAttribute('data-z'), 10));
-      });
-    });
+    window.PeriodicTable.renderPicker(gridEl, onPick, maxZ, { row4: !maxZ });
   }
 
   // ---------- Noyau : protons et neutrons ----------
@@ -148,6 +146,7 @@
     var showHelpers = config.showHelpers !== false;
 
     var nextRemoveProton = true;
+    var neutralVisible = true;
 
     // "Instable" = ne correspond à aucun atome du tableau (Z, A) : le noyau tremble.
     function isUnstable() {
@@ -166,6 +165,7 @@
       var msg = config.neutralMsgEl;
       if (!msg) return;
       msg.classList.remove('atom-neutral-msg--pos', 'atom-neutral-msg--neg', 'atom-neutral-msg--ok');
+      if (!neutralVisible) { msg.textContent = ''; return; }
       var diff = electrons - protons;
       if (protons === 0 && electrons === 0) {
         msg.textContent = '';
@@ -226,6 +226,9 @@
       render();
     }
 
+    function setCounts(p, n, e) { protons = p; neutrons = n; electrons = e; render(); }
+    function setNeutralVisible(v) { neutralVisible = !!v; render(); }
+
     function removeNucleon() {
       if (protons + neutrons === 0) return;
       var t = nextRemoveProton ? 'p' : 'n';
@@ -263,6 +266,8 @@
       add: add,
       reset: reset,
       setFromElement: setFromElement,
+      setCounts: setCounts,
+      setNeutralVisible: setNeutralVisible,
       getCounts: function () { return { protons: protons, neutrons: neutrons, electrons: electrons }; }
     };
   }
@@ -299,6 +304,7 @@
       document.getElementById('btn-atom-clear').addEventListener('click', function () { atomCtrl.reset(); });
 
       var overlay = document.getElementById('atom-picker-overlay');
+      window.PeriodicTable.wireOverlay(overlay);
       var grid = document.getElementById('atom-picker-grid');
       document.getElementById('btn-atom-select').addEventListener('click', function () {
         renderPickerGrid(grid, function (z) {
@@ -431,6 +437,7 @@
       document.getElementById('btn-atx-add-electron').addEventListener('click', function () { atomCtrl.add('electron'); });
       document.getElementById('btn-atx-clear').addEventListener('click', function () { atomCtrl.reset(); });
 
+      window.PeriodicTable.wireOverlay(els.pickerOverlay);
       document.getElementById('btn-atx-open-picker').addEventListener('click', function () {
         renderPickerGrid(document.getElementById('atx-picker-grid'), function (z) {
           els.identifyPicked.dataset.z = String(z);
@@ -453,4 +460,13 @@
     document.addEventListener('DOMContentLoaded', init);
     return { getScore: function () { return { correct: score.correct, total: score.total }; } };
   })();
+
+  // Briques partagees avec le mode Ions (ions-app.js)
+  window.AtomKit = {
+    createAtomController: createAtomController,
+    renderNucleus: renderNucleus,
+    renderElectrons: renderElectrons,
+    cellHTML: cellHTML,
+    chargeSup: chargeSup
+  };
 })();

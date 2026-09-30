@@ -14,7 +14,12 @@ window.App = (function () {
     'screen-expert': 'red',
     'screen-balance': 'purple',
     'screen-atom-cours': 'green',
-    'screen-atom-exercice': 'green'
+    'screen-atom-exercice': 'green',
+    'screen-ion-cours': 'orange',
+    'screen-ion-exercice': 'orange',
+    'screen-atom-challenge': 'home',
+    'screen-atom-ch1': 'green',
+    'screen-atom-ch2': 'orange'
   };
 
   function showScreen(id) {
