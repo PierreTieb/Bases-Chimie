@@ -151,7 +151,13 @@
       searchInput.value = '';
       renderList('');
     });
-    closeBtn.addEventListener('click', function () { overlay.style.display = 'none'; });
+    function closeCatalog() { overlay.style.display = 'none'; }
+    closeBtn.addEventListener('click', closeCatalog);
+    // Un clic/toucher sur le fond sombre (en dehors du panneau) ferme le catalogue, où qu'on soit dans la liste.
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) closeCatalog(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && overlay.style.display !== 'none') closeCatalog();
+    });
     searchInput.addEventListener('input', function () { renderList(searchInput.value); });
   }
 
@@ -224,16 +230,29 @@
     }
 
     function onValidateFormulas() {
-      var inputs = els.equation.querySelectorAll('.eq-blank');
+      var inputs = Array.prototype.slice.call(els.equation.querySelectorAll('.eq-blank'));
       var allOk = true;
-      inputs.forEach(function (inp) {
-        var idx = parseInt(inp.getAttribute('data-idx'), 10);
-        var expected = window.Molecules.parseFormulaInput(reaction.substances[idx].formula);
-        var got = window.Molecules.parseFormulaInput(inp.value);
-        var ok = countsEqual(got, expected);
-        inp.classList.remove('eq-blank--ok', 'eq-blank--bad');
-        inp.classList.add(ok ? 'eq-blank--ok' : 'eq-blank--bad');
-        if (!ok) allOk = false;
+      // L'ordre n'a pas d'importance à l'intérieur des réactifs ni des produits : chaque case est
+      // comparée aux substances attendues de son camp, et une substance ne peut être "prise" qu'une fois.
+      ['reactif', 'produit'].forEach(function (type) {
+        var group = inputs.filter(function (inp) {
+          return reaction.substances[parseInt(inp.getAttribute('data-idx'), 10)].type === type;
+        });
+        var expected = reaction.substances.filter(function (s) { return s.type === type; })
+          .map(function (s) { return window.Molecules.parseFormulaInput(s.formula); });
+        var claimed = expected.map(function () { return false; });
+        group.forEach(function (inp) {
+          var got = window.Molecules.parseFormulaInput(inp.value);
+          var matchAt = -1;
+          if (got) {
+            for (var i = 0; i < expected.length; i++) {
+              if (!claimed[i] && countsEqual(got, expected[i])) { matchAt = i; break; }
+            }
+          }
+          if (matchAt !== -1) claimed[matchAt] = true; else allOk = false;
+          inp.classList.remove('eq-blank--ok', 'eq-blank--bad');
+          inp.classList.add(matchAt !== -1 ? 'eq-blank--ok' : 'eq-blank--bad');
+        });
       });
       if (allOk) {
         els.feedback.textContent = "Bravo, l'équation est complète !";
