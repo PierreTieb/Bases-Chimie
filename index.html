@@ -107,9 +107,9 @@
         <span class="mode-btn__title">Exerce-toi avec les ions</span>
         <span class="mode-btn__subtitle">Construis ou identifie l'ion demandé</span>
       </button>
-      <button type="button" class="mode-btn mode-btn--g5 mode-btn--locked-soft" aria-disabled="true" tabindex="-1">
+      <button type="button" id="btn-lab-nav" class="mode-btn mode-btn--g5">
         <span class="mode-btn__title">Identifier les ions</span>
-        <span class="mode-btn__subtitle">Disponible prochainement</span>
+        <span class="mode-btn__subtitle">Soude, nitrate d'argent et flamme</span>
       </button>
     </div>
 
@@ -505,6 +505,10 @@
   <section id="screen-atom-ch1" class="screen screen--sandbox screen--yellow"></section>
   <section id="screen-atom-ch2" class="screen screen--sandbox screen--orange"></section>
 
+  <!-- ÉCRANS : LABO D'IDENTIFICATION DES IONS (contenu généré par lab-app.js) -->
+  <section id="screen-lab" class="screen screen--sandbox screen--g5"></section>
+  <section id="screen-lab-test" class="screen screen--sandbox screen--g5"></section>
+
   <canvas id="confetti-canvas"></canvas>
 
   <script src="js/units.js"></script>
@@ -523,6 +527,7 @@
   <script src="js/periodic-table.js"></script>
   <script src="js/atoms-app.js"></script>
   <script src="js/ions-app.js"></script>
+  <script src="js/lab-app.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

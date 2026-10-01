@@ -17,6 +17,8 @@ window.App = (function () {
     'screen-atom-exercice': 'g2',
     'screen-ion-cours': 'g3',
     'screen-ion-exercice': 'g4',
+    'screen-lab': 'g5',
+    'screen-lab-test': 'g5',
     'screen-atom-challenge': 'home',
     'screen-atom-ch1': 'yellow',
     'screen-atom-ch2': 'orange'
