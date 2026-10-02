@@ -227,6 +227,7 @@
 
     function setCounts(p, n, e) { protons = p; neutrons = n; electrons = e; render(); }
     function setNeutralVisible(v) { neutralVisible = !!v; render(); }
+    function setShake(v) { showHelpers = !!v; render(); }
 
     function removeNucleon() {
       if (protons + neutrons === 0) return;
@@ -267,6 +268,7 @@
       setFromElement: setFromElement,
       setCounts: setCounts,
       setNeutralVisible: setNeutralVisible,
+      setShake: setShake,
       getCounts: function () { return { protons: protons, neutrons: neutrons, electrons: electrons }; }
     };
   }

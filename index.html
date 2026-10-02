@@ -494,9 +494,9 @@
         <span class="mode-btn__title">Les ions</span>
         <span class="mode-btn__level">Niveau 2</span>
       </button>
-      <button type="button" class="mode-btn mode-btn--red mode-btn--trophy mode-btn--locked" aria-disabled="true" tabindex="-1">
+      <button type="button" id="btn-ach-lvl3" class="mode-btn mode-btn--red mode-btn--trophy">
         <span class="mode-btn__title">Mode Expert</span>
-        <span class="mode-btn__level">Niveau 3 · Disponible prochainement</span>
+        <span class="mode-btn__level">Niveau 3</span>
         <span class="mode-btn__trophy" aria-hidden="true">🏆</span>
       </button>
     </div>
@@ -508,6 +508,23 @@
   <!-- ÉCRANS : LABO D'IDENTIFICATION DES IONS (contenu généré par lab-app.js) -->
   <section id="screen-lab" class="screen screen--sandbox screen--g5"></section>
   <section id="screen-lab-test" class="screen screen--sandbox screen--g5"></section>
+
+  <!-- ÉCRANS : MODE EXPERT DES ATOMES ET IONS (questions générées par ions-app.js / lab-app.js) -->
+  <section id="screen-atom-expert-q" class="screen screen--sandbox screen--red"></section>
+  <section id="screen-atom-expert-lab" class="screen screen--sandbox screen--red"></section>
+  <section id="screen-atom-expert-recap" class="screen screen--red">
+    <h1 class="app-title app-title--small">Mode Expert</h1>
+    <div class="exp-recap-card">
+      <div class="exp-trophy" id="aer-trophy">🏆</div>
+      <div class="exp-final" id="aer-final"></div>
+      <div class="exp-time" id="aer-time"></div>
+      <p class="exp-message" id="aer-message"></p>
+      <div class="ex-actions">
+        <button type="button" class="btn-primary btn-primary--alt" id="aer-train" style="display:none;">S'entraîner</button>
+        <button type="button" class="btn-primary" id="aer-replay">Rejouer</button>
+      </div>
+    </div>
+  </section>
 
   <canvas id="confetti-canvas"></canvas>
 
@@ -528,6 +545,7 @@
   <script src="js/atoms-app.js"></script>
   <script src="js/ions-app.js"></script>
   <script src="js/lab-app.js"></script>
+  <script src="js/atom-expert.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

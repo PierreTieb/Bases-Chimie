@@ -150,7 +150,7 @@
     var root = null, els = {};
     var ion = null, precip = null, busy = false, lit = false;
     var timers = [], flameTimer = null;
-    var unknown = null, lastUnknown = null, chosen = null, found = false;
+    var unknown = null, lastUnknown = null, chosen = null, found = false, failed = false;
 
     function later(ms, fn) { timers.push(setTimeout(fn, ms)); }
     function clearTimers() { timers.forEach(clearTimeout); timers = []; clearTimeout(flameTimer); }
@@ -167,13 +167,15 @@
       var bottom = free
         ? '<div class="ex-actions"><button type="button" class="btn-primary" id="' + p + '-totest">Faire des tests</button></div>'
         : '<div class="ex-actions"><button type="button" class="btn-secondary" id="' + p + '-choose">Quel ion est dans le tube ?</button>' +
-          '<button type="button" class="btn-primary" id="' + p + '-validate" disabled>Valider</button></div>' +
-          '<div class="ex-actions"><button type="button" class="btn-secondary lab-mini" id="' + p + '-tolab">Retourner au labo</button></div>';
+          '<button type="button" class="btn-primary" id="' + p + '-validate" disabled>Valider</button>' +
+          (cfg.expert ? '<button type="button" class="btn-primary btn-primary--alt" id="' + p + '-other" style="display:none">Autre échantillon</button>' : '') + '</div>' +
+          (cfg.expert ? '' : '<div class="ex-actions"><button type="button" class="btn-secondary lab-mini" id="' + p + '-tolab">Retourner au labo</button></div>');
       var grid = IONS.map(function (i) {
         return '<button type="button" class="lab-ion-btn" data-k="' + i.key + '">' + ionHTML(i) + '</button>';
       }).join('');
       return '<button type="button" class="btn-back" id="' + p + '-back">← Retour</button>' +
         '<h1 class="app-title app-title--small">' + cfg.title + '</h1>' +
+        (cfg.expert ? '<p class="exp-progress" id="' + p + '-progress"></p>' : '') +
         '<p class="app-subtitle lab-intro">' + cfg.intro + '</p>' +
         (free ? '<div class="ex-actions"><button type="button" class="btn-secondary" id="' + p + '-select">Sélectionner un ion</button></div>' : '') +
         '<div class="lab-board"><div class="lab-scene">' + sceneSVG(p) + '</div></div>' +
@@ -344,22 +346,41 @@
       var pool = IONS.filter(function (i) { return i.key !== lastUnknown; });
       unknown = pool[Math.floor(Math.random() * pool.length)];
       lastUnknown = unknown.key;
-      chosen = null; found = false;
+      chosen = null; found = false; failed = false;
+      if (els.other) els.other.style.display = 'none';
       els.choose.innerHTML = 'Quel ion est dans le tube ?';
       els.validate.textContent = 'Valider';
       els.validate.disabled = true;
       showTube(unknown);
       say('', '');
     }
+    // Al3+ et Zn2+ donnent exactement les mêmes résultats : les deux réponses sont acceptées.
+    function isAZ(i) { return i.key === 'Al3+' || i.key === 'Zn2+'; }
     function onValidate() {
-      if (found) { newUnknown(); return; }
+      if (found) {
+        if (cfg.expert) { if (cfg.expert.onNext) cfg.expert.onNext(); } else newUnknown();
+        return;
+      }
       if (!chosen || busy) return;
-      if (chosen.key === unknown.key) {
+      var ok = chosen.key === unknown.key || (isAZ(chosen) && isAZ(unknown));
+      if (ok) {
         found = true;
-        say("Bravo, c'est bien l'ion " + ionHTML(unknown) + ' qui est dans le tube !', 'success');
+        if (isAZ(unknown)) {
+          say('Bravo ! Avec ces tests, ' + ionHTML(byKey('Al3+')) + ' et ' + ionHTML(byKey('Zn2+')) +
+            " sont impossibles à distinguer. Ici, c'était " + ionHTML(unknown) + '.', 'success');
+        } else {
+          say("Bravo, c'est bien l'ion " + ionHTML(unknown) + ' qui est dans le tube !', 'success');
+        }
         confetti(els.validate);
         els.validate.textContent = 'Ion suivant';
+        if (cfg.expert) {
+          els.validate.textContent = cfg.expert.nextLabel || 'Voir mon score';
+          if (els.other) els.other.style.display = 'none';
+          if (cfg.expert.onSolved) cfg.expert.onSolved(!failed);
+        }
       } else {
+        failed = true;
+        if (els.other) els.other.style.display = '';
         say("Ce n'est pas cet ion qui est dans le tube, refais des tests avec cet échantillon et compare au tableau de données.", 'error');
       }
     }
@@ -395,7 +416,7 @@
         feedback: g('feedback'), tube: g('tube'), label: g('label'), cloud: g('cloud'), blob: g('blob'),
         flNaoh: g('fl-naoh'), flAg: g('fl-ag'), flame: g('flame'), fout: g('fout'), drop: g('drop'),
         empty: g('empty'), off: g('off'), pick: g('pick'), dataov: g('dataov'),
-        select: g('select'), choose: g('choose'), validate: g('validate')
+        select: g('select'), choose: g('choose'), validate: g('validate'), other: g('other'), progress: g('progress')
       };
       g('fl-naoh').addEventListener('click', function () { pour('naoh'); });
       g('fl-ag').addEventListener('click', function () { pour('ag'); });
@@ -417,16 +438,21 @@
       } else {
         els.choose.addEventListener('click', openPick);
         els.validate.addEventListener('click', onValidate);
-        g('tolab').addEventListener('click', function () { clearTimers(); window.App.showScreen('screen-lab'); window.Lab.free.start(); });
+        if (els.other) els.other.addEventListener('click', function () { if (!busy) newUnknown(); });
+        if (g('tolab')) g('tolab').addEventListener('click', function () { clearTimers(); window.App.showScreen('screen-lab'); window.Lab.free.start(); });
       }
-      g('back').addEventListener('click', function () { clearTimers(); window.App.showScreen('screen-mode2'); });
+      g('back').addEventListener('click', function () { clearTimers(); window.App.showScreen(cfg.backTo || 'screen-mode2'); });
       hideTube();
       move(els.flNaoh, FL_REST.naoh[0], FL_REST.naoh[1]);
       move(els.flAg, FL_REST.ag[0], FL_REST.ag[1]);
     }
 
     document.addEventListener('DOMContentLoaded', init);
-    return { start: start };
+    return {
+      start: start,
+      setProgress: function (t) { if (els.progress) els.progress.textContent = t; },
+      hooks: cfg.expert || null
+    };
   }
 
   var free = createLab({
@@ -437,7 +463,11 @@
     sectionId: 'screen-lab-test', prefix: 'lt', mode: 'test', title: 'Faire des tests',
     intro: "Un ion inconnu se trouve dans le tube : fais des tests pour l'identifier."
   });
-  window.Lab = { free: free, test: test };
+  var expert = createLab({
+    sectionId: 'screen-atom-expert-lab', prefix: 'axl', mode: 'test', title: 'Mode Expert', backTo: 'screen-atom-challenge', expert: {},
+    intro: "Un ion inconnu se trouve dans le tube : fais des tests pour l'identifier."
+  });
+  window.Lab = { free: free, test: test, expert: expert };
 
   document.addEventListener('DOMContentLoaded', function () {
     var b = $('btn-lab-nav');

@@ -185,12 +185,13 @@
   // ============================================================
   function createQuiz(cfg) {
     var p = cfg.prefix, root = null, els = {}, ctrl = null;
+    var ions = !!cfg.ions, curPool = cfg.pool, forced = null, failed = false;   // forced : question imposée (mode Expert)
     var item = null, type = null, lastType = null, lastKey = null;
     var score = { correct: 0, total: 0 };
     var solved = false, revealing = false, timer = null;
 
     function tpl() {
-      var ions = cfg.ions;
+      var ions = cfg.ions || !!cfg.expert;
       return '' +
         '<button type="button" class="btn-back" id="' + p + '-back">← Retour</button>' +
         '<h1 class="app-title app-title--small">' + cfg.title + '</h1>' +
@@ -253,11 +254,18 @@
     function next() {
       clearTimeout(timer);
       solved = false; revealing = false;
-      type = lastType ? (lastType === 'construct' ? 'identify' : 'construct') : (Math.random() < 0.5 ? 'construct' : 'identify');
+      failed = false;
+      if (forced) {
+        type = forced.type; ions = forced.ions; curPool = forced.pool;
+        ctrl.setShake(forced.shake);
+      } else {
+        type = lastType ? (lastType === 'construct' ? 'identify' : 'construct') : (Math.random() < 0.5 ? 'construct' : 'identify');
+      }
       lastType = type;
-      item = pickNew(cfg.pool, lastKey);
+      item = pickNew(curPool, lastKey);
       lastKey = keyOf(item);
       var x = expected(item);
+      if (els.chg) { show(els.chg, ions); show(els.keypad, ions); }
 
       setFeedback('', ''); clearBuilt();
       els.ptover.style.display = 'none';
@@ -266,7 +274,7 @@
       show(els.skip, !!cfg.skipAlways);
 
       if (type === 'construct') {
-        els.instr.textContent = cfg.ions ? "Construis l'ion suivant :" : "Construis l'atome suivant :";
+        els.instr.textContent = ions ? "Construis l'ion suivant :" : "Construis l'atome suivant :";
         show(els.build, true); show(els.identify, false);
         els.target.innerHTML = K.cellHTML(x.el, item.charge);
         els.sentence.innerHTML = (cfg.sentence && item.charge)
@@ -274,7 +282,7 @@
         ctrl.reset();
         clearBuilt();
       } else {
-        els.instr.textContent = cfg.ions ? "Quel est cet ion ? Écris son symbole et sa charge." : 'Quel est cet atome ? Écris son symbole.';
+        els.instr.textContent = ions ? "Quel est cet ion ? Écris son symbole et sa charge." : 'Quel est cet atome ? Écris son symbole.';
         show(els.build, false); show(els.identify, true);
         K.renderNucleus(els.inuc, x.p, x.n);
         K.renderElectrons(els.iel, x.e);
@@ -350,7 +358,7 @@
         }
       } else {
         var el = U.getBySymbol(els.sym.value);
-        var ch = els.chg ? parseCharge(els.chg.value) : { ok: true, value: 0 };
+        var ch = (ions && els.chg) ? parseCharge(els.chg.value) : { ok: true, value: 0 };
         ok = !!el && el.z === item.z && ch.ok && ch.value === item.charge;
         if (!ok) {
           if (cfg.atomFeedback) msg = atomIdentifyMsg(item);
@@ -369,7 +377,7 @@
           var lbl = "l'atome " + deName(x.el) + ' (' + x.el.symbol + ')';
           if (type === 'identify') setFeedback('Il s\'agit bien de ' + lbl + ' car il a bien ' + x.p + ' proton' + (x.p > 1 ? 's' : '') + '.', 'success');
           else setFeedback('Bravo, tu as construit ' + lbl + ' !', 'success');
-        } else if (!cfg.ions) setFeedback('Bravo, bonne réponse !', 'success');
+        } else if (!ions) setFeedback('Bravo, bonne réponse !', 'success');
         else if (type === 'construct') setFeedback("Bravo, tu as construit l'ion " + ionHTML(x.el, item.charge) + ' !', 'success');
         else setFeedback("Bravo, c'est bien l'ion " + ionHTML(x.el, item.charge) + " : l'atome " + deName(x.el) +
           ' qui a ' + changeHTML(item.charge) + '.', 'success');
@@ -378,14 +386,24 @@
         if (els.sym) els.sym.disabled = true;
         els.skip.textContent = 'Question suivante';
         show(els.skip, true, 'inline-block');
+        if (cfg.expert) {
+          els.skip.textContent = cfg.expert.nextLabel || 'Question suivante';
+          if (cfg.expert.onSolved) cfg.expert.onSolved(!failed);
+        }
       } else {
+        failed = true;
         setFeedback(msg, 'error');
+        if (cfg.expert) els.skip.textContent = 'Autre question';
         show(els.skip, true, 'inline-block');
       }
     }
 
     function onSkip() {
       if (revealing) return;
+      if (cfg.expert) {                          // Expert : pas de solution, seulement une autre question du même type
+        if (solved) { if (cfg.expert.onNext) cfg.expert.onNext(); } else next();
+        return;
+      }
       if (solved) { next(); return; }
       revealing = true;
       score.total++; updateScore();
@@ -400,7 +418,7 @@
           paintCharge();
         }
       }
-      setFeedback('Voici la bonne réponse : ' + (cfg.ions ? ionHTML(x.el, item.charge) : x.el.symbol) + '.', 'reveal');
+      setFeedback('Voici la bonne réponse : ' + (ions ? ionHTML(x.el, item.charge) : x.el.symbol) + '.', 'reveal');
       timer = setTimeout(next, 3000);
     }
 
@@ -412,7 +430,7 @@
       els = {
         score: g('score'), instr: g('instruction'), build: g('build'), identify: g('identify'),
         target: g('target'), sentence: g('sentence'), inuc: g('inucleus'), iel: g('ielectrons'),
-        sym: g('sym'), chg: g('chg'), amass: g('amass'), az: g('az'), built: g('built'),
+        sym: g('sym'), chg: g('chg'), keypad: g('keypad'), amass: g('amass'), az: g('az'), built: g('built'),
         feedback: g('feedback'), validate: g('validate'), skip: g('skip'), ptover: g('ptover')
       };
 
@@ -456,7 +474,12 @@
     }
 
     document.addEventListener('DOMContentLoaded', init);
-    return { start: function () { if (root) next(); } };
+    return {
+      start: function () { if (root) next(); },
+      startExpert: function (spec) { if (root) { forced = spec; lastType = null; next(); } },
+      setTop: function (t) { if (els.score) els.score.textContent = t; },
+      hooks: cfg.expert || null
+    };
   }
 
   var ionEx = createQuiz({
@@ -466,6 +489,10 @@
   var atomEx = createQuiz({
     sectionId: 'screen-atom-exercice', prefix: 'atx', title: "S'exercer avec les atomes", backTo: 'screen-mode2',
     pool: ATOMS, ions: false, shake: true, detailed: false, atomFeedback: true, sentence: false, skipAlways: false
+  });
+  var expertQuiz = createQuiz({
+    sectionId: 'screen-atom-expert-q', prefix: 'axq', title: 'Mode Expert', backTo: 'screen-atom-challenge',
+    pool: ATOMS, ions: false, shake: false, detailed: false, sentence: false, skipAlways: false, expert: {}
   });
   var ch1 = createQuiz({
     sectionId: 'screen-atom-ch1', prefix: 'ch1', title: 'Challenge : atomes neutres', backTo: 'screen-atom-challenge',
@@ -492,5 +519,5 @@
     go('btn-back-to-mode2-ch', 'screen-mode2');
   });
 
-  window.Ions = { atomExercice: atomEx, cours: IonCours, exercice: ionEx, challenge1: ch1, challenge2: ch2 };
+  window.Ions = { expert: expertQuiz, pools: { atoms: ATOMS, ions: CH2_IONS }, atomExercice: atomEx, cours: IonCours, exercice: ionEx, challenge1: ch1, challenge2: ch2 };
 })();
