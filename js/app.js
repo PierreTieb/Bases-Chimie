@@ -65,7 +65,12 @@ window.App = (function () {
     var btnTemp = document.getElementById('btn-temp-nav');
     if (btnTemp) btnTemp.addEventListener('click', function () {
       showScreen('screen-temp');
-      if (window.TempLab) window.TempLab.start();
+      if (window.TempLab) window.TempLab.start('free');
+    });
+    var btnExp = document.getElementById('btn-exp-nav');
+    if (btnExp) btnExp.addEventListener('click', function () {
+      showScreen('screen-temp');
+      if (window.TempLab) window.TempLab.start('exp');
     });
     var btnBackTemp = document.getElementById('btn-back-to-mode3-tp');
     if (btnBackTemp) btnBackTemp.addEventListener('click', function () {
@@ -120,6 +125,8 @@ window.App = (function () {
     });
   }
 
+  // Pas de zoom par double clic / double tap, dans toute l'appli.
+  document.addEventListener('dblclick', function (e) { e.preventDefault(); }, { passive: false });
   document.addEventListener('DOMContentLoaded', init);
 
   return { showScreen: showScreen };

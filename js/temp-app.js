@@ -3,26 +3,32 @@
 window.TempLab = (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
-  var NS = 'http://www.w3.org/2000/svg', N = 96, TMIN = -100, TMAX = 200, TR_TIME = 5;
+  var NS = 'http://www.w3.org/2000/svg', N = 96, TMIN = -100, TMAX = 200, LO = -273.15, HI = 500, SPEED = .4, TR_TIME = 5;
   // tr[0] = fusion/solidification, tr[1] = vaporisation/liquéfaction : [T début, T fin] (palier si égaux), null = hors plage
   var FAM = [
     { t: 'Corps purs', l: [
-      { n: 'Eau', ph: 1, tr: [[0, 0], [100, 100]], liq: '#6FC0EC', sol: '#D4F0FF' },
-      { n: 'Acétone', ph: 1, tr: [[-95, -95], [56, 56]], liq: '#CFE6F2', sol: '#E6F4FB' },
-      { n: 'Éthanol', ph: 1, tr: [null, [78, 78]], liq: '#D3E8F2', sol: '#E6F4FB' },
-      { n: 'Cyclohexane', ph: 1, tr: [[6.5, 6.5], [81, 81]], liq: '#DCEAEE', sol: '#F4FAFB' },
-      { n: 'Acide éthanoïque pur', ph: 1, tr: [[16.6, 16.6], [118, 118]], liq: '#E6F0DF', sol: '#F5FAF2' },
-      { n: 'Mercure', ph: 1, tr: [[-39, -39], null], liq: '#A9B2BA', sol: '#C9D0D6', atom: 1 },
-      { n: 'Gallium', ph: 0, tr: [[30, 30], null], liq: '#B4BEC6', sol: '#D2D8DD', atom: 1 },
-      { n: 'Acide stéarique', ph: 0, tr: [[69, 69], null], liq: '#F2E3A8', sol: '#FBF7EC' }] },
+      { n: 'Eau', ph: 1, tr: [[0, 0], [100, 100]], tf: 0, te: 100, liq: '#6FC0EC', sol: '#D4F0FF' },
+      { n: 'Acétone', ph: 1, tr: [[-95, -95], [56, 56]], tf: -95, te: 56, liq: '#CFE6F2', sol: '#E6F4FB' },
+      { n: 'Éthanol', ph: 1, tr: [null, [78, 78]], tf: -114, te: 78, liq: '#D3E8F2', sol: '#E6F4FB' },
+      { n: 'Cyclohexane', ph: 1, tr: [[6.5, 6.5], [81, 81]], tf: 6.5, te: 81, liq: '#DCEAEE', sol: '#F4FAFB' },
+      { n: 'Acide éthanoïque pur', ph: 1, tr: [[16.6, 16.6], [118, 118]], tf: 16.6, te: 118, liq: '#E6F0DF', sol: '#F5FAF2' },
+      { n: 'Mercure', ph: 1, tr: [[-39, -39], [357, 357]], tf: -39, te: 357, liq: '#A9B2BA', sol: '#C9D0D6', atom: 1 },
+      { n: 'Gallium', ph: 0, tr: [[30, 30], null], tf: 30, te: 2400, liq: '#B4BEC6', sol: '#D2D8DD', atom: 1 },
+      { n: 'Naphtalène', ph: 0, tr: [[80, 80], [218, 218]], tf: 80, te: 218, liq: '#EFE9D6', sol: '#F5F2E9' },
+      { n: 'Sucre (saccharose)', ph: 0, tr: [[186, 186], null], tf: 186, te: null, liq: '#E9C98A', sol: '#FDFDFB' },
+      { n: 'Étain', ph: 0, tr: [[232, 232], null], tf: 232, te: 2602, liq: '#B8BEC4', sol: '#C9CED3', atom: 1 },
+      { n: 'Nitrate de sodium', ph: 0, tr: [[308, 308], null], tf: 308, te: null, liq: '#E8EEF0', sol: '#F4F4F2', ent: 1 },
+      { n: 'Hydroxyde de sodium (soude)', ph: 0, tr: [[323, 323], null], tf: 323, te: 1388, liq: '#E6EDEF', sol: '#F2F2F0', ent: 1 },
+      { n: 'Nitrate de potassium', ph: 0, tr: [[334, 334], null], tf: 334, te: null, liq: '#E8EEF0', sol: '#F6F6F4', ent: 1 }] },
     { t: 'Mélanges', l: [
-      { n: 'Eau de mer', ph: 1, mix: .08, tr: [[-5, -2], [100.6, 103]], liq: '#4F9FCF', sol: '#CFE6F2' },
       { n: 'Eau salée (20 %)', ph: 1, mix: .2, tr: [[-19, -16], [108, 111]], liq: '#6FAFCB', sol: '#DDEEF5' },
       { n: 'Éthanol-eau (40 %)', ph: 1, mix: .35, tr: [[-35, -27], [82, 95]], liq: '#CFE6F2', sol: '#E6F4FB' },
       { n: 'Liquide de refroidissement', ph: 1, mix: .4, tr: [[-45, -37], [107, 125]], liq: '#6FD9A8', sol: '#D5F3E4' },
-      { n: 'Cire de bougie (paraffine)', ph: 0, mix: .3, tr: [[50, 60], null], liq: '#F5E7B5', sol: '#F7F2E4' }] }
+      { n: 'Cire de bougie (paraffine)', ph: 0, mix: .3, tr: [[50, 60], null], liq: '#F5E7B5', sol: '#F7F2E4' },
+      { n: 'Soudure étain-plomb', ph: 0, mix: .4, tr: [[183, 190], null], liq: '#B0B5BA', sol: '#C3C7CB', atom: 1 }] }
   ];
-  var S = {}, P = [], SLOTS = [], els = {}, raf = null, lastT = 0, micro = false, ax = { x: 10, y0: 0, y1: 50 };
+  var ALL = FAM[0].l.concat(FAM[1].l);
+  var mode = 'free', locked = false, X = {}, S = {}, P = [], SLOTS = [], els = {}, raf = null, lastT = 0, micro = false, ax = { x: 10, y0: 0, y1: 50 };
 
   (function () {                                       // bloc de 96 : pavage haut/bas, comme dans le mode précédent
     var s = 8.3, h = s * .866, px = s / 2 + .3, py = h + .4;
@@ -56,10 +62,6 @@ window.TempLab = (function () {
       '<g id="tp-flame" style="opacity:0"><g id="tp-flg">' +
       '<path class="st-f f1" d="M132 240c-8-8-7-18 0-30 7 12 8 22 0 30z" fill="url(#tp-fg)"/><path class="st-f f2" d="M150 240c-10-10-9-24 0-42 9 18 10 32 0 42z" fill="url(#tp-fg)"/>' +
       '<path class="st-f f3" d="M168 240c-8-8-7-18 0-30 7 12 8 22 0 30z" fill="url(#tp-fg)"/><path class="st-f f4" d="M141 240c-4-5-3-10 0-17 3 7 4 12 0 17z" fill="#FFF3B0"/><path class="st-f f5" d="M159 240c-4-5-3-10 0-17 3 7 4 12 0 17z" fill="#FFF3B0"/></g></g>' +
-      '<path d="M178 272H226" stroke="#59656F" stroke-width="4" stroke-linecap="round"/>' +
-      '<g id="tp-knob" transform="translate(252 258)" style="cursor:grab;touch-action:none"><circle r="28" fill="#F4F5F7" stroke="#98A4B0" stroke-width="3"/>' +
-      '<path d="M0-20A20 20 0 0 1 0 20" fill="none" stroke="#E4574C" stroke-width="7"/><path d="M0-20A20 20 0 0 0 0 20" fill="none" stroke="#3F78D8" stroke-width="7"/>' +
-      '<g id="tp-needle"><path d="M-3.5 3h7L0-23z" fill="#2E3A46"/></g><circle r="5" fill="#2E3A46"/></g>' +
       '<rect x="92" y="38" width="116" height="146" fill="rgba(215,235,247,.35)"/>' +
       '<g clip-path="url(#tp-clip)"><g id="tp-water" class="tp-macro"><path d="M92 139q14-8 29 0t29 0 29 0 29 0V184H92z" id="tp-wp" opacity=".9"/><path d="M92 139q14-8 29 0t29 0 29 0 29 0" fill="none" stroke="#fff" stroke-width="2" opacity=".6"/></g>' +
       '<g id="tp-gas" class="tp-macro" filter="url(#tp-blur)">' + [[125,150,22,1],[170,130,26,2],[140,95,22,3],[180,168,18,4],[115,68,16,5],[165,70,20,6]].map(function (c) { return '<circle class="st-g g' + c[3] + '" cx="' + c[0] + '" cy="' + c[1] + '" r="' + c[2] + '" fill="url(#tp-gg)"/>'; }).join('') + '</g></g>' +
@@ -74,11 +76,10 @@ window.TempLab = (function () {
   // ---------- Expérience ----------
   function reset() {
     S = { sub: null, T: 20, ph: 1, inTr: -1, p: 0, entry: 0, idx: 0, k: 0, appr: null, t: 0, pts: [{ t: 0, T: 20 }], labs: [], ap: 1, minT: 20, maxT: 20 };
-    setKnob(0);
+    setSlider(.5);
     ax = { x: 10, y0: 0, y1: 50 };
     if (els.svg) { $('tp-water').style.display = $('tp-gas').style.display = $('tp-ice').style.display = $('tp-micro').style.display = 'none'; }
     els.read.textContent = 'Aucune substance dans le bécher';
-    els.legend.firstChild && (els.legendTxt.textContent = '');
   }
 
   function select(sub) {
@@ -93,7 +94,7 @@ window.TempLab = (function () {
       p.tri.style.display = p.b ? 'none' : ''; p.cir.style.display = p.b ? '' : 'none';
       p.x = 120 + Math.random() * 60; p.y = -10 - Math.random() * 130; p.vx = p.vy = 0; p.a = Math.random() * 360; p.m = -1;
     });
-    els.legendTxt.textContent = sub.mix ? 'Triangles et ronds : deux sortes d\'entités' : (sub.atom ? 'Un triangle : un atome' : 'Un triangle : une molécule');
+    els.legendTxt.textContent = sub.mix ? 'Triangles et ronds : deux sortes d\'entités' : 'Un triangle : ' + (sub.atom ? 'un atome' : (sub.ent ? 'une entité' : 'une molécule'));
   }
 
   function fracs() {
@@ -121,9 +122,12 @@ window.TempLab = (function () {
       else if (S.p <= 0) finish(S.inTr, false);
       else S.T = tr[0] + S.p * (tr[1] - tr[0]);
     } else {
-      var B = heat ? (sub.tr[S.ph] ? sub.tr[S.ph][0] : TMAX) : (S.ph > 0 && sub.tr[S.ph - 1] ? sub.tr[S.ph - 1][1] : TMIN);
+      var B = heat ? (sub.tr[S.ph] ? sub.tr[S.ph][0] : HI) : (S.ph > 0 && sub.tr[S.ph - 1] ? sub.tr[S.ph - 1][1] : null);
       var ap = S.appr;
-      if (!ap || ap.B !== B || ap.dir !== (heat ? 1 : -1)) ap = S.appr = { T0: S.T, B: B, s: 0, dir: heat ? 1 : -1, D: 3.2 + Math.abs(B - S.T) / 100 };
+      if (B === null) {                                 // refroidissement sans palier : asymptote au zéro absolu
+        S.appr = null; S.T = LO + (S.T - LO) * Math.exp(-.02 * dt);
+      } else {
+      if (!ap || ap.B !== B || ap.dir !== (heat ? 1 : -1)) ap = S.appr = { T0: S.T, B: B, s: 0, dir: heat ? 1 : -1, D: (3.2 + Math.abs(B - S.T) / 100) / SPEED };
       var reached = Math.abs(B - ap.T0) < .05;
       if (!reached) {                                  // approche amortie : vitesse maximale au départ, nulle à l'arrivée
         ap.s = Math.min(1, ap.s + a * dt / ap.D);
@@ -135,24 +139,22 @@ window.TempLab = (function () {
         if (heat && sub.tr[S.ph]) { S.inTr = S.ph; S.p = 0; S.entry = 0; S.idx = S.pts.length - 1; }
         else if (!heat && S.ph > 0 && sub.tr[S.ph - 1]) { S.inTr = S.ph - 1; S.p = 1; S.entry = 1; S.idx = S.pts.length - 1; }
       }
+      }
     }
-    S.T = clamp(S.T, TMIN, TMAX);
+    S.T = clamp(S.T, LO, HI);
     S.minT = Math.min(S.minT, S.T); S.maxT = Math.max(S.maxT, S.T);
     S.pts.push({ t: S.t, T: S.T });
   }
 
-  // ---------- Molette ----------
-  function setKnob(k) {
-    S.k = k;
-    if (els.needle) els.needle.setAttribute('transform', 'rotate(' + (k * 75) + ')');
+  // ---------- Curseur chaud / froid : zone centrale neutre (non dessinée), sinon chauffe ou refroidit à intensité fixe ----------
+  var NEUTRAL = .09;
+  function setSlider(pos) {
+    $('tp-thumb').style.left = (pos * 100) + '%';
+    S.k = pos < .5 - NEUTRAL ? -1 : (pos > .5 + NEUTRAL ? 1 : 0);
   }
-  function knobDrag(e) {
-    var r = $('tp-knob').getBoundingClientRect();
-    var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
-    var ang = Math.atan2(dx, -dy) * 180 / Math.PI;
-    if (Math.abs(ang) > 100) ang = ang > 0 ? 75 : -75;
-    ang = clamp(ang, -75, 75);
-    setKnob(Math.abs(ang) < 7 ? 0 : Math.round(ang / 75 * 100) / 100);
+  function sliderDrag(e) {
+    var r = $('tp-slider').getBoundingClientRect();
+    setSlider(clamp((e.clientX - r.left) / r.width, 0, 1));
   }
 
   // ---------- Rendu macro / micro ----------
@@ -169,7 +171,7 @@ window.TempLab = (function () {
   }
 
   function stepMicro(dt, f) {
-    var fs = f[0], fl = f[1], ag = .6 + .9 * (S.T - TMIN) / 300;
+    var fs = f[0], fl = f[1], ag = .4 + 1.1 * clamp((S.T + 273) / 773, 0, 1);
     var y1 = 179 - 62 * fs, y0 = y1 - Math.max(10, 36 * fl), i, j, p, q;
     P.forEach(function (p) {
       var m = p.rank < fs ? 0 : (p.rank < fs + fl ? 1 : 2);
@@ -214,12 +216,12 @@ window.TempLab = (function () {
     if (S.sub) {
       S.ap = Math.min(1, S.ap + dt);
       stepMicro(dt, f);
-      els.read.textContent = S.sub.n + ' : ' + fmt(T) + ' °C';
+      els.read.textContent = (mode === 'exp' && !X.revealed ? 'Substance inconnue' : S.sub.n) + ' : ' + fmt(T) + ' °C';
     }
   }
 
   // ---------- Graphique ----------
-  function niceX(v) { var a = [10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 420, 600]; for (var i = 0; i < a.length; i++) if (a[i] >= v) return a[i]; return Math.ceil(v / 300) * 300; }
+  function niceX(v) { var a = [10, 15, 20, 30, 45, 60, 90, 120, 180, 240, 300, 420, 600, 900, 1200]; for (var i = 0; i < a.length; i++) if (a[i] >= v) return a[i]; return Math.ceil(v / 300) * 300; }
   function stepOf(range, list) { for (var i = 0; i < list.length; i++) if (range / list[i] <= 7) return list[i]; return list[list.length - 1]; }
 
   function drawGraph(dt) {
@@ -227,17 +229,18 @@ window.TempLab = (function () {
     if (!W) return;
     if (cv.width !== Math.round(W * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
     var c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0); c.clearRect(0, 0, W, H);
-    var tx = niceX(Math.max(S.t * 1.1, 1)), ty1 = Math.min(250, Math.max(50, Math.ceil((S.maxT + 1) / 50) * 50)), ty0 = Math.min(0, Math.floor((S.minT - 10) / 25) * 25), k = Math.min(1, dt * 4);
+    var tx = niceX(Math.max(S.t * 1.1, 1)), ty1 = Math.min(500, Math.max(50, Math.ceil((S.maxT + 1) / 50) * 50)), ty0 = Math.max(-275, Math.min(0, Math.floor((S.minT - 10) / 25) * 25)), k = Math.min(1, dt * 4);
     ax.x += (tx - ax.x) * k; ax.y1 += (ty1 - ax.y1) * k; ax.y0 += (ty0 - ax.y0) * k;
     var ml = 44, mr = 12, mt = 14, mb = 28, pw = W - ml - mr, ph = H - mt - mb;
     var X = function (t) { return ml + t / ax.x * pw; }, Y = function (v) { return mt + (1 - (v - ax.y0) / (ax.y1 - ax.y0)) * ph; };
     c.fillStyle = 'rgba(255,255,255,.45)'; c.fillRect(ml, mt, pw, ph);
     c.font = '600 11px Nunito, sans-serif'; c.fillStyle = '#3B4652'; c.strokeStyle = 'rgba(40,60,90,.2)'; c.lineWidth = 1;
-    var sy = stepOf(ax.y1 - ax.y0, [5, 10, 20, 25, 50, 100]), sx = stepOf(ax.x, [2, 5, 10, 15, 20, 30, 60, 120]), v, t;
+    var sy = stepOf(ax.y1 - ax.y0, [5, 10, 20, 25, 50, 100, 200]), sx = stepOf(ax.x, [2, 5, 10, 15, 20, 30, 60, 120]), v, t;
     c.textAlign = 'right';
     for (v = Math.ceil(ax.y0 / sy) * sy; v <= ax.y1 + .01; v += sy) { c.beginPath(); c.moveTo(ml, Y(v)); c.lineTo(ml + pw, Y(v)); c.stroke(); c.fillText(v, ml - 5, Y(v) + 4); }
     c.textAlign = 'center';
     for (t = 0; t <= ax.x + .01; t += sx) { c.beginPath(); c.moveTo(X(t), mt); c.lineTo(X(t), mt + ph); c.stroke(); c.fillText(t, X(t), mt + ph + 14); }
+    if (ax.y0 < -240) { c.strokeStyle = '#2F6FD0'; c.setLineDash([6, 4]); c.beginPath(); c.moveTo(ml, Y(LO)); c.lineTo(ml + pw, Y(LO)); c.stroke(); c.setLineDash([]); c.fillStyle = '#2F6FD0'; c.textAlign = 'left'; c.fillText('zéro absolu (-273,15 °C)', ml + 6, Y(LO) - 5); c.fillStyle = '#3B4652'; }
     c.strokeStyle = '#3B4652'; c.lineWidth = 1.5; c.strokeRect(ml, mt, pw, ph);
     c.textAlign = 'left'; c.fillText('T (°C)', 4, 11); c.textAlign = 'right'; c.fillText('Temps (s)', W - 4, H - 3);
     c.save(); c.beginPath(); c.rect(ml, mt, pw, ph); c.clip();
@@ -261,6 +264,7 @@ window.TempLab = (function () {
   }
 
   function setMicro(on) {
+    if (locked) on = false;
     micro = on; els.svg.classList.toggle('is-micro', on);
     $('tp-ico-lens').style.display = on ? 'none' : ''; $('tp-ico-eye').style.display = on ? '' : 'none';
     els.legend.style.display = on ? '' : 'none';
@@ -268,9 +272,45 @@ window.TempLab = (function () {
   }
 
   function stop() { if (raf) cancelAnimationFrame(raf); raf = null; }
-  function start() {
-    stop(); reset(); setMicro(false);
+
+  function setLocked(v) { locked = v; els.microBtn.disabled = v; if (v) setMicro(false); }
+
+  // ---------- Mode Expérience : identifier une substance inconnue ----------
+  function msg(t, cls) { $('tp-msg').textContent = t; $('tp-msg').className = 'ex-feedback' + (cls ? ' ' + cls : ''); }
+  function newUnknown() {
+    var pool = ALL.filter(function (s) { return s !== X.target; });
+    X = { target: pool[Math.floor(Math.random() * pool.length)], fails: 0, revealed: false };
+    select(X.target); setLocked(true); msg('', '');
+    $('btn-tp-ident').style.display = ''; $('btn-tp-skip').style.display = 'none'; $('btn-tp-next').style.display = 'none';
+  }
+  function reveal(ok) {
+    X.revealed = true; setLocked(false);
+    $('btn-tp-ident').style.display = 'none'; $('btn-tp-skip').style.display = 'none'; $('btn-tp-next').style.display = '';
+    msg(ok ? 'Bravo, c\'était bien : ' + X.target.n + ' !' : 'La substance était : ' + X.target.n + '.', ok ? 'success' : 'reveal');
+    if (ok && window.Confetti && $('confetti-canvas')) { try { var r = $('btn-tp-next').getBoundingClientRect(); window.Confetti.burst($('confetti-canvas'), r.left + r.width / 2, r.top); } catch (e) { /* décoratif */ } }
+  }
+  function guess(sub) {
+    if (sub === X.target) { $('tp-pick').style.display = 'none'; reveal(true); return; }
+    X.fails++; setLocked(false);                       // le mode microscopique devient disponible dès le premier échec
+    $('btn-tp-skip').style.display = '';
+    $('tp-pick-body').style.display = 'none'; $('tp-fail').style.display = '';
+  }
+
+  function openPick() {
+    $('tp-pick-title').textContent = mode === 'exp' ? 'Quelle est cette substance ?' : 'Choisis une substance';
+    $('tp-pick-body').style.display = ''; $('tp-fail').style.display = 'none';
+    $('tp-pick').style.display = 'flex';
+  }
+
+  function start(m) {
+    stop(); mode = m || 'free'; X = {};
+    $('screen-temp').setAttribute('data-tpmode', mode);
+    $('tp-title').textContent = mode === 'exp' ? 'Expérience' : 'Température de changement d\'état';
+    $('tp-sub').textContent = mode === 'exp' ? 'Chauffe et refroidis la substance inconnue, observe sa courbe, puis identifie-la grâce au tableau.'
+      : 'Étudie les changements d\'états de différentes substances en manipulant la température.';
+    reset(); setLocked(false); setMicro(false);
     ['tp-pick', 'tp-memo'].forEach(function (id) { $(id).style.display = 'none'; });
+    if (mode === 'exp') newUnknown();
     lastT = performance.now(); raf = requestAnimationFrame(frame);
   }
 
@@ -290,28 +330,42 @@ window.TempLab = (function () {
       layer.appendChild(tri); layer.appendChild(cir);
       P.push({ tri: tri, cir: cir, slot: slot, rank: rk[slot], b: 0, m: -1, x: 150, y: -30, vx: 0, vy: 0, a: 0, va: 0 });
     });
-    var kn = $('tp-knob');
-    kn.addEventListener('pointerdown', function (e) { if (!S.sub) return; kn.setPointerCapture(e.pointerId); kn.style.cursor = 'grabbing'; knobDrag(e); });
-    kn.addEventListener('pointermove', function (e) { if (kn.hasPointerCapture && kn.hasPointerCapture(e.pointerId)) knobDrag(e); });
-    kn.addEventListener('pointerup', function () { kn.style.cursor = 'grab'; });
-    // Fenêtre de choix des substances
-    var html = '';
-    FAM.forEach(function (f, fi) {
-      html += '<h3 class="st-memo__h">' + f.t + '</h3><div class="tp-list">';
-      f.l.forEach(function (s, si) { html += '<button type="button" class="tp-item" data-f="' + fi + '" data-s="' + si + '">' + s.n + '</button>'; });
-      html += '</div>';
-    });
-    $('tp-pick-list').innerHTML = html;
-    Array.prototype.forEach.call($('tp-pick-list').querySelectorAll('.tp-item'), function (b) {
-      b.addEventListener('click', function () { select(FAM[+b.getAttribute('data-f')].l[+b.getAttribute('data-s')]); $('tp-pick').style.display = 'none'; });
-    });
+    var sl = $('tp-slider');
+    sl.addEventListener('pointerdown', function (e) { sl.setPointerCapture(e.pointerId); sliderDrag(e); });
+    sl.addEventListener('pointermove', function (e) { if (sl.hasPointerCapture(e.pointerId)) sliderDrag(e); });
+    // Fenêtre de choix : deux onglets (corps purs / mélanges) et des cartes avec pastille de couleur
+    var tab = 0;
+    function cards() {
+      $('tp-cards').innerHTML = FAM[tab].l.map(function (s, i) {
+        return '<button type="button" class="tp-card" data-i="' + i + '"><span class="tp-sw" style="background:' + (s.ph === 0 ? s.sol : s.liq) + '"></span><span>' + s.n + '</span></button>';
+      }).join('');
+      Array.prototype.forEach.call($('tp-cards').querySelectorAll('.tp-card'), function (b) {
+        b.addEventListener('click', function () {
+          var sub = FAM[tab].l[+b.getAttribute('data-i')];
+          if (mode === 'exp') guess(sub); else { select(sub); $('tp-pick').style.display = 'none'; }
+        });
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('.tp-tab'), function (t, i) { t.classList.toggle('on', i === tab); });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.tp-tab'), function (t, i) { t.addEventListener('click', function () { tab = i; cards(); }); });
+    cards();
+    // Tableau de données (mode Expérience)
+    function num(v) { return String(v).replace('.', ',').replace('-', '\u2212'); }
+    function cell(s, k) { if (s.mix) { var r = s.tr[k]; return r ? '\u2248 ' + num(r[0]) + ' à ' + num(r[1]) : '\u2014'; } var v = k ? s.te : s.tf; return v === null ? '\u2014' : num(v); }
+    var rows = ALL.slice().sort(function (a, b) { return (a.mix ? 1 : 0) - (b.mix ? 1 : 0); });
+    $('tp-table').innerHTML = '<table class="tp-tbl"><thead><tr><th>Substance</th><th>Fusion (°C)</th><th>Ébullition (°C)</th></tr></thead><tbody>' +
+      rows.map(function (s) { return '<tr class="' + (s.mix ? 'mx' : '') + '"><td>' + s.n + '</td><td>' + cell(s, 0) + '</td><td>' + cell(s, 1) + '</td></tr>'; }).join('') + '</tbody></table>';
     function bindOverlay(id, openBtn, closeBtn) {
       var o = $(id); $(openBtn).addEventListener('click', function () { o.style.display = 'flex'; });
       $(closeBtn).addEventListener('click', function () { o.style.display = 'none'; });
       o.addEventListener('click', function (e) { if (e.target === o) o.style.display = 'none'; });
     }
     bindOverlay('tp-pick', 'btn-tp-choose', 'btn-tp-pick-close'); bindOverlay('tp-memo', 'btn-tp-retenir', 'btn-tp-memo-close');
-    $('btn-tp-reset').addEventListener('click', function () { reset(); });
+    $('btn-tp-choose').addEventListener('click', openPick); $('btn-tp-ident').addEventListener('click', openPick);
+    $('btn-tp-retry').addEventListener('click', function () { $('tp-pick').style.display = 'none'; });
+    $('btn-tp-skip').addEventListener('click', function () { reveal(false); });
+    $('btn-tp-next').addEventListener('click', newUnknown);
+    $('btn-tp-reset').addEventListener('click', function () { if (mode === 'exp' && X.target) select(X.target); else reset(); });
     els.microBtn.addEventListener('click', function () { setMicro(!micro); });
     reset();
   }

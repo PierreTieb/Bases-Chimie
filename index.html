@@ -540,11 +540,13 @@
         <span class="mode-btn__title">Changements d'états</span>
         <span class="mode-btn__subtitle">Manipule la matière et change d'état</span>
       </button>
-    </div>
-    <div class="mode-list">
       <button type="button" id="btn-temp-nav" class="mode-btn mode-btn--r2">
         <span class="mode-btn__title">Température de changement d'état</span>
         <span class="mode-btn__subtitle">Teste différentes matières dans différentes conditions</span>
+      </button>
+      <button type="button" id="btn-exp-nav" class="mode-btn mode-btn--r3">
+        <span class="mode-btn__title">Expérience</span>
+        <span class="mode-btn__subtitle">Identifie toi-même des substances chimiques</span>
       </button>
     </div>
   </section>
@@ -666,10 +668,11 @@
   <!-- ÉCRAN : TEMPÉRATURE DE CHANGEMENT D'ÉTAT (labo expérimental) -->
   <section id="screen-temp" class="screen screen--sandbox screen--r2">
     <button type="button" class="btn-back" id="btn-back-to-mode3-tp">← Retour</button>
-    <h1 class="app-title app-title--small">Température de changement d'état</h1>
-    <p class="app-subtitle">Étudie les changements d'états de différentes substances en manipulant la température.</p>
+    <h1 class="app-title app-title--small" id="tp-title">Température de changement d'état</h1>
+    <p class="app-subtitle" id="tp-sub">Étudie les changements d'états de différentes substances en manipulant la température.</p>
+    <div class="tp-exp-only tp-tablewrap" id="tp-table"></div>
     <div class="tp-toprow">
-      <button type="button" class="st-btn tp-choose" id="btn-tp-choose">Choisir une substance</button>
+      <button type="button" class="st-btn tp-choose tp-free-only" id="btn-tp-choose">Choisir une substance</button>
       <button type="button" class="st-btn tp-reset" id="btn-tp-reset">Réinitialiser</button>
     </div>
     <p class="tp-read" id="tp-read"></p>
@@ -684,14 +687,29 @@
         <p class="st-legend" id="tp-legend" style="display:none"><svg viewBox="0 0 24 22" aria-hidden="true"><polygon points="12,2 2,19 22,19" class="st-tri"/></svg><span id="tp-legend-txt"></span></p>
       </div>
     </div>
+    <div class="tp-slider" id="tp-slider" aria-label="Curseur froid / chaud"><div class="tp-thumb" id="tp-thumb"></div></div>
+    <p class="tp-hint">Glisse le curseur : côté bleu, on refroidit ; côté rouge, on chauffe ; au centre, on arrête.</p>
     <canvas id="tp-graph" class="tp-graph"></canvas>
-    <div class="st-retenir-wrap"><button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-tp-retenir"><span class="mode-btn__title">À retenir</span></button></div>
+    <p class="ex-feedback tp-exp-only" id="tp-msg"></p>
+    <div class="st-retenir-wrap tp-exp-only">
+      <button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-tp-ident"><span class="mode-btn__title">Identifier la substance</span></button>
+      <button type="button" class="st-btn tp-skip" id="btn-tp-skip" style="display:none">Résoudre et passer</button>
+      <button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-tp-next" style="display:none"><span class="mode-btn__title">Essayer une autre substance</span></button>
+    </div>
+    <div class="st-retenir-wrap tp-free-only"><button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-tp-retenir"><span class="mode-btn__title">À retenir</span></button></div>
 
     <div class="eq-catalog-overlay" id="tp-pick">
       <div class="eq-catalog-panel">
-        <h2 class="eq-catalog-title">Choisis une substance</h2>
-        <div id="tp-pick-list"></div>
-        <button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-tp-pick-close"><span class="mode-btn__title">Fermer</span></button>
+        <h2 class="eq-catalog-title" id="tp-pick-title">Choisis une substance</h2>
+        <div id="tp-pick-body">
+          <div class="tp-tabs"><button type="button" class="tp-tab on">Corps purs</button><button type="button" class="tp-tab">Mélanges</button></div>
+          <div class="tp-cards" id="tp-cards"></div>
+          <button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-tp-pick-close"><span class="mode-btn__title">Fermer</span></button>
+        </div>
+        <div id="tp-fail" style="display:none">
+          <p class="tp-failtxt">Ce n'est pas la bonne substance.</p>
+          <button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-tp-retry"><span class="mode-btn__title">Réessayer</span></button>
+        </div>
       </div>
     </div>
     <div class="eq-catalog-overlay" id="tp-memo">
