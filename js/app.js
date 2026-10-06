@@ -24,7 +24,9 @@ window.App = (function () {
     'screen-lab-test': 'g5',
     'screen-atom-challenge': 'home',
     'screen-atom-ch1': 'yellow',
-    'screen-atom-ch2': 'orange'
+    'screen-atom-ch2': 'orange',
+    'screen-mode3': 'home',
+    'screen-states': 'r1'
   };
 
   function showScreen(id) {
@@ -45,6 +47,19 @@ window.App = (function () {
     wireNav('btn-mode2', 'screen-mode2');
     wireNav('btn-back-to-home', 'screen-home');
     wireNav('btn-back-to-home-2', 'screen-home');
+
+    wireNav('btn-mode3', 'screen-mode3');
+    wireNav('btn-back-to-home-3', 'screen-home');
+    var btnStates = document.getElementById('btn-states-nav');
+    if (btnStates) btnStates.addEventListener('click', function () {
+      showScreen('screen-states');
+      if (window.States) window.States.start(); // réinitialise le mode à chaque entrée
+    });
+    var btnBackStates = document.getElementById('btn-back-to-mode3');
+    if (btnBackStates) btnBackStates.addEventListener('click', function () {
+      if (window.States) window.States.stop();  // coupe animations et ambiance froide
+      showScreen('screen-mode3');
+    });
 
     wireNav('btn-mode1-1', 'screen-mode1-1');
     wireNav('btn-back-to-mode1', 'screen-mode1');

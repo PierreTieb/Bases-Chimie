@@ -24,17 +24,19 @@
       </button>
     </div>
 
+    <p class="mode-caption">Pour observer la matière dans tous ses états</p>
+    <div class="mode-list">
+      <button type="button" id="btn-mode3" class="mode-btn mode-btn--r">
+        <span class="mode-btn__title">Transformations physiques</span>
+        <span class="mode-btn__subtitle">Étudie les caractéristiques de la matière</span>
+      </button>
+    </div>
+
     <p class="mode-caption">Pour découvrir l'atome</p>
     <div class="mode-list">
       <button type="button" id="btn-mode2" class="mode-btn mode-btn--green">
         <span class="mode-btn__title">Atomes et Ions</span>
         <span class="mode-btn__subtitle">Construis et identifie des atomes</span>
-      </button>
-    </div>
-
-    <div class="mode-list mode-list--spaced">
-      <button type="button" class="mode-btn mode-btn--soon" aria-disabled="true" tabindex="-1">
-        <span class="mode-btn__title">Prochainement…</span>
       </button>
     </div>
   </section>
@@ -526,6 +528,139 @@
     </div>
   </section>
 
+  <!-- ÉCRAN : MODE 3 (Transformations physiques) -->
+  <section id="screen-mode3" class="screen">
+    <button type="button" class="btn-back" id="btn-back-to-home-3">← Retour</button>
+    <h1 class="app-title">Transformations physiques</h1>
+    <p class="app-subtitle">Choisis ton mode pour commencer</p>
+
+    <p class="mode-caption">Pour manipuler la matière</p>
+    <div class="mode-list">
+      <button type="button" id="btn-states-nav" class="mode-btn mode-btn--r1">
+        <span class="mode-btn__title">Changements d'états</span>
+        <span class="mode-btn__subtitle">Manipule la matière et change d'état</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ÉCRAN : CHANGEMENTS D'ÉTATS (laboratoire : l'eau) -->
+  <section id="screen-states" class="screen screen--sandbox screen--r1">
+    <button type="button" class="btn-back" id="btn-back-to-mode3">← Retour</button>
+    <h1 class="app-title app-title--small">Changements d'états</h1>
+
+    <div class="st-name" id="st-name" aria-live="polite"></div>
+
+    <div class="st-stagewrap">
+    <div class="st-stage">
+      <svg viewBox="0 0 300 300" class="st-svg" id="st-svg" role="img" aria-label="Un bécher d'eau posé sur un réchaud à gaz">
+        <defs>
+          <clipPath id="st-clip"><rect x="92" y="38" width="116" height="146"/></clipPath>
+          <linearGradient id="st-wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ED3F5"/><stop offset="1" stop-color="#4FA9DC"/></linearGradient>
+          <radialGradient id="st-gg"><stop offset="0" stop-color="#fff" stop-opacity=".95"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+          <linearGradient id="st-fg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#FF9F1C"/><stop offset="1" stop-color="#FFE066"/></linearGradient>
+          <filter id="st-blur"><feGaussianBlur stdDeviation="2.5"/></filter>
+        </defs>
+
+        <!-- Réchaud -->
+        <path d="M126 262h48l8 18h-64z" fill="#6B7886"/>
+        <rect x="142" y="250" width="16" height="14" fill="#8996A3"/>
+        <rect x="122" y="240" width="56" height="11" rx="5" fill="#59656F" id="st-head"/>
+        <path d="M178 272h40q12 0 12-12" fill="none" stroke="#59656F" stroke-width="4" stroke-linecap="round"/>
+        <!-- Trépied -->
+        <path d="M100 190h100M106 190l-6 52M194 190l6 52" stroke="#7A8794" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+        <!-- Flamme -->
+        <g id="st-flame" class="st-flame">
+          <path class="st-f f1" d="M132 240c-8-8-7-18 0-30 7 12 8 22 0 30z" fill="url(#st-fg)"/>
+          <path class="st-f f2" d="M150 240c-10-10-9-24 0-42 9 18 10 32 0 42z" fill="url(#st-fg)"/>
+          <path class="st-f f3" d="M168 240c-8-8-7-18 0-30 7 12 8 22 0 30z" fill="url(#st-fg)"/>
+          <path class="st-f f4" d="M141 240c-4-5-3-10 0-17 3 7 4 12 0 17z" fill="#FFF3B0"/>
+          <path class="st-f f5" d="M159 240c-4-5-3-10 0-17 3 7 4 12 0 17z" fill="#FFF3B0"/>
+        </g>
+
+        <!-- Fond du bécher -->
+        <rect x="92" y="38" width="116" height="146" fill="rgba(215,235,247,.35)"/>
+
+        <!-- Contenu -->
+        <g clip-path="url(#st-clip)">
+          <g id="st-water" class="st-item" style="display:none">
+            <path d="M92 139q14-8 29 0t29 0 29 0 29 0V184H92z" fill="url(#st-wg)" opacity=".9"/>
+            <path d="M92 139q14-8 29 0t29 0 29 0 29 0" fill="none" stroke="#fff" stroke-width="2" opacity=".6"/>
+          </g>
+          <g id="st-gas" class="st-item" style="display:none" filter="url(#st-blur)">
+            <circle class="st-g g1" cx="125" cy="150" r="22" fill="url(#st-gg)"/>
+            <circle class="st-g g2" cx="170" cy="130" r="26" fill="url(#st-gg)"/>
+            <circle class="st-g g3" cx="140" cy="95" r="22" fill="url(#st-gg)"/>
+            <circle class="st-g g4" cx="180" cy="168" r="18" fill="url(#st-gg)"/>
+            <circle class="st-g g5" cx="115" cy="68" r="16" fill="url(#st-gg)"/>
+            <circle class="st-g g6" cx="165" cy="70" r="20" fill="url(#st-gg)"/>
+          </g>
+        </g>
+        <rect id="st-stream" x="146" y="0" width="8" height="120" rx="4" fill="#6FC0EC" style="display:none"/>
+        <g id="st-ice" class="st-item" style="display:none">
+          <rect x="121" y="122" width="58" height="62" rx="9" fill="#D4F0FF" stroke="#8CC7E6" stroke-width="2.5" opacity=".95"/>
+          <path d="M130 133h14M130 133v16" stroke="#fff" stroke-width="4" stroke-linecap="round"/>
+        </g>
+        <!-- Représentation microscopique -->
+        <g id="st-micro"></g>
+
+        <!-- Verre -->
+        <path d="M86 38h10M204 38h10M92 38V176q0 8 8 8h100q8 0 8-8V38" fill="none" stroke="#7F9DB3" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M188 80h16M194 105h10M188 130h16M194 155h10" stroke="#7F9DB3" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+      </svg>
+    </div>
+    <div class="st-side" id="st-side" style="visibility:hidden">
+      <div class="st-lens" id="st-lens">
+        <svg id="st-ico-lens" viewBox="0 0 24 24" fill="none" stroke="#8A2A20" stroke-width="2.4" stroke-linecap="round"><circle cx="10" cy="10" r="6.5" fill="#fff" fill-opacity=".6"/><path d="M15 15l6 6"/></svg>
+        <svg id="st-ico-eye" viewBox="0 0 24 24" fill="none" stroke="#8A2A20" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M2 12c3-5 6-7 10-7s7 2 10 7c-3 5-6 7-10 7s-7-2-10-7z" fill="#fff" fill-opacity=".6"/><circle cx="12" cy="12" r="3" fill="#8A2A20"/></svg>
+      </div>
+      <button type="button" class="st-micro-btn" id="btn-st-micro">Représentation microscopique</button>
+      <p class="st-legend" id="st-legend" style="display:none"><svg viewBox="0 0 24 22" aria-hidden="true"><polygon points="12,2 2,19 22,19" class="st-tri"/></svg><span>Un triangle : une molécule</span></p>
+    </div>
+    </div>
+
+    <p class="st-prompt" id="st-prompt">Dans quel état veux-tu mettre l'eau ?</p>
+    <div class="st-row" id="st-picks">
+      <button type="button" class="st-btn st-pick st-pick--solid" data-state="solid">Solide</button>
+      <button type="button" class="st-btn st-pick st-pick--liquid" data-state="liquid">Liquide</button>
+      <button type="button" class="st-btn st-pick st-pick--gas" data-state="gas">Gaz</button>
+    </div>
+
+    <div class="st-row" id="st-actions" style="display:none">
+      <button type="button" class="st-btn st-heat" id="btn-st-heat"><svg class="st-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-4 3-7 1 1 1 2 2 3 1-2 1-5 1-8z" fill="#E8590C" stroke="#B3400A" stroke-width="1" stroke-linejoin="round"/><path d="M12 22a3 3 0 0 1-3-3c0-2 2-3 3-5 1 2 3 3 3 5a3 3 0 0 1-3 3z" fill="#FFD43B"/></svg> Chauffer</button>
+      <button type="button" class="st-btn st-cool" id="btn-st-cool"><svg class="st-ico" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><g id="sf"><path d="M12 2v20M9 4l3 3 3-3M9 20l3-3 3 3"/></g><use href="#sf" transform="rotate(60 12 12)"/><use href="#sf" transform="rotate(120 12 12)"/></svg> Refroidir</button>
+    </div>
+
+    <div class="st-retenir-wrap" id="st-retenir-wrap" style="display:none">
+      <button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-st-retenir"><span class="mode-btn__title">À retenir</span></button>
+    </div>
+
+    <div class="eq-catalog-overlay" id="st-overlay">
+      <div class="eq-catalog-panel">
+        <h2 class="eq-catalog-title">À retenir</h2>
+        <div class="st-memo">
+          <h3 class="st-memo__h">Les changements d'état</h3>
+          <p>La <b class="st-red">fusion</b> est le passage de l'état solide à l'état liquide (la température augmente).</p>
+          <p>La <b class="st-red">vaporisation</b> est le passage de l'état liquide à l'état gazeux (la température augmente).</p>
+          <p>La <b class="st-blue">solidification</b> est le passage de l'état liquide à l'état solide (la température diminue).</p>
+          <p>La <b class="st-blue">liquéfaction</b> est le passage de l'état gazeux à l'état liquide (la température diminue).</p>
+        </div>
+        <div class="st-memo">
+          <h3 class="st-memo__h">La représentation microscopique</h3>
+          <div class="st-micro-row"><svg class="st-illu" viewBox="0 0 100 60" aria-hidden="true"><polygon transform="translate(42.8 52.4) rotate(0)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(47.6 49.8) rotate(180)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(52.4 52.4) rotate(0)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(57.2 49.8) rotate(180)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(42.8 41.6) rotate(180)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(47.6 44.2) rotate(0)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(52.4 41.6) rotate(180)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(57.2 44.2) rotate(0)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(42.8 36.0) rotate(0)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(47.6 33.4) rotate(180)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(52.4 36.0) rotate(0)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(57.2 33.4) rotate(180)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/></svg><p><b>État solide :</b> les molécules sont serrées, ordonnées et immobiles.</p></div>
+          <div class="st-micro-row"><svg class="st-illu" viewBox="0 0 100 60" aria-hidden="true"><polygon transform="translate(14 50) rotate(40)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(27 52) rotate(200)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(40 49) rotate(100)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(53 52) rotate(300)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(66 50) rotate(160)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(79 52) rotate(10)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(21 41) rotate(250)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(35 40) rotate(70)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(48 41) rotate(330)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(61 40) rotate(120)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(74 41) rotate(220)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(88 50) rotate(280)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/></svg><p><b>État liquide :</b> les molécules sont serrées mais désordonnées, elles glissent les unes sur les autres.</p></div>
+          <div class="st-micro-row"><svg class="st-illu" viewBox="0 0 100 60" aria-hidden="true"><polygon transform="translate(12 12) rotate(30)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(40 9) rotate(200)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(70 14) rotate(110)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(90 8) rotate(300)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(25 30) rotate(250)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(55 27) rotate(60)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(82 32) rotate(160)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(10 48) rotate(340)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(38 44) rotate(90)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(63 47) rotate(210)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(88 52) rotate(20)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/><polygon transform="translate(48 18) rotate(140)" points="0,-5.2 -4.5,2.6 4.5,2.6" class="st-tri"/></svg><p><b>État gazeux :</b> les molécules sont très écartées, désordonnées et très agitées.</p></div>
+          <p class="st-memo__note">Dans les trois états, le nombre de molécules ne change pas.</p>
+        </div>
+        <button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-st-close"><span class="mode-btn__title">Fermer</span></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ambiance froide (vent et flocons) -->
+  <div class="st-cold" id="st-cold" aria-hidden="true"></div>
+  <div class="st-cold-tint" id="st-cold-tint" aria-hidden="true"></div>
+
   <canvas id="confetti-canvas"></canvas>
 
   <script src="js/units.js"></script>
@@ -546,6 +681,7 @@
   <script src="js/ions-app.js"></script>
   <script src="js/lab-app.js"></script>
   <script src="js/atom-expert.js"></script>
+  <script src="js/states-app.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

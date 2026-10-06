@@ -645,3 +645,106 @@ body[data-theme="g5"] { --bg-top: #F6F7EC; --bg-bottom: #C9CFA6; }
 .lab-ion-cell { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; background: #fafafa; }
 .lab-table td svg { display: block; margin: 0 auto 2px; }
 .lab-cap { display: block; font-size: .68rem; font-weight: 700; line-height: 1.15; color: var(--ink-soft); }
+
+/* ===== Module 3 : Transformations physiques (rouges pastel) ===== */
+.mode-btn--r  { --c-light: #FFD9D4; --c-mid: #F7A39A; --c-dark: #D9776D; --c-text: #5E1A14; }
+.mode-btn--r1 { --c-light: #FFF3F1; --c-mid: #FDDAD5; --c-dark: #EDB0A8; --c-text: #5E1A14; }
+body[data-theme="r1"] { --bg-top: #FFF6F4; --bg-bottom: #F6CFC9; }
+.screen--r1, .screen--r1 .eq-catalog-panel { --acc-light: #FFE3DF; --acc-mid: #F7A39A; --acc-dark: #D9776D; --acc-text: #5E1A14; }
+#screen-states { position: relative; z-index: 1; }
+
+.st-name { height: 2.2rem; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: 1.7rem; line-height: 2.2rem; margin-top: 6px; }
+.st-name.show { animation: st-pop .45s ease-out; }
+.st-red { color: #D9382B; } .st-blue { color: #2F6FD0; }
+.st-stagewrap { display: flex; align-items: flex-start; justify-content: center; gap: 6px; max-width: 470px; margin: 0 auto; }
+.st-stage { flex: 1 1 auto; min-width: 0; max-width: 340px; }
+.st-svg { width: 100%; height: auto; display: block; overflow: visible; }
+.st-prompt { text-align: center; font-weight: 800; margin: 10px 0 12px; }
+.st-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.st-btn {
+  font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; cursor: pointer; border: none;
+  border-radius: 20px; padding: 14px 20px; min-height: 54px; min-width: 104px; flex: 1 1 104px; max-width: 170px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 5px 0 rgba(46,58,70,.22), inset 0 2px 0 rgba(255,255,255,.55); transition: transform .12s, box-shadow .12s, opacity .2s;
+}
+.st-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 rgba(46,58,70,.22), inset 0 2px 0 rgba(255,255,255,.55); }
+.st-btn:disabled { opacity: .45; filter: saturate(.5); cursor: default; }
+.st-pick--solid { background: #D8F0FC; color: #0B4E66; }
+.st-pick--liquid { background: #A9DCF5; color: #0B4E66; }
+.st-pick--gas { background: #EEF1F4; color: #3B4652; }
+.st-heat { background: linear-gradient(135deg, #FFE98A, #FFB36B); color: #5E2E00; max-width: 190px; }
+.st-cool { background: linear-gradient(225deg, #2F55C8, #CDEFFF); color: #fff; text-shadow: 0 1px 2px rgba(10,30,90,.55); max-width: 190px; }
+.st-ico { width: 24px; height: 24px; flex: none; }
+.st-retenir-wrap { margin: 22px auto 0; max-width: 260px; }
+.st-retenir { min-height: 56px; align-items: center; padding: 12px 20px; }
+.st-memo { background: #FFF6F4; border-radius: 16px; padding: 12px 14px; }
+.st-memo__h { font-family: var(--font-display); font-size: 1.05rem; margin: 0 0 6px; }
+.st-memo p { margin: 4px 0; font-weight: 700; line-height: 1.4; }
+
+/* Animations de l'eau */
+.st-item, #st-stream { transform-box: fill-box; transform-origin: 50% 100%; }
+#st-water.a-drop { animation: st-fill .9s .3s ease-out backwards; }
+#st-water.a-in   { animation: st-fillslow 2s linear backwards; }
+#st-water.a-out  { animation: st-drain 2s linear forwards; }
+#st-stream { transform-origin: 50% 0; }
+#st-stream.go { animation: st-stream 1.2s ease-in forwards; }
+#st-ice.a-drop { animation: st-bounce 1.2s ease-in backwards; }
+#st-ice.a-in   { animation: st-iceIn 2s ease-out backwards; }
+#st-ice.a-out  { animation: st-iceOut 2s ease-in forwards; }
+#st-gas.a-drop { animation: st-fadein 1.3s ease-out backwards; }
+#st-gas.a-in   { animation: st-fadein 2s linear backwards; }
+#st-gas.a-out  { animation: st-fadeout 2s linear forwards; }
+.st-g { animation: st-drift 5s ease-in-out infinite alternate; }
+.st-g.g2 { animation-duration: 6.5s; animation-delay: -2s; } .st-g.g3 { animation-duration: 4.5s; animation-delay: -1s; }
+.st-g.g4 { animation-duration: 7s; animation-delay: -3s; } .st-g.g5 { animation-duration: 5.5s; animation-delay: -4s; } .st-g.g6 { animation-duration: 6s; animation-delay: -.5s; }
+@keyframes st-drift { from { transform: translate(-12px, 6px) scale(.95); } to { transform: translate(14px, -10px) scale(1.12); } }
+@keyframes st-fill { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes st-fillslow { from { transform: scaleY(0); opacity: .3; } to { transform: scaleY(1); opacity: 1; } }
+@keyframes st-drain { from { transform: scaleY(1); opacity: 1; } to { transform: scaleY(0); opacity: 0; } }
+@keyframes st-stream { 0% { transform: scaleY(0); opacity: 1; } 35% { transform: scaleY(1); opacity: 1; } 70% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+@keyframes st-bounce { 0% { transform: translateY(-170px); } 45% { transform: translateY(0); } 62% { transform: translateY(-9px); } 78% { transform: translateY(0); } 88% { transform: translateY(-3px); } 100% { transform: translateY(0); } }
+@keyframes st-iceIn { from { transform: scale(.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes st-iceOut { from { transform: scale(1); opacity: 1; } to { transform: scale(.25); opacity: 0; } }
+@keyframes st-fadein { from { opacity: 0; } to { opacity: 1; } }
+@keyframes st-fadeout { from { opacity: 1; } to { opacity: 0; } }
+@keyframes st-pop { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* Flamme et réchaud */
+.st-flame { opacity: 0; transition: opacity .4s; }
+.st-flame.on { opacity: 1; }
+.st-f { transform-box: fill-box; transform-origin: 50% 100%; animation: st-flick .35s ease-in-out infinite alternate; }
+.st-f.f2 { animation-duration: .28s; } .st-f.f3 { animation-duration: .42s; } .st-f.f4 { animation-duration: .25s; }
+@keyframes st-flick { from { transform: scale(.88, .85); } to { transform: scale(1.1, 1.12); } }
+#st-head.on { fill: #D9602B; }
+
+/* Ambiance froide */
+.st-cold, .st-cold-tint { position: fixed; inset: 0; pointer-events: none; opacity: 0; visibility: hidden; transition: opacity .6s, visibility .6s; overflow: hidden; }
+.st-cold { z-index: 0; background: linear-gradient(120deg, rgba(120,170,235,.30), rgba(190,225,255,.15)); }
+.st-cold-tint { z-index: 2; background: rgba(110,160,235,.10); }
+.st-cold.on, .st-cold-tint.on { opacity: 1; visibility: visible; }
+.st-flake { position: absolute; top: 0; background: #fff; border-radius: 50%; opacity: .85; animation: st-flake linear infinite; }
+.st-wind { position: absolute; left: -200px; height: 3px; border-radius: 3px; background: linear-gradient(90deg, transparent, rgba(255,255,255,.75), transparent); animation: st-wind linear infinite; }
+@keyframes st-flake { from { transform: translate(0, -5vh); } to { transform: translate(30vw, 105vh); } }
+@keyframes st-wind { from { transform: translateX(0); } to { transform: translateX(calc(100vw + 400px)); } }
+
+/* Loupe / représentation microscopique */
+.st-side { width: 92px; flex: none; display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 70px; }
+.st-lens { width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(160deg, #FFE3DF, #F7A39A); box-shadow: 0 4px 0 #D9776D, inset 0 2px 0 rgba(255,255,255,.55); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.st-lens svg { width: 30px; height: 30px; }
+.st-micro-btn { font-family: var(--font-body); font-weight: 800; font-size: .72rem; line-height: 1.2; color: #5E1A14; cursor: pointer; border: none; border-radius: 12px; padding: 8px 6px; width: 100%;
+  background: linear-gradient(160deg, #FFD9D4, #F7A39A); box-shadow: 0 3px 0 #D9776D, inset 0 2px 0 rgba(255,255,255,.55); }
+.st-micro-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #D9776D; }
+.st-svg.is-micro .st-item, .st-svg.is-micro #st-stream { visibility: hidden; }
+.st-svg:not(.is-micro) #st-micro { visibility: hidden; }
+.st-tri { fill: #BFE3F7; stroke: #5FA8D3; stroke-width: 1; stroke-linejoin: round; }
+
+.st-legend { margin: 4px 0 0; display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; font-size: .74rem; font-weight: 800; line-height: 1.25; color: #5E1A14; }
+.st-legend svg { width: 26px; height: 24px; }
+.st-micro-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+.st-micro-row p { margin: 0; }
+.st-illu { flex: none; width: 96px; height: 58px; background: rgba(215,235,247,.45); border: 2px solid #9DB9CC; border-radius: 10px; }
+.st-memo__note { font-size: .85rem; text-align: center; opacity: .85; }
+
+/* Loupe / œil : simple illustration, non cliquable */
+.st-lens { width: auto; height: auto; background: none; box-shadow: none; border-radius: 0; cursor: default; pointer-events: none; }
+.st-lens svg { width: 52px; height: 52px; }
