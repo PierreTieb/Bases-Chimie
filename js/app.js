@@ -26,7 +26,8 @@ window.App = (function () {
     'screen-atom-ch1': 'yellow',
     'screen-atom-ch2': 'orange',
     'screen-mode3': 'home',
-    'screen-states': 'r1'
+    'screen-states': 'r1',
+    'screen-temp': 'r2'
   };
 
   function showScreen(id) {
@@ -58,6 +59,17 @@ window.App = (function () {
     var btnBackStates = document.getElementById('btn-back-to-mode3');
     if (btnBackStates) btnBackStates.addEventListener('click', function () {
       if (window.States) window.States.stop();  // coupe animations et ambiance froide
+      showScreen('screen-mode3');
+    });
+
+    var btnTemp = document.getElementById('btn-temp-nav');
+    if (btnTemp) btnTemp.addEventListener('click', function () {
+      showScreen('screen-temp');
+      if (window.TempLab) window.TempLab.start();
+    });
+    var btnBackTemp = document.getElementById('btn-back-to-mode3-tp');
+    if (btnBackTemp) btnBackTemp.addEventListener('click', function () {
+      if (window.TempLab) window.TempLab.stop();
       showScreen('screen-mode3');
     });
 

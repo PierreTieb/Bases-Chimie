@@ -748,3 +748,22 @@ body[data-theme="r1"] { --bg-top: #FFF6F4; --bg-bottom: #F6CFC9; }
 /* Loupe / œil : simple illustration, non cliquable */
 .st-lens { width: auto; height: auto; background: none; box-shadow: none; border-radius: 0; cursor: default; pointer-events: none; }
 .st-lens svg { width: 52px; height: 52px; }
+
+/* ===== Mode Température de changement d'état ===== */
+.mode-btn--r2 { --c-light: #F9B8B0; --c-mid: #EC7C70; --c-dark: #CC4A3E; --c-text: #3D0B07; }
+body[data-theme="r2"] { --bg-top: #FFF1EE; --bg-bottom: #F1B7AF; }
+.screen--r2, .screen--r2 .eq-catalog-panel { --acc-light: #F9B8B0; --acc-mid: #EC7C70; --acc-dark: #CC4A3E; --acc-text: #3D0B07; }
+.tp-toprow { display: flex; justify-content: space-between; gap: 10px; margin: 6px 0 4px; }
+.tp-choose { background: linear-gradient(160deg, #FFD9D4, #F7A39A); color: #5E1A14; max-width: none; flex: 0 1 auto; }
+.tp-reset { background: #fff; color: #5E1A14; max-width: none; flex: 0 1 auto; min-width: 0; }
+.tp-read { text-align: center; font-family: var(--font-display); font-weight: 700; font-size: 1.25rem; min-height: 1.6rem; margin: 4px 0; }
+.tp-graph { display: block; width: 100%; max-width: 560px; height: 250px; margin: 12px auto 0; background: rgba(255,255,255,.3); border-radius: 14px; }
+.tp-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 14px; }
+.tp-item { font-family: var(--font-body); font-weight: 800; font-size: .9rem; color: #5E1A14; background: #FFF6F4; border: 2px solid #F7A39A; border-radius: 12px; padding: 9px 12px; cursor: pointer; }
+.tp-item:active { background: #FFD9D4; }
+.tp-curve { width: 100px; height: 60px; }
+.tp-b { fill: #FFD9A8; stroke: #E59B4B; stroke-width: 1; }
+.tp-fz { transform-box: fill-box; transform-origin: center; animation: tp-tw 1.6s ease-in-out infinite; }
+@keyframes tp-tw { 0%, 100% { opacity: .25; transform: scale(.6) rotate(0); } 50% { opacity: 1; transform: scale(1.3) rotate(40deg); } }
+.st-svg.is-micro .tp-macro { visibility: hidden; }
+.st-svg:not(.is-micro) #tp-micro { visibility: hidden; }

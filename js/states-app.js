@@ -103,7 +103,7 @@ window.States = (function () {
     $('st-ico-lens').style.display = on ? 'none' : '';
     $('st-ico-eye').style.display = on ? '' : 'none';
     $('st-legend').style.display = on ? '' : 'none';
-    els.microBtn.textContent = on ? 'Représentation macroscopique' : 'Représentation microscopique';
+    els.microBtn.textContent = on ? 'Mode Macroscopique' : 'Mode Microscopique';
   }
 
   function setAnim(el, cls) {

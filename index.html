@@ -541,6 +541,12 @@
         <span class="mode-btn__subtitle">Manipule la matière et change d'état</span>
       </button>
     </div>
+    <div class="mode-list">
+      <button type="button" id="btn-temp-nav" class="mode-btn mode-btn--r2">
+        <span class="mode-btn__title">Température de changement d'état</span>
+        <span class="mode-btn__subtitle">Teste différentes matières dans différentes conditions</span>
+      </button>
+    </div>
   </section>
 
   <!-- ÉCRAN : CHANGEMENTS D'ÉTATS (laboratoire : l'eau) -->
@@ -614,7 +620,7 @@
         <svg id="st-ico-lens" viewBox="0 0 24 24" fill="none" stroke="#8A2A20" stroke-width="2.4" stroke-linecap="round"><circle cx="10" cy="10" r="6.5" fill="#fff" fill-opacity=".6"/><path d="M15 15l6 6"/></svg>
         <svg id="st-ico-eye" viewBox="0 0 24 24" fill="none" stroke="#8A2A20" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M2 12c3-5 6-7 10-7s7 2 10 7c-3 5-6 7-10 7s-7-2-10-7z" fill="#fff" fill-opacity=".6"/><circle cx="12" cy="12" r="3" fill="#8A2A20"/></svg>
       </div>
-      <button type="button" class="st-micro-btn" id="btn-st-micro">Représentation microscopique</button>
+      <button type="button" class="st-micro-btn" id="btn-st-micro">Mode Microscopique</button>
       <p class="st-legend" id="st-legend" style="display:none"><svg viewBox="0 0 24 22" aria-hidden="true"><polygon points="12,2 2,19 22,19" class="st-tri"/></svg><span>Un triangle : une molécule</span></p>
     </div>
     </div>
@@ -657,6 +663,56 @@
     </div>
   </section>
 
+  <!-- ÉCRAN : TEMPÉRATURE DE CHANGEMENT D'ÉTAT (labo expérimental) -->
+  <section id="screen-temp" class="screen screen--sandbox screen--r2">
+    <button type="button" class="btn-back" id="btn-back-to-mode3-tp">← Retour</button>
+    <h1 class="app-title app-title--small">Température de changement d'état</h1>
+    <p class="app-subtitle">Étudie les changements d'états de différentes substances en manipulant la température.</p>
+    <div class="tp-toprow">
+      <button type="button" class="st-btn tp-choose" id="btn-tp-choose">Choisir une substance</button>
+      <button type="button" class="st-btn tp-reset" id="btn-tp-reset">Réinitialiser</button>
+    </div>
+    <p class="tp-read" id="tp-read"></p>
+    <div class="st-stagewrap">
+      <div class="st-stage" id="tp-stage"></div>
+      <div class="st-side" id="tp-side">
+        <div class="st-lens">
+          <svg id="tp-ico-lens" viewBox="0 0 24 24" fill="none" stroke="#8A2A20" stroke-width="2.4" stroke-linecap="round"><circle cx="10" cy="10" r="6.5" fill="#fff" fill-opacity=".6"/><path d="M15 15l6 6"/></svg>
+          <svg id="tp-ico-eye" viewBox="0 0 24 24" fill="none" stroke="#8A2A20" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M2 12c3-5 6-7 10-7s7 2 10 7c-3 5-6 7-10 7s-7-2-10-7z" fill="#fff" fill-opacity=".6"/><circle cx="12" cy="12" r="3" fill="#8A2A20"/></svg>
+        </div>
+        <button type="button" class="st-micro-btn" id="btn-tp-micro">Mode Microscopique</button>
+        <p class="st-legend" id="tp-legend" style="display:none"><svg viewBox="0 0 24 22" aria-hidden="true"><polygon points="12,2 2,19 22,19" class="st-tri"/></svg><span id="tp-legend-txt"></span></p>
+      </div>
+    </div>
+    <canvas id="tp-graph" class="tp-graph"></canvas>
+    <div class="st-retenir-wrap"><button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-tp-retenir"><span class="mode-btn__title">À retenir</span></button></div>
+
+    <div class="eq-catalog-overlay" id="tp-pick">
+      <div class="eq-catalog-panel">
+        <h2 class="eq-catalog-title">Choisis une substance</h2>
+        <div id="tp-pick-list"></div>
+        <button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-tp-pick-close"><span class="mode-btn__title">Fermer</span></button>
+      </div>
+    </div>
+    <div class="eq-catalog-overlay" id="tp-memo">
+      <div class="eq-catalog-panel">
+        <h2 class="eq-catalog-title">À retenir</h2>
+        <div class="st-memo">
+          <h3 class="st-memo__h">Corps pur : un palier</h3>
+          <div class="st-micro-row"><svg class="st-illu tp-curve" viewBox="0 0 100 60"><path d="M8 52L35 30H65L92 8" fill="none" stroke="#1F2E48" stroke-width="3" stroke-linejoin="round"/></svg>
+          <p>Un <b>corps pur</b> change d'état à une <b>température constante</b> : la courbe présente un <b>palier</b> horizontal.</p></div>
+        </div>
+        <div class="st-memo">
+          <h3 class="st-memo__h">Mélange : pas de palier</h3>
+          <div class="st-micro-row"><svg class="st-illu tp-curve" viewBox="0 0 100 60"><path d="M8 52L30 34L68 22L92 8" fill="none" stroke="#1F2E48" stroke-width="3" stroke-linejoin="round"/></svg>
+          <p>Pendant le changement d'état d'un <b>mélange</b>, la température <b>continue de varier</b> : il n'y a <b>pas de palier</b>.</p></div>
+          <p class="st-memo__note">Le palier permet donc de reconnaître un corps pur.</p>
+        </div>
+        <button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-tp-memo-close"><span class="mode-btn__title">Fermer</span></button>
+      </div>
+    </div>
+  </section>
+
   <!-- Ambiance froide (vent et flocons) -->
   <div class="st-cold" id="st-cold" aria-hidden="true"></div>
   <div class="st-cold-tint" id="st-cold-tint" aria-hidden="true"></div>
@@ -682,6 +738,7 @@
   <script src="js/lab-app.js"></script>
   <script src="js/atom-expert.js"></script>
   <script src="js/states-app.js"></script>
+  <script src="js/temp-app.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
