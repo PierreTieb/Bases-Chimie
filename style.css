@@ -799,9 +799,8 @@ html, body { touch-action: manipulation; }
 body[data-theme="r4"] { --bg-top: #FFEBE7; --bg-bottom: #EC9E94; }
 .screen--r4, .screen--r4 .eq-catalog-panel { --acc-light: #DC4A3A; --acc-mid: #BB2A1C; --acc-dark: #7E160D; --acc-text: #3D0B07; }
 #screen-piston { position: relative; z-index: 1; }
-.pi-toprow { display: flex; gap: 8px; margin: 6px 0 8px; }
-.pi-btn { min-width: 0; flex: 1 1 0; max-width: none; padding: 10px 4px; min-height: 46px; font-size: 1rem; }
-.pi-clear { background: #fff; color: #5E1A14; }
+.pi-toprow { display: flex; justify-content: center; gap: 10px; margin: 6px 0 8px; }
+.pi-btn { min-width: 0; flex: 0 1 112px; max-width: 112px; padding: 10px 4px; min-height: 46px; font-size: 1rem; }
 .pi-btn.pi-on { outline: 3px solid #7E160D; outline-offset: 2px; }
 .pi-wrap { align-items: flex-start; gap: 4px; }
 .pi-wrap .st-side { width: 84px; margin-top: 56px; }

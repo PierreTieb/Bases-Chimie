@@ -4,7 +4,8 @@
 //   la température reste). Le thermomètre n'est pas gradué : une seule variable normalisée « tau » (0..1).
 // - Piston : seul le gaz se comprime / s'étend. Relâché, il revient (mouvement amorti rapide) à la position
 //   d'équilibre de la température atteinte. Un repère fixe marque le niveau initial.
-// - Pas de changement d'état, sauf la liquéfaction du gaz (comprimé ou refroidi) : il devient alors liquide.
+// - Pas de changement d'état, sauf la liquéfaction du gaz (comprimé ou refroidi), réversible : relâcher le piston
+//   ou réchauffer le ramène à l'état gazeux (S.cond = gaz condensé).
 window.PistonLab = (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
@@ -33,9 +34,14 @@ window.PistonLab = (function () {
     var d = S.tau - T0;
     if (S.sub === 'solid') return H.solid * (1 + .011 * d);      // dilatation imperceptible
     if (S.sub === 'liquid') return H.liquid * (1 + .12 * d);     // très légère, mais perceptible
-    if (S.sub === 'gas') return H.gas * clamp(1 + 1.403 * d - .881 * d * d, .45, 1.6);   // très visible
+    if (S.sub === 'gas') return S.cond ? H.liquid * (1 + .12 * d) : heqGas();
     return H.none;
   }
+  function heqGas() {                                            // très visible
+    var d = S.tau - T0;
+    return H.gas * clamp(1 + 1.403 * d - .881 * d * d, .45, 1.6);
+  }
+  function kind() { return S.sub === 'gas' && S.cond ? 'liquid' : S.sub; }   // état affiché
   function hc() { return 55 - 22 * clamp((S.tau - .07) / .93, 0, 1); }   // hauteur sous laquelle le gaz se liquéfie
 
   // ---------- Scène SVG ----------
@@ -80,7 +86,7 @@ window.PistonLab = (function () {
   // ---------- État ----------
   function fresh(keepPiston) {
     var ph = keepPiston ? S.ph : H.none, pv = keepPiston ? S.pv : 0;
-    S = { sub: null, tau: T0, k: 0, amb: false, ph: ph, pv: pv, pdown: 0, drag: null, ref: H.none, ap: 1, armed: false, t: 0 };
+    S = { sub: null, tau: T0, k: 0, amb: false, ph: ph, pv: pv, pdown: 0, drag: null, ref: H.none, ap: 1, cond: false, t: 0 };
   }
 
   function msg(t, cls) { els.msg.textContent = t; els.msg.className = 'ex-feedback' + (cls ? ' ' + cls : ''); }
@@ -106,7 +112,7 @@ window.PistonLab = (function () {
 
   function select(sub) {
     fresh(true);
-    S.sub = sub; S.chosen = sub; S.ap = 0; S.ref = H[sub];
+    S.sub = sub; S.chosen = sub; S.ap = 0; S.ref = H[sub]; S.cond = false;
     var top = B - H[sub] + 6;
     P.forEach(function (p) { p.x = 100 + Math.random() * 100; p.y = top + Math.random() * (FLOOR - top); p.a = Math.random() * 360; });
     setMode(sub);
@@ -116,21 +122,17 @@ window.PistonLab = (function () {
     els.svg.classList.toggle('pi-locked', sub !== 'gas');
   }
 
-  function clearAll() {
-    fresh(true);
-    setThumb(.5);
-    msg(MSG_START, 'reveal');
-    markButtons();
-    els.svg.classList.add('pi-locked');
+  function condense() {
+    S.cond = true;
+    setMode('liquid');
+    msg(S.drag ? 'À force de comprimer le gaz, ses molécules se sont rapprochées : il est devenu liquide.'
+      : 'En refroidissant le gaz, ses molécules ralentissent et se rapprochent : il est devenu liquide.', 'success');
   }
 
-  function liquefy() {
-    var byDrag = !!S.drag;
-    S.drag = null; S.sub = 'liquid';
-    setMode('liquid');
-    els.svg.classList.add('pi-locked');
-    msg(byDrag ? 'À force de comprimer le gaz, ses molécules se sont rapprochées : il est devenu liquide.'
-      : 'En refroidissant le gaz, ses molécules ralentissent et se rapprochent : il est devenu liquide.', 'success');
+  function evaporate() {
+    S.cond = false;
+    setMode('gas');
+    msg('Les molécules se sont de nouveau éloignées : c\'est de nouveau un gaz.', 'reveal');
   }
 
   // ---------- Simulation ----------
@@ -146,22 +148,22 @@ window.PistonLab = (function () {
 
   function stepPiston(dt) {
     var prev = S.ph;
-    if (S.drag) { S.ph = S.drag.h; S.pv = 0; }
+    if (S.sub === 'gas') {                                       // liquéfaction réversible, avec une marge (hystérésis)
+      var ctrl = S.drag ? S.drag.h : heqGas(), lim = hc();
+      if (!S.cond && ctrl <= lim) condense();
+      else if (S.cond && ctrl > lim + 6) evaporate();
+    }
+    if (S.drag && !S.cond) S.ph += (S.drag.h - S.ph) * Math.min(1, 25 * dt), S.pv = 0;
     else {
       var a = SW * SW * (heq() - S.ph) - 2 * SZ * SW * S.pv;     // retour amorti mais rapide
       S.pv += a * dt; S.ph += S.pv * dt;
     }
     S.ph = clamp(S.ph, 20, 146);
     S.pdown = (prev - S.ph) / dt;
-    if (S.sub === 'gas') {
-      var lim = hc();
-      if (S.ph > lim + 4) S.armed = true;
-      else if (S.armed && S.ph <= lim) liquefy();
-    }
   }
 
   function stepMicro(dt) {
-    var m = S.sub, i, j, p, q;
+    var m = kind(), i, j, p, q;
     if (!m) return;
     var ag = agit(), y0 = B - S.ph + 5, y1 = FLOOR;
     S.t += dt;
@@ -205,12 +207,13 @@ window.PistonLab = (function () {
     if (on) S.ap = Math.min(1, S.ap + dt * 2);
     els.mac.style.display = on ? '' : 'none';
     els.mac.style.opacity = S.ap;
-    els.solid.style.display = S.sub === 'solid' ? '' : 'none';
-    els.liq.style.display = S.sub === 'liquid' ? '' : 'none';
-    els.gas.style.display = S.sub === 'gas' ? '' : 'none';
-    if (S.sub === 'solid') { els.solid.setAttribute('y', yPB.toFixed(2)); els.solid.setAttribute('height', (S.ph + 2).toFixed(2)); }
-    else if (S.sub === 'liquid') { els.liq.setAttribute('y', yPB.toFixed(2)); els.liq.setAttribute('height', (S.ph + 1).toFixed(2)); }
-    else if (S.sub === 'gas') {
+    var kd = kind();
+    els.solid.style.display = kd === 'solid' ? '' : 'none';
+    els.liq.style.display = kd === 'liquid' ? '' : 'none';
+    els.gas.style.display = kd === 'gas' ? '' : 'none';
+    if (kd === 'solid') { els.solid.setAttribute('y', yPB.toFixed(2)); els.solid.setAttribute('height', (S.ph + 2).toFixed(2)); }
+    else if (kd === 'liquid') { els.liq.setAttribute('y', yPB.toFixed(2)); els.liq.setAttribute('height', (S.ph + 1).toFixed(2)); }
+    else if (kd === 'gas') {
       els.gcr.setAttribute('y', yPB.toFixed(2)); els.gcr.setAttribute('height', S.ph.toFixed(2));
       els.fog.setAttribute('opacity', clamp(18 / S.ph, .12, .5).toFixed(3));
     }
@@ -335,7 +338,6 @@ window.PistonLab = (function () {
     Array.prototype.forEach.call(document.querySelectorAll('#screen-piston [data-pisub]'), function (b) {
       b.addEventListener('click', function () { select(b.getAttribute('data-pisub')); });
     });
-    $('btn-pi-clear').addEventListener('click', clearAll);
     $('btn-pi-amb').addEventListener('click', function () { if (S.sub) S.amb = true; });
     els.microBtn.addEventListener('click', function () { setMicro(!micro); });
 
