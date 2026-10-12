@@ -27,7 +27,8 @@ window.App = (function () {
     'screen-atom-ch2': 'orange',
     'screen-mode3': 'home',
     'screen-states': 'r1',
-    'screen-temp': 'r2'
+    'screen-temp': 'r2',
+    'screen-piston': 'r4'
   };
 
   function showScreen(id) {
@@ -75,6 +76,17 @@ window.App = (function () {
     var btnBackTemp = document.getElementById('btn-back-to-mode3-tp');
     if (btnBackTemp) btnBackTemp.addEventListener('click', function () {
       if (window.TempLab) window.TempLab.stop();
+      showScreen('screen-mode3');
+    });
+
+    var btnPiston = document.getElementById('btn-piston-nav');
+    if (btnPiston) btnPiston.addEventListener('click', function () {
+      showScreen('screen-piston');
+      if (window.PistonLab) window.PistonLab.start(); // écran visible : tailles mesurables
+    });
+    var btnBackPiston = document.getElementById('btn-back-to-mode3-pi');
+    if (btnBackPiston) btnBackPiston.addEventListener('click', function () {
+      if (window.PistonLab) window.PistonLab.stop();
       showScreen('screen-mode3');
     });
 

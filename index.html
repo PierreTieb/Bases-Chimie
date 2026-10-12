@@ -548,6 +548,10 @@
         <span class="mode-btn__title">Expérience</span>
         <span class="mode-btn__subtitle">Identifie toi-même des substances chimiques</span>
       </button>
+      <button type="button" id="btn-piston-nav" class="mode-btn mode-btn--r4">
+        <span class="mode-btn__title">Propriétés de la matière</span>
+        <span class="mode-btn__subtitle">Comprime, étire, chauffe et refroidis solides, liquides et gaz</span>
+      </button>
     </div>
   </section>
 
@@ -731,6 +735,43 @@
     </div>
   </section>
 
+  <!-- ÉCRAN : PROPRIÉTÉS DE LA MATIÈRE (labo à piston) -->
+  <section id="screen-piston" class="screen screen--sandbox screen--r4">
+    <button type="button" class="btn-back" id="btn-back-to-mode3-pi">← Retour</button>
+    <h1 class="app-title app-title--small">Propriétés de la matière</h1>
+    <p class="app-subtitle">Chauffe, refroidis, comprime ou étire : observe comment le volume change selon l'état de la matière.</p>
+    <div class="pi-toprow">
+      <button type="button" class="st-btn pi-btn st-pick--solid" data-pisub="solid">Solide</button>
+      <button type="button" class="st-btn pi-btn st-pick--liquid" data-pisub="liquid">Liquide</button>
+      <button type="button" class="st-btn pi-btn st-pick--gas" data-pisub="gas">Gaz</button>
+      <button type="button" class="st-btn pi-btn pi-clear" id="btn-pi-clear">Vider</button>
+    </div>
+    <div class="st-stagewrap pi-wrap">
+      <div class="pi-slider" id="pi-slider" aria-label="Curseur chaud en haut, froid en bas"><div class="pi-thumb" id="pi-thumb"></div></div>
+      <div class="st-stage" id="pi-stage"></div>
+      <div class="st-side" id="pi-side">
+        <div class="st-lens">
+          <svg id="pi-ico-lens" viewBox="0 0 24 24" fill="none" stroke="#8A2A20" stroke-width="2.4" stroke-linecap="round"><circle cx="10" cy="10" r="6.5" fill="#fff" fill-opacity=".6"/><path d="M15 15l6 6"/></svg>
+          <svg id="pi-ico-eye" viewBox="0 0 24 24" fill="none" stroke="#8A2A20" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M2 12c3-5 6-7 10-7s7 2 10 7c-3 5-6 7-10 7s-7-2-10-7z" fill="#fff" fill-opacity=".6"/><circle cx="12" cy="12" r="3" fill="#8A2A20"/></svg>
+        </div>
+        <button type="button" class="st-micro-btn" id="btn-pi-micro">Mode Microscopique</button>
+        <p class="st-legend" id="pi-legend" style="display:none"><svg viewBox="0 0 24 22" aria-hidden="true"><polygon points="12,2 2,19 22,19" class="st-tri"/></svg><span>Un triangle : une molécule</span></p>
+        <button type="button" class="st-micro-btn pi-amb" id="btn-pi-amb">Température ambiante</button>
+      </div>
+    </div>
+    <p class="tp-hint">Curseur : en haut on chauffe, en bas on refroidit (relâché, il s'arrête). Tire ou pousse la poignée rouge pour déplacer le piston.</p>
+    <p class="ex-feedback" id="pi-msg"></p>
+    <div class="st-retenir-wrap"><button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-pi-retenir"><span class="mode-btn__title">À retenir</span></button></div>
+
+    <div class="eq-catalog-overlay" id="pi-memo">
+      <div class="eq-catalog-panel">
+        <h2 class="eq-catalog-title">À retenir</h2>
+        <div id="pi-memo-body"></div>
+        <button type="button" class="mode-btn mode-btn--r st-retenir" id="btn-pi-memo-close"><span class="mode-btn__title">Fermer</span></button>
+      </div>
+    </div>
+  </section>
+
   <!-- Ambiance froide (vent et flocons) -->
   <div class="st-cold" id="st-cold" aria-hidden="true"></div>
   <div class="st-cold-tint" id="st-cold-tint" aria-hidden="true"></div>
@@ -757,6 +798,7 @@
   <script src="js/atom-expert.js"></script>
   <script src="js/states-app.js"></script>
   <script src="js/temp-app.js"></script>
+  <script src="js/piston-app.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
