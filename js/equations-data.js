@@ -257,7 +257,7 @@ window.Equations = (function () {
       substances: [
         { label: "le dihydrogène", type: 'reactif', formula: 'H2' },
         { label: "le dichlore", type: 'reactif', formula: 'Cl2' },
-        { label: "du chlorure d'hydrogène", type: 'produit', formula: 'HCl' }
+        { label: "de l'acide chlorhydrique", type: 'produit', formula: 'HCl' }
       ]
     },
     {
@@ -373,7 +373,7 @@ window.Equations = (function () {
       template: "Quand le gaz {0} rencontre le gaz {1}, il apparaît une fumée blanche de {2}.",
       substances: [
         { label: "ammoniac", type: 'reactif', formula: 'NH3' },
-        { label: "chlorure d'hydrogène", type: 'reactif', formula: 'HCl' },
+        { label: "acide chlorhydrique", type: 'reactif', formula: 'HCl' },
         { label: "chlorure d'ammonium", type: 'produit', formula: 'NH4Cl' }
       ]
     },
