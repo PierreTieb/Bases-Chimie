@@ -180,6 +180,7 @@
     var reaction = null;
     var step = 1; // 1 = réactifs, 2 = produits, 3 = formules
     var selected = null;
+    var solved = false;
 
     function typeCount(type) {
       return reaction.substances.filter(function (s) { return s.type === type; }).length;
@@ -255,6 +256,7 @@
         });
       });
       if (allOk) {
+        solved = true;
         els.feedback.textContent = "Bravo, l'équation est complète !";
         els.feedback.className = 'ex-feedback success';
         triggerConfettiFromButton(els.validateBtn);
@@ -266,6 +268,7 @@
     }
 
     function startNewReaction() {
+      solved = false;
       reaction = window.Equations.getRandomReaction('cours');
       step = 1;
       selected = { reactif: new Set(), produit: new Set() };
@@ -299,7 +302,17 @@
     }
 
     document.addEventListener('DOMContentLoaded', init);
-    return { startNewReaction: function () { startNewReaction(); } };
+    // state() : lu par la leçon « La transformation chimique »
+    return {
+      startNewReaction: function () { startNewReaction(); },
+      state: function () {
+        return {
+          step: step, solved: solved,
+          reactifs: !!selected && selected.reactif.size === typeCount('reactif'),
+          produits: !!selected && selected.produit.size === typeCount('produit')
+        };
+      }
+    };
   })();
 
   // ============================================================
@@ -428,6 +441,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', init);
-    return { getScore: function () { return { correct: score.correct, total: score.total }; } };
+    return { start: pickNew, getScore: function () { return { correct: score.correct, total: score.total }; } };
   })();
 })();

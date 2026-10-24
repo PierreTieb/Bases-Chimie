@@ -14,115 +14,92 @@
   <!-- ÉCRAN : ACCUEIL -->
   <section id="screen-home" class="screen active">
     <h1 class="app-title">Les Bases de la Chimie</h1>
-    <p class="app-subtitle">Choisis ton mode pour commencer</p>
+    <p class="app-subtitle">Tout ce qu'il faut savoir sur la matière, les molécules et les atomes au collège</p>
 
-    <p class="mode-caption">Pour comprendre les molécules et les réactions</p>
     <div class="mode-list">
-      <button type="button" id="btn-mode1" class="mode-btn mode-btn--blue">
-        <span class="mode-btn__title">Les molécules</span>
-        <span class="mode-btn__subtitle">Formules chimiques et transformations</span>
+      <button type="button" id="btn-lessons" class="mode-btn mode-btn--blue mode-btn--icon">
+        <span class="mode-btn__title">Leçons</span>
+        <span class="mode-btn__subtitle">Apprendre pas à pas, puis s'entraîner sur chaque notion</span>
+        <svg class="mode-btn__ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M8 10q8-3 16 2v28q-8-5-16-2z" fill="#fff" fill-opacity=".55"/><path d="M40 10q-8-3-16 2v28q8-5 16-2z" fill="#fff" fill-opacity=".35"/><path d="M8 10q8-3 16 2 8-5 16-2v28q-8-3-16 2-8-5-16-2z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/><path d="M24 12v28" stroke="currentColor" stroke-width="2.2"/></svg>
       </button>
-    </div>
-
-    <p class="mode-caption">Pour observer la matière dans tous ses états</p>
-    <div class="mode-list">
-      <button type="button" id="btn-mode3" class="mode-btn mode-btn--r">
-        <span class="mode-btn__title">Transformations physiques</span>
-        <span class="mode-btn__subtitle">Étudie les caractéristiques de la matière</span>
+      <button type="button" id="btn-labo" class="mode-btn mode-btn--green mode-btn--icon">
+        <span class="mode-btn__title">Laboratoire</span>
+        <span class="mode-btn__subtitle">Des paillasses libres pour manipuler la matière, les molécules et les atomes</span>
+        <svg class="mode-btn__ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M19 6h10M21 6v13L10 38a3 3 0 0 0 2.6 4.5h22.8A3 3 0 0 0 38 38L27 19V6" fill="#fff" fill-opacity=".5" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/><path d="M14.5 31h19l3.3 6a2 2 0 0 1-1.8 3H13a2 2 0 0 1-1.8-3z" fill="currentColor" fill-opacity=".35"/><circle cx="21" cy="35" r="1.8" fill="#fff"/><circle cx="27" cy="33" r="1.3" fill="#fff"/></svg>
       </button>
-    </div>
-
-    <p class="mode-caption">Pour découvrir l'atome</p>
-    <div class="mode-list">
-      <button type="button" id="btn-mode2" class="mode-btn mode-btn--green">
-        <span class="mode-btn__title">Atomes et Ions</span>
-        <span class="mode-btn__subtitle">Construis et identifie des atomes</span>
-      </button>
-    </div>
-  </section>
-
-  <!-- ÉCRAN : MODE 1 (sélection des sous-modes) -->
-  <section id="screen-mode1" class="screen">
-    <button type="button" class="btn-back" id="btn-back-to-home">← Retour</button>
-    <h1 class="app-title">Les molécules</h1>
-    <p class="app-subtitle">Choisis ton mode pour commencer</p>
-
-    <p class="mode-caption">Pour découvrir les formules chimiques</p>
-    <div class="mode-list">
-      <button type="button" id="btn-mode1-1" class="mode-btn mode-btn--b1">
-        <span class="mode-btn__title">Construis ta molécule</span>
-        <span class="mode-btn__subtitle">Assemble des atomes et construis tes molécules</span>
-      </button>
-      <button type="button" id="btn-mode1-2" class="mode-btn mode-btn--b2">
-        <span class="mode-btn__title">Teste-toi</span>
-        <span class="mode-btn__subtitle">Identifie et construis des molécules existantes</span>
-      </button>
-    </div>
-
-    <p class="mode-caption">Pour apprendre à maîtriser les équations chimiques</p>
-    <div class="mode-list">
-      <button type="button" id="btn-eq-cours" class="mode-btn mode-btn--b3">
-        <span class="mode-btn__title">Décris une transformation</span>
-        <span class="mode-btn__subtitle">Identifie les réactifs et les produits</span>
-      </button>
-      <button type="button" id="btn-balance" class="mode-btn mode-btn--b4">
-        <span class="mode-btn__title">Équilibre une équation chimique</span>
-        <span class="mode-btn__subtitle">Ajuste une écriture scientifique</span>
-      </button>
-    </div>
-
-    <p class="mode-caption mode-caption--sep">Mets en œuvre tes connaissances dans ce challenge</p>
-    <div class="mode-list">
-      <button type="button" id="btn-eq-exercice" class="mode-btn mode-btn--glass mode-btn--trophy">
+      <button type="button" id="btn-challenge" class="mode-btn mode-btn--yellow mode-btn--trophy">
         <span class="mode-btn__title">Challenge</span>
-        <span class="mode-btn__subtitle">Teste ta maîtrise de l'écriture chimique</span>
+        <span class="mode-btn__subtitle">2 minutes pour marquer un maximum de points</span>
+        <span class="mode-btn__best" id="home-best" hidden></span>
         <span class="mode-btn__trophy" aria-hidden="true">🏆</span>
       </button>
     </div>
   </section>
 
-  <!-- ÉCRAN : MODE 2 (sélection des sous-modes) -->
-  <section id="screen-mode2" class="screen">
-    <button type="button" class="btn-back" id="btn-back-to-home-2">← Retour</button>
-    <h1 class="app-title">Atomes et Ions</h1>
-    <p class="app-subtitle">Choisis ton mode pour commencer</p>
+  <!-- ÉCRAN : MENU DES LEÇONS (cartes générées par lessons.js) -->
+  <section id="screen-lessons" class="screen">
+    <button type="button" class="btn-back" id="btn-back-lessons">← Retour</button>
+    <h1 class="app-title">Leçons</h1>
+    <p class="app-subtitle">Choisis une leçon : suis-la pas à pas ou entraîne-toi</p>
+    <div id="lessons-list"></div>
+  </section>
 
-    <p class="mode-caption">Pour travailler les atomes</p>
-    <div class="mode-list">
-      <button type="button" id="btn-atom-cours-nav" class="mode-btn mode-btn--g1">
-        <span class="mode-btn__title">Construire ton atome</span>
-        <span class="mode-btn__subtitle">Ajoute protons, neutrons et électrons</span>
-      </button>
-      <button type="button" id="btn-atom-exercice-nav" class="mode-btn mode-btn--g2">
-        <span class="mode-btn__title">S'exercer avec les atomes</span>
-        <span class="mode-btn__subtitle">Construis ou identifie l'atome demandé</span>
-      </button>
-    </div>
+  <!-- ÉCRAN : LABORATOIRE (choix d'une paillasse) -->
+  <section id="screen-labo" class="screen">
+    <button type="button" class="btn-back" id="btn-back-labo">← Retour</button>
+    <h1 class="app-title">Laboratoire</h1>
+    <p class="app-subtitle">Choisis une paillasse et manipule librement</p>
+    <div class="mode-list" id="labo-list"></div>
+  </section>
 
-    <p class="mode-caption">Pour découvrir ce que sont les ions</p>
-    <div class="mode-list">
-      <button type="button" id="btn-ion-cours-nav" class="mode-btn mode-btn--g3">
-        <span class="mode-btn__title">Découvrir les ions</span>
-        <span class="mode-btn__subtitle">Transforme un atome en ion, pas à pas</span>
-      </button>
-      <button type="button" id="btn-ion-exercice-nav" class="mode-btn mode-btn--g4">
-        <span class="mode-btn__title">Exerce-toi avec les ions</span>
-        <span class="mode-btn__subtitle">Construis ou identifie l'ion demandé</span>
-      </button>
-      <button type="button" id="btn-lab-nav" class="mode-btn mode-btn--g5">
-        <span class="mode-btn__title">Identifier les ions</span>
-        <span class="mode-btn__subtitle">Soude, nitrate d'argent et flamme</span>
-      </button>
+  <!-- ÉCRAN : LEÇON SUR LE pH (échelle interactive) -->
+  <section id="screen-ph" class="screen screen--sandbox screen--g4">
+    <button type="button" class="btn-back" id="btn-back-ph">← Retour</button>
+    <h1 class="app-title app-title--small">Acides et bases</h1>
+    <div class="ph-card">
+      <div class="ph-value"><span>pH =</span><b id="ph-num">7</b></div>
+      <p class="ph-kind" id="ph-kind">Solution neutre</p>
+      <div class="ph-scale" aria-hidden="true">
+        <div class="ph-bar"></div>
+        <div class="ph-ticks"><span>0</span><span>7</span><span>14</span></div>
+        <div class="ph-zones"><span class="ph-z--acid">Acide</span><span class="ph-z--neutral">Neutre</span><span class="ph-z--base">Basique</span></div>
+      </div>
+      <input type="range" id="ph-range" class="ph-range" min="0" max="14" step="1" value="7" aria-label="Valeur du pH">
     </div>
+  </section>
 
-    <p class="mode-caption mode-caption--sep">Mets en œuvre tes connaissances dans ce challenge</p>
-    <div class="mode-list">
-      <button type="button" id="btn-atom-challenge" class="mode-btn mode-btn--glass mode-btn--trophy">
-        <span class="mode-btn__title">Challenge</span>
-        <span class="mode-btn__subtitle">Teste ta maîtrise des atomes et des ions</span>
-        <span class="mode-btn__trophy" aria-hidden="true">🏆</span>
-      </button>
+  <!-- ÉCRAN : ENTRAÎNEMENT À CHOIX MULTIPLES (questions générées par qcm.js) -->
+  <section id="screen-qcm" class="screen screen--sandbox">
+    <button type="button" class="btn-back" id="btn-back-qcm">← Retour</button>
+    <h1 class="app-title app-title--small" id="qcm-title">Entraînement</h1>
+    <div class="exercise-topbar"><span class="ex-score" id="qcm-score">Score : 0 / 0</span></div>
+    <div id="qcm-host"></div>
+    <div class="ex-actions"><button type="button" class="btn-primary" id="btn-qcm-next" style="display:none;">Question suivante</button></div>
+  </section>
+
+  <!-- ÉCRAN : CHALLENGE (règles, meilleurs scores) -->
+  <section id="screen-challenge" class="screen">
+    <button type="button" class="btn-back" id="btn-back-challenge">← Retour</button>
+    <h1 class="app-title">Challenge</h1>
+    <p class="app-subtitle">2 minutes pour marquer un maximum de points !</p>
+    <div class="ch-rules">
+      <div class="ch-rule"><b>1 pt</b><span>Question à choix</span></div>
+      <div class="ch-rule"><b>3 pts</b><span>Construire ou identifier un atome, un ion, une molécule</span></div>
+      <div class="ch-rule"><b>5 pts</b><span>Expérience : équation, ion ou substance à trouver</span></div>
     </div>
+    <p class="ch-rules__more">Chaque erreur fait perdre 1 point à la question en cours. Passer une question coûte 5 secondes.</p>
+    <div class="ch-bests" id="ch-bests"></div>
+    <div class="ex-actions"><button type="button" class="btn-primary ch-go" id="btn-ch-start">Commencer</button></div>
+  </section>
+
+  <!-- ÉCRAN : QUESTION À CHOIX DU CHALLENGE -->
+  <section id="screen-ch-qcm" class="screen screen--sandbox">
+    <div id="ch-qcm-host"></div>
+  </section>
+
+  <!-- ÉCRAN : RÉSULTATS DU CHALLENGE -->
+  <section id="screen-ch-results" class="screen">
+    <div id="ch-results"></div>
   </section>
 
   <!-- ÉCRAN : MODE 1-1-COURS (bac à sable de construction moléculaire) -->
@@ -242,30 +219,7 @@
     </div>
   </section>
 
-  <!-- ÉCRAN : SOUS-MENU CHALLENGE (niveaux 1, 2, 3) -->
-  <section id="screen-eq-practice" class="screen">
-    <button type="button" class="btn-back" id="btn-back-to-mode1-practice">← Retour</button>
-    <h1 class="app-title">Challenge</h1>
-    <p class="app-subtitle">Choisis ton niveau</p>
-
-    <div class="mode-list">
-      <button type="button" id="btn-eq-lvl1" class="mode-btn mode-btn--yellow">
-        <span class="mode-btn__title">Écrire une équation chimique</span>
-        <span class="mode-btn__level">Niveau 1</span>
-      </button>
-      <button type="button" id="btn-eq-lvl2" class="mode-btn mode-btn--orange">
-        <span class="mode-btn__title">Équilibrer une équation</span>
-        <span class="mode-btn__level">Niveau 2</span>
-      </button>
-      <button type="button" id="btn-eq-lvl3" class="mode-btn mode-btn--red mode-btn--trophy">
-        <span class="mode-btn__title">Mode Expert</span>
-        <span class="mode-btn__level">Niveau 3</span>
-        <span class="mode-btn__trophy" aria-hidden="true">🏆</span>
-      </button>
-    </div>
-  </section>
-
-  <!-- ÉCRAN : NIVEAU 2 (Équilibrer une équation) -->
+  <!-- ÉCRAN : ENTRAÎNEMENT « Équilibrer une équation » -->
   <section id="screen-balance-exercice" class="screen screen--sandbox screen--orange">
     <button type="button" class="btn-back" id="btn-back-to-practice-bx">← Retour</button>
     <h1 class="app-title app-title--small">Équilibrer une équation</h1>
@@ -288,10 +242,8 @@
     </div>
   </section>
 
-  <!-- ÉCRAN : NIVEAU 3 (Mode Expert) -->
+  <!-- ÉCRAN : QUESTION D'ÉQUATION DU CHALLENGE (écrire ou équilibrer, géré par expert-app.js) -->
   <section id="screen-expert" class="screen screen--sandbox screen--red">
-    <button type="button" class="btn-back" id="btn-back-to-practice-exp">← Retour</button>
-    <p class="exp-progress" id="exp-progress"></p>
     <h1 class="exp-instruction" id="exp-instruction"></h1>
 
     <div id="exp-run">
@@ -311,22 +263,6 @@
 
       <div class="ex-actions">
         <button type="button" class="btn-primary" id="btn-exp-validate">Valider</button>
-        <button type="button" class="btn-primary btn-primary--alt" id="btn-exp-new" style="display:none;">Nouvelle transformation</button>
-        <button type="button" class="btn-primary" id="btn-exp-next" style="display:none;">Question suivante</button>
-      </div>
-    </div>
-
-    <div class="exp-recap" id="exp-recap" style="display:none;">
-      <div class="exp-recap-card">
-        <div class="exp-trophy" id="exp-trophy">🏆</div>
-        <div class="exp-final" id="exp-final"></div>
-        <div class="exp-time" id="exp-time"></div>
-        <p class="exp-message" id="exp-message"></p>
-        <div class="ex-actions">
-          <button type="button" class="btn-primary btn-primary--alt" id="btn-exp-tuto" style="display:none;">Revoir le tuto</button>
-          <button type="button" class="btn-primary" id="btn-exp-replay">Rejouer</button>
-          <button type="button" class="btn-secondary" id="btn-exp-menu">Retour au menu</button>
-        </div>
       </div>
     </div>
 
@@ -358,7 +294,7 @@
       <button type="button" class="btn-secondary" id="btn-bal-prev">Précédent</button>
       <button type="button" class="btn-primary" id="btn-bal-next">Suivant</button>
       <button type="button" class="btn-primary btn-primary--alt" id="btn-bal-redo" style="display:none;">Refaire le tuto</button>
-      <button type="button" class="btn-primary" id="btn-bal-menu" style="display:none;">Choisir un autre mode</button>
+      <button type="button" class="btn-primary" id="btn-bal-menu" style="display:none;">Retour aux leçons</button>
     </div>
   </section>
 
@@ -474,86 +410,22 @@
         </div>
         <div class="ex-actions">
           <button type="button" class="btn-primary btn-primary--alt" id="btn-ionc-again">Essayer un autre ion</button>
-          <button type="button" class="btn-primary" id="btn-ionc-menu">Choisir un autre mode</button>
+          <button type="button" class="btn-primary" id="btn-ionc-menu">Retour aux leçons</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ÉCRANS : exercice ions et challenges (contenu généré par ions-app.js) -->
+  <!-- ÉCRAN : exercice ions (contenu généré par ions-app.js) -->
   <section id="screen-ion-exercice" class="screen screen--sandbox screen--g4"></section>
-
-  <section id="screen-atom-challenge" class="screen">
-    <button type="button" class="btn-back" id="btn-back-to-mode2-ch">← Retour</button>
-    <h1 class="app-title">Challenge</h1>
-    <p class="app-subtitle">Choisis ton niveau</p>
-    <div class="mode-list">
-      <button type="button" id="btn-ach-lvl1" class="mode-btn mode-btn--yellow">
-        <span class="mode-btn__title">Atomes neutres</span>
-        <span class="mode-btn__level">Niveau 1</span>
-      </button>
-      <button type="button" id="btn-ach-lvl2" class="mode-btn mode-btn--orange">
-        <span class="mode-btn__title">Les ions</span>
-        <span class="mode-btn__level">Niveau 2</span>
-      </button>
-      <button type="button" id="btn-ach-lvl3" class="mode-btn mode-btn--red mode-btn--trophy">
-        <span class="mode-btn__title">Mode Expert</span>
-        <span class="mode-btn__level">Niveau 3</span>
-        <span class="mode-btn__trophy" aria-hidden="true">🏆</span>
-      </button>
-    </div>
-  </section>
-
-  <section id="screen-atom-ch1" class="screen screen--sandbox screen--yellow"></section>
-  <section id="screen-atom-ch2" class="screen screen--sandbox screen--orange"></section>
 
   <!-- ÉCRANS : LABO D'IDENTIFICATION DES IONS (contenu généré par lab-app.js) -->
   <section id="screen-lab" class="screen screen--sandbox screen--g5"></section>
   <section id="screen-lab-test" class="screen screen--sandbox screen--g5"></section>
 
-  <!-- ÉCRANS : MODE EXPERT DES ATOMES ET IONS (questions générées par ions-app.js / lab-app.js) -->
-  <section id="screen-atom-expert-q" class="screen screen--sandbox screen--red"></section>
-  <section id="screen-atom-expert-lab" class="screen screen--sandbox screen--red"></section>
-  <section id="screen-atom-expert-recap" class="screen screen--red">
-    <h1 class="app-title app-title--small">Mode Expert</h1>
-    <div class="exp-recap-card">
-      <div class="exp-trophy" id="aer-trophy">🏆</div>
-      <div class="exp-final" id="aer-final"></div>
-      <div class="exp-time" id="aer-time"></div>
-      <p class="exp-message" id="aer-message"></p>
-      <div class="ex-actions">
-        <button type="button" class="btn-primary btn-primary--alt" id="aer-train" style="display:none;">S'entraîner</button>
-        <button type="button" class="btn-primary" id="aer-replay">Rejouer</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ÉCRAN : MODE 3 (Transformations physiques) -->
-  <section id="screen-mode3" class="screen">
-    <button type="button" class="btn-back" id="btn-back-to-home-3">← Retour</button>
-    <h1 class="app-title">Transformations physiques</h1>
-    <p class="app-subtitle">Choisis ton mode pour commencer</p>
-
-    <p class="mode-caption">Pour manipuler la matière</p>
-    <div class="mode-list">
-      <button type="button" id="btn-states-nav" class="mode-btn mode-btn--r1">
-        <span class="mode-btn__title">Changements d'états</span>
-        <span class="mode-btn__subtitle">Manipule la matière et change d'état</span>
-      </button>
-      <button type="button" id="btn-temp-nav" class="mode-btn mode-btn--r2">
-        <span class="mode-btn__title">Température de changement d'état</span>
-        <span class="mode-btn__subtitle">Teste différentes matières dans différentes conditions</span>
-      </button>
-      <button type="button" id="btn-exp-nav" class="mode-btn mode-btn--r3">
-        <span class="mode-btn__title">Expérience</span>
-        <span class="mode-btn__subtitle">Identifie toi-même des substances chimiques</span>
-      </button>
-      <button type="button" id="btn-piston-nav" class="mode-btn mode-btn--r4">
-        <span class="mode-btn__title">Propriétés de la matière</span>
-        <span class="mode-btn__subtitle">Comprime, étire, chauffe et refroidis solides, liquides et gaz</span>
-      </button>
-    </div>
-  </section>
+  <!-- ÉCRANS : QUESTIONS ATOMES, IONS ET LABO DU CHALLENGE (générés par ions-app.js / lab-app.js) -->
+  <section id="screen-atom-expert-q" class="screen screen--sandbox screen--g2"></section>
+  <section id="screen-atom-expert-lab" class="screen screen--sandbox screen--g5"></section>
 
   <!-- ÉCRAN : CHANGEMENTS D'ÉTATS (laboratoire : l'eau) -->
   <section id="screen-states" class="screen screen--sandbox screen--r1">
@@ -774,6 +646,21 @@
   <div class="st-cold" id="st-cold" aria-hidden="true"></div>
   <div class="st-cold-tint" id="st-cold-tint" aria-hidden="true"></div>
 
+  <!-- Bandeau du challenge : visible par-dessus l'écran de chaque question -->
+  <div class="ch-hud" id="ch-hud" hidden>
+    <button type="button" class="ch-hud__quit" id="ch-quit" aria-label="Quitter la partie">✕</button>
+    <div class="ch-hud__time" id="ch-time" aria-live="off">3:00</div>
+    <div class="ch-hud__score"><small>Score</small><b id="ch-score">0</b></div>
+    <div class="ch-hud__stake" id="ch-stake" title="Points en jeu sur cette question"></div>
+    <button type="button" class="ch-hud__pass" id="ch-pass">Passer <small>−5 s</small></button>
+    <span class="ch-hud__pop" id="ch-pop" aria-hidden="true"></span>
+  </div>
+
+  <!-- Fenêtre partagée des leçons et du challenge -->
+  <div class="eq-catalog-overlay pop-overlay" id="pop-overlay">
+    <div class="eq-catalog-panel pop-card" id="pop-card" role="dialog" aria-modal="true"></div>
+  </div>
+
   <canvas id="confetti-canvas"></canvas>
 
   <script src="js/units.js"></script>
@@ -793,10 +680,14 @@
   <script src="js/atoms-app.js"></script>
   <script src="js/ions-app.js"></script>
   <script src="js/lab-app.js"></script>
-  <script src="js/atom-expert.js"></script>
   <script src="js/states-app.js"></script>
   <script src="js/temp-app.js"></script>
   <script src="js/piston-app.js"></script>
+  <script src="js/pop.js"></script>
+  <script src="js/qcm.js"></script>
+  <script src="js/lessons-data.js"></script>
+  <script src="js/lessons.js"></script>
+  <script src="js/challenge.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

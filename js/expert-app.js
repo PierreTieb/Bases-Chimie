@@ -1,45 +1,32 @@
 // expert-app.js
-// Mode Expert (niveau 3) : 3 questions enchaînées, puis un récapitulatif (note /100 + chrono).
-//   Q1 : écrire l'équation qui décrit la transformation (formules)
-//   Q2 : équilibrer une équation donnée (coefficients)
-//   Q3 : écrire l'équation ET l'équilibrer (formules + coefficients)
-// Pas de "résoudre et passer" : après un échec on peut seulement demander une NOUVELLE
-// transformation du même type. Il faut réussir les 3 questions pour voir le score.
-//
-// Note : X = nombre de cases à remplir dans les 3 transformations finalement réussies.
-//   note = 100 - 50 * (cases rouges apparues) / X, arrondie à l'entier supérieur, bornée à [0, 100].
+// Question d'équation du Challenge (une à la fois) :
+//   'write'   : écrire l'équation qui décrit la transformation (formules)
+//   'balance' : équilibrer une équation donnée (coefficients)
+//   'mix'     : écrire l'équation ET l'équilibrer (formules + coefficients)
+// Le Challenge reçoit les résultats par ses crochets : onFail() à chaque validation fausse,
+// onSolved() quand toutes les cases sont vertes.
 window.Expert = (function () {
   'use strict';
 
-  var PENALTY = 50;   // points retirés pour une case rouge = PENALTY / X
-
-  var QUESTIONS = [
-    { key: 'write',   instruction: "Écrire l'équation qui décrit cette transformation",
+  var QUESTIONS = {
+    write:   { instruction: "Écris l'équation qui décrit cette transformation",
       phrase: true,  scene: false, formulas: true,  coefs: false, success: "Bravo, l'équation est correcte !" },
-    { key: 'balance', instruction: "Équilibre correctement cette équation chimique",
+    balance: { instruction: "Équilibre correctement cette équation chimique",
       phrase: false, scene: true,  formulas: false, coefs: true,  success: "Bravo, l'équation est équilibrée !" },
-    { key: 'mix',     instruction: "Écris l'équation chimique de cette transformation ET équilibre-la correctement.",
+    mix:     { instruction: "Écris l'équation chimique de cette transformation ET équilibre-la correctement.",
       phrase: true,  scene: true,  formulas: true,  coefs: true,  success: "Bravo, l'équation est écrite et équilibrée !" }
-  ];
-
-  var MESSAGES = [
-    { min: 100, text: "Excellent, tu maîtrises les équations chimiques !", color: '#7B3FE4', trophy: true },
-    { min: 80,  text: "C'est un très bon score, réessaye et bats ton record !", color: '#1F7A3D' },
-    { min: 50,  text: "C'est bien, vérifie bien tes propositions, compte bien les atomes de chaque côté la prochaine fois !", color: '#6BAA2A' },
-    { min: 25,  text: "C'est pas mal, continue de t'entraîner pour améliorer ce score.", color: '#E9822B' },
-    { min: 0,   text: "Tu es arrivé(e) au bout, réessaye une fois pour progresser, ou retourne voir le tuto pour comprendre tes erreurs.", color: '#E8766D', tuto: true }
-  ];
+  };
 
   var els = {};
   var scene = null;
-  var run = null;      // { q, t0, t1, X, reds, sigs }
-  var cur = null;      // { reaction, subs, solved, failed }
+  var run = null;      // { key, hooks, sigs }
+  var cur = null;      // { reaction, subs, solved }
   var coefInputs = [];
   var formulaInputs = [];
 
   // ---------- Outils ----------
   function parse(f) { return f ? window.Molecules.parseFormulaInput(f) : null; }
-  function cfg() { return QUESTIONS[run.q]; }
+  function cfg() { return QUESTIONS[run.key]; }
   function coefValue(i) {
     var inp = coefInputs[i];
     return (!inp || inp.value === '') ? 1 : parseInt(inp.value, 10);
@@ -51,14 +38,14 @@ window.Expert = (function () {
 
   // ---------- Tirage de la transformation ----------
   function pickReaction() {
-    var E = window.Equations, key = cfg().key, r;
+    var E = window.Equations, key = run.key, r;
     if (key === 'write') r = E.getRandomReaction('expert-1', run.sigs);
     else if (key === 'balance') r = E.getRandomBalance('expert-2', run.sigs);
     else r = E.getRandomSolvedReaction('expert-3', run.sigs);
+    run.sigs.push(window.Equations.sigOf(r.substances));
     cur = {
       reaction: r,
       solved: false,
-      failed: false,
       subs: r.substances.map(function (s) {
         return { formula: s.formula, type: s.type, coef: s.coef || 1, counts: parse(s.formula) };
       })
@@ -88,7 +75,6 @@ window.Expert = (function () {
 
   function buildQuestion() {
     var c = cfg();
-    els.progress.textContent = 'Question ' + (run.q + 1) + ' / ' + QUESTIONS.length;
     els.instruction.textContent = c.instruction;
     setFeedback('', '');
 
@@ -109,16 +95,14 @@ window.Expert = (function () {
       cur.subs.forEach(function (s, i) { updateSlot(i); });
     }
 
-    // Le catalogue : sous l'équation (Q1), dans le coin de la scène (Q3), absent en Q2.
-    if (c.key === 'write') { els.catQ1.appendChild(els.catBtn); els.catBtn.style.display = ''; }
-    else if (c.key === 'mix') { els.sceneFoot.appendChild(els.catBtn); els.catBtn.style.display = ''; }
+    // Le catalogue : sous l'équation pour écrire, dans le coin de la scène pour écrire et équilibrer.
+    if (run.key === 'write') { els.catQ1.appendChild(els.catBtn); els.catBtn.style.display = ''; }
+    else if (run.key === 'mix') { els.sceneFoot.appendChild(els.catBtn); els.catBtn.style.display = ''; }
     else { els.catBtn.style.display = 'none'; }
-    els.catQ1.style.display = c.key === 'write' ? '' : 'none';
+    els.catQ1.style.display = run.key === 'write' ? '' : 'none';
 
     els.validateBtn.style.display = '';
     els.validateBtn.disabled = false;
-    els.newBtn.style.display = 'none';
-    els.nextBtn.style.display = 'none';
 
     window.EqUI.fitEquation(els.equation);
     if (c.scene) scene.layout();
@@ -142,7 +126,7 @@ window.Expert = (function () {
   // ---------- Saisie ----------
   function onInput(e) {
     var t = e.target;
-    if (!t.classList || cur.solved) return;
+    if (!t.classList || !cur || cur.solved) return;
     var i = parseInt(t.getAttribute('data-idx'), 10);
     if (isNaN(i)) return;
     if (t.classList.contains('eq-coef')) {
@@ -192,20 +176,20 @@ window.Expert = (function () {
   }
 
   function onValidate() {
-    if (cur.solved) return;
+    if (!cur || cur.solved) return;
     var c = cfg();
     var match = c.formulas ? matchFormulas() : null;
-    var reds = 0, allGreen = true, formulasOk = true;
+    var allGreen = true, formulasOk = true;
 
     cur.subs.forEach(function (s, i) {
       if (c.formulas) {
         var okF = match[i] !== -1;
         formulaInputs[i].classList.remove('eq-blank--ok', 'eq-blank--bad');
         formulaInputs[i].classList.add(okF ? 'eq-blank--ok' : 'eq-blank--bad');
-        if (!okF) { reds++; allGreen = false; formulasOk = false; }
+        if (!okF) { allGreen = false; formulasOk = false; }
       }
       if (c.coefs) {
-        // Coefficient attendu : celui de la substance reconnue (Q3) ou de la zone (Q2).
+        // Coefficient attendu : celui de la substance reconnue (écrire et équilibrer) ou de la zone (équilibrer).
         // Formule non reconnue : le coefficient ne peut pas être jugé, il reste neutre.
         var expected = c.formulas ? (match[i] !== -1 ? cur.subs[match[i]].coef : null) : s.coef;
         coefInputs[i].classList.remove('eq-coef--ok', 'eq-coef--bad');
@@ -214,107 +198,48 @@ window.Expert = (function () {
         } else {
           var okC = coefValue(i) === expected;
           coefInputs[i].classList.add(okC ? 'eq-coef--ok' : 'eq-coef--bad');
-          if (!okC) { reds++; allGreen = false; }
+          if (!okC) allGreen = false;
         }
       }
     });
-    run.reds += reds;
 
     if (allGreen) {
       onSolved();
       return;
     }
-    cur.failed = true;
-    els.newBtn.style.display = 'inline-block';
     var balanced = c.coefs && formulasOk && isBalanced(function (i) {
       return c.formulas ? cur.subs[match[i]].counts : cur.subs[i].counts;
     });
     if (balanced) {
       setFeedback("Les atomes sont bien équilibrés, mais utilise les plus petits coefficients possibles.", 'error');
     } else {
-      setFeedback("Certaines cases sont en rouge : corrige-les et revalide, ou demande une nouvelle transformation.", 'error');
+      setFeedback("Certaines cases sont en rouge : corrige-les et revalide.", 'error');
     }
+    if (run.hooks.onFail) run.hooks.onFail();
   }
 
   function onSolved() {
-    var c = cfg();
     cur.solved = true;
-    run.X += cur.subs.length * ((c.formulas ? 1 : 0) + (c.coefs ? 1 : 0));
-    run.sigs.push(window.Equations.sigOf(cur.reaction.substances));
     els.equation.querySelectorAll('input').forEach(function (inp) { inp.readOnly = true; });
-    setFeedback(c.success, 'success');
+    setFeedback(cfg().success, 'success');
     window.EqUI.confetti(els.validateBtn);
     els.validateBtn.style.display = 'none';
-    els.newBtn.style.display = 'none';
-    var last = run.q === QUESTIONS.length - 1;
-    if (last) run.t1 = Date.now();                  // le chrono s'arrête à la dernière bonne réponse
-    els.nextBtn.textContent = last ? 'Voir mon score' : 'Question suivante';
-    els.nextBtn.style.display = 'inline-block';
-  }
-
-  function onNew() {
-    if (cur.solved) return;
-    pickReaction();
-    buildQuestion();
-  }
-
-  function onNext() {
-    if (!cur.solved) return;
-    if (run.q < QUESTIONS.length - 1) {
-      run.q++;
-      pickReaction();
-      buildQuestion();
-    } else {
-      showRecap();
-    }
-  }
-
-  // ---------- Récapitulatif ----------
-  function formatTime(ms) {
-    var secs = Math.round(ms / 1000), m = Math.floor(secs / 60), s = secs % 60;
-    return m > 0 ? m + ' min ' + (s < 10 ? '0' : '') + s + ' s' : s + ' s';
-  }
-
-  function computeScore() {
-    var raw = 100 - PENALTY * run.reds / run.X;
-    return Math.max(0, Math.min(100, Math.ceil(raw - 1e-9)));   // toujours à l'entier supérieur
-  }
-
-  function showRecap() {
-    var score = computeScore();
-    var msg = MESSAGES.filter(function (m) { return score >= m.min; })[0];
-
-    els.run.style.display = 'none';
-    els.progress.style.display = 'none';
-    els.instruction.style.display = 'none';
-    els.recap.style.display = '';
-
-    els.trophy.style.display = msg.trophy ? '' : 'none';
-    els.final.textContent = score + ' / 100';
-    els.time.textContent = '\u23F1 ' + formatTime(run.t1 - run.t0);
-    els.message.textContent = msg.text;
-    els.message.style.color = msg.color;
-    els.tutoBtn.style.display = msg.tuto ? '' : 'none';
-    if (msg.trophy) window.EqUI.confetti(els.final);
+    if (run.hooks.onSolved) run.hooks.onSolved();
   }
 
   // ---------- Démarrage ----------
-  // Appelé à chaque entrée dans l'écran (il est alors visible, donc mesurable).
-  function start() {
-    run = { q: 0, t0: Date.now(), t1: null, X: 0, reds: 0, sigs: [] };
-    els.recap.style.display = 'none';
-    els.run.style.display = '';
-    els.progress.style.display = '';
-    els.instruction.style.display = '';
+  // Appelé une fois l'écran visible (la scène doit pouvoir se mesurer).
+  // sigs : équations déjà tirées pendant la partie, pour éviter les répétitions.
+  function startOne(key, hooks, sigs) {
+    run = { key: key, hooks: hooks || {}, sigs: sigs || [] };
+    document.getElementById('exp-catalog-overlay').style.display = 'none';   // resté ouvert à la question précédente
     pickReaction();
     buildQuestion();
   }
 
   function init() {
     var $ = function (id) { return document.getElementById(id); };
-    els.progress = $('exp-progress');
     els.instruction = $('exp-instruction');
-    els.run = $('exp-run');
     els.phrase = $('exp-phrase');
     els.scene = $('exp-scene');
     els.sceneFoot = $('exp-scene-foot');
@@ -323,15 +248,7 @@ window.Expert = (function () {
     els.catBtn = $('btn-exp-catalog');
     els.feedback = $('exp-feedback');
     els.validateBtn = $('btn-exp-validate');
-    els.newBtn = $('btn-exp-new');
-    els.nextBtn = $('btn-exp-next');
-    els.recap = $('exp-recap');
-    els.trophy = $('exp-trophy');
-    els.final = $('exp-final');
-    els.time = $('exp-time');
-    els.message = $('exp-message');
-    els.tutoBtn = $('btn-exp-tuto');
-    if (!els.run || !els.equation) return;
+    if (!els.equation) return;
 
     scene = window.BalanceScene.create($('exp-row'));
     window.EqUI.setupEquation(els.equation);        // indices automatiques + une seule ligne
@@ -339,21 +256,13 @@ window.Expert = (function () {
     window.EqUI.setupCatalog('exp');
 
     els.validateBtn.addEventListener('click', onValidate);
-    els.newBtn.addEventListener('click', onNew);
-    els.nextBtn.addEventListener('click', onNext);
-    $('btn-exp-replay').addEventListener('click', start);
-    $('btn-exp-menu').addEventListener('click', function () { window.App.showScreen('screen-eq-practice'); });
-    els.tutoBtn.addEventListener('click', function () {
-      window.App.showScreen('screen-balance');
-      if (window.Balance) window.Balance.start();
-    });
     window.addEventListener('resize', function () {
       if (!run || !cur) return;
       window.EqUI.fitEquation(els.equation);
-      if (scene) scene.layout();
+      if (cfg().scene) scene.layout();
     });
   }
 
   document.addEventListener('DOMContentLoaded', init);
-  return { start: start };
+  return { startOne: startOne };
 })();

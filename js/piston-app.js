@@ -86,7 +86,7 @@ window.PistonLab = (function () {
   // ---------- État ----------
   function fresh(keepPiston) {
     var ph = keepPiston ? S.ph : H.none, pv = keepPiston ? S.pv : 0;
-    S = { sub: null, tau: T0, k: 0, amb: false, ph: ph, pv: pv, pdown: 0, drag: null, ref: H.none, ap: 1, cond: false, t: 0 };
+    S = { sub: null, tau: T0, k: 0, amb: false, ph: ph, pv: pv, pdown: 0, drag: null, ref: H.none, ap: 1, cond: false, t: 0, tried: false };
   }
 
   function msg(t, cls) { els.msg.textContent = t; els.msg.className = 'ex-feedback' + (cls ? ' ' + cls : ''); }
@@ -250,6 +250,7 @@ window.PistonLab = (function () {
   }
 
   function lockedMsg() {
+    S.tried = true;                                              // on a essayé de bouger le piston d'un solide ou d'un liquide
     var h = $('pi-handle');
     h.classList.remove('pi-shake'); void h.getBoundingClientRect(); h.classList.add('pi-shake');
     if (!S.sub) msg(MSG_START, 'reveal');
@@ -375,5 +376,10 @@ window.PistonLab = (function () {
   }
 
   document.addEventListener('DOMContentLoaded', init);
-  return { start: start, stop: stop };
+  // state() : lu par la leçon « Propriétés des gaz »
+  return {
+    start: start, stop: stop,
+    choose: function (sub) { select(sub); },             // leçon : reprise d'une étape
+    state: function () { return { sub: S.sub, ph: S.ph, ref: S.ref, tau: S.tau, cond: S.cond, drag: !!S.drag, tried: S.tried }; }
+  };
 })();

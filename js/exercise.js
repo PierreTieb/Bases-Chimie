@@ -8,6 +8,7 @@ window.Exercise = (function () {
   var solved = false;
   var revealing = false;
   var score = { correct: 0, total: 0 };
+  var hooks = null;            // Challenge : { onSolved, onFail } (null en entraînement)
 
   function countsEqual(a, b) {
     var ak = Object.keys(a).filter(function (k) { return a[k] > 0; });
@@ -35,10 +36,10 @@ window.Exercise = (function () {
     });
   }
 
-  function pickQuestion() {
+  function pickQuestion(forcedType) {
     var pool = window.Molecules.getAllKnown();
     var entry = window.Generator.pickRandom(pool);
-    var type = window.Generator.pickRandom(['identify', 'build']);
+    var type = forcedType || window.Generator.pickRandom(['identify', 'build']);
     return { type: type, name: entry.name, counts: entry.counts, formula: entry.formula };
   }
 
@@ -52,10 +53,10 @@ window.Exercise = (function () {
     els.skipBtn.disabled = !enabled;
   }
 
-  function showQuestion() {
+  function showQuestion(forcedType) {
     solved = false;
     revealing = false;
-    current = pickQuestion();
+    current = pickQuestion(forcedType);
     resetFeedback();
     hideName();
     setButtonsEnabled(true);
@@ -133,11 +134,13 @@ window.Exercise = (function () {
       if (current.type === 'identify') els.formulaInput.disabled = true;
       els.skipBtn.style.display = 'inline-block';
       els.skipBtn.textContent = 'Molécule suivante';
+      if (hooks && hooks.onSolved) hooks.onSolved();
     } else {
       // Pas de réponse révélée, pas de blocage : on peut réessayer librement.
       els.feedback.textContent = "Ce n'est pas la bonne formule, réessaie.";
       els.feedback.className = 'ex-feedback error';
       els.skipBtn.style.display = 'inline-block';
+      if (hooks && hooks.onFail) hooks.onFail();
     }
   }
 
@@ -204,6 +207,10 @@ window.Exercise = (function () {
 
   return {
     showQuestion: showQuestion,
+    // Entraînement « Teste-toi » : questions au hasard, sans crochets
+    startTraining: function () { hooks = null; showQuestion(); },
+    // Question du Challenge : type 'identify' ou 'build' imposé
+    startChallenge: function (type, h) { hooks = h || null; showQuestion(type); },
     getScore: function () { return { correct: score.correct, total: score.total }; }
   };
 })();

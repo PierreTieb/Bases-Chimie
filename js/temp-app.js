@@ -29,6 +29,7 @@ window.TempLab = (function () {
   ];
   var ALL = FAM[0].l.concat(FAM[1].l);
   var mode = 'free', locked = false, X = {}, S = {}, P = [], SLOTS = [], els = {}, raf = null, lastT = 0, micro = false, ax = { x: 10, y0: 0, y1: 50 };
+  var hooks = null;                                    // Challenge : { onSolved, onFail } en mode Expérience
 
   (function () {                                       // bloc de 96 : pavage haut/bas, comme dans le mode précédent
     var s = 8.3, h = s * .866, px = s / 2 + .3, py = h + .4;
@@ -290,8 +291,11 @@ window.TempLab = (function () {
     if (ok && window.Confetti && $('confetti-canvas')) { try { var r = $('btn-tp-next').getBoundingClientRect(); window.Confetti.burst($('confetti-canvas'), r.left + r.width / 2, r.top); } catch (e) { /* décoratif */ } }
   }
   function guess(sub) {
-    if (sub === X.target) { $('tp-pick').style.display = 'none'; reveal(true); return; }
-    X.fails++; setLocked(false);                       // le mode microscopique devient disponible dès le premier échec
+    if (X.revealed) return;
+    if (sub === X.target) { $('tp-pick').style.display = 'none'; reveal(true); if (hooks && hooks.onSolved) hooks.onSolved(); return; }
+    X.fails++;
+    if (!hooks) setLocked(false);                      // entraînement : le mode microscopique devient disponible dès le premier échec (jamais au Challenge)
+    if (hooks && hooks.onFail) hooks.onFail();
     $('btn-tp-skip').style.display = '';
     $('tp-pick-body').style.display = 'none'; $('tp-fail').style.display = '';
   }
@@ -302,8 +306,9 @@ window.TempLab = (function () {
     $('tp-pick').style.display = 'flex';
   }
 
-  function start(m) {
-    stop(); mode = m || 'free'; X = {};
+  // h : crochets du Challenge (mode Expérience seulement)
+  function start(m, h) {
+    stop(); mode = m || 'free'; X = {}; hooks = h || null;
     $('screen-temp').setAttribute('data-tpmode', mode);
     $('tp-title').textContent = mode === 'exp' ? 'Expérience' : 'Température de changement d\'état';
     $('tp-sub').textContent = mode === 'exp' ? 'Chauffe et refroidis la substance inconnue, observe sa courbe, puis identifie-la grâce au tableau.'
@@ -371,5 +376,10 @@ window.TempLab = (function () {
   }
 
   document.addEventListener('DOMContentLoaded', init);
-  return { start: start, stop: stop };
+  // state() : lu par la leçon « Températures de changement d'état »
+  return {
+    start: start, stop: stop,
+    choose: function (name) { var s = ALL.filter(function (x) { return x.n === name; })[0]; if (s) select(s); },   // leçon : reprise d'une étape
+    state: function () { return { sub: S.sub && S.sub.n, mix: !!(S.sub && S.sub.mix), T: S.T, labs: (S.labs || []).map(function (l) { return l.name; }) }; }
+  };
 })();

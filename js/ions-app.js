@@ -2,7 +2,7 @@
 // Mode "Ions" du module Atomes et Ions :
 //  - IonCours  : tuto "Découvrir les ions" (2 étapes + réussite + écran "À retenir")
 //  - Quiz      : moteur construire / identifier en alternance, utilisé par
-//                "Exerce-toi avec les ions", Challenge niveau 1 (atomes) et niveau 2 (ions)
+//                les entraînements atomes et ions, et par les questions du Challenge
 // Code couleur des textes : rouge = positif (+, perdu, positif), bleu foncé = négatif (−, gagné, négatif).
 (function () {
   'use strict';
@@ -138,6 +138,7 @@
         show(els.main, false);
         show(els.recap, true);
         window.scrollTo(0, 0);
+        if (window.Lessons) window.Lessons.tutoDone('ions');
       }
     }
 
@@ -395,6 +396,7 @@
         setFeedback(msg, 'error');
         if (cfg.expert) els.skip.textContent = 'Autre question';
         show(els.skip, true, 'inline-block');
+        if (cfg.expert && cfg.expert.onFail) cfg.expert.onFail();
       }
     }
 
@@ -490,34 +492,11 @@
     sectionId: 'screen-atom-exercice', prefix: 'atx', title: "S'exercer avec les atomes", backTo: 'screen-mode2',
     pool: ATOMS, ions: false, shake: true, detailed: false, atomFeedback: true, sentence: false, skipAlways: false
   });
+  // Questions du Challenge : une question imposée à la fois, résultats transmis par les crochets « expert »
   var expertQuiz = createQuiz({
-    sectionId: 'screen-atom-expert-q', prefix: 'axq', title: 'Mode Expert', backTo: 'screen-atom-challenge',
+    sectionId: 'screen-atom-expert-q', prefix: 'axq', title: 'Challenge', backTo: 'screen-mode2',
     pool: ATOMS, ions: false, shake: false, detailed: false, sentence: false, skipAlways: false, expert: {}
   });
-  var ch1 = createQuiz({
-    sectionId: 'screen-atom-ch1', prefix: 'ch1', title: 'Challenge : atomes neutres', backTo: 'screen-atom-challenge',
-    pool: ATOMS, ions: false, shake: true, detailed: false, sentence: false, skipAlways: false
-  });
-  var ch2 = createQuiz({
-    sectionId: 'screen-atom-ch2', prefix: 'ch2', title: 'Challenge : les ions', backTo: 'screen-atom-challenge',
-    pool: CH2_IONS, ions: true, shake: false, detailed: false, sentence: false, skipAlways: false
-  });
 
-  // ---------- Navigation ----------
-  function go(btnId, screenId, startFn) {
-    var b = $(btnId);
-    if (b) b.addEventListener('click', function () { window.App.showScreen(screenId); if (startFn) startFn(); });
-  }
-  document.addEventListener('DOMContentLoaded', function () {
-    go('btn-atom-exercice-nav', 'screen-atom-exercice', atomEx.start);
-    go('btn-ion-cours-nav', 'screen-ion-cours', IonCours.start);
-    go('btn-ion-exercice-nav', 'screen-ion-exercice', ionEx.start);
-    go('btn-atom-challenge', 'screen-atom-challenge');
-    go('btn-ach-lvl1', 'screen-atom-ch1', ch1.start);
-    go('btn-ach-lvl2', 'screen-atom-ch2', ch2.start);
-    go('btn-back-to-mode2-ion', 'screen-mode2');
-    go('btn-back-to-mode2-ch', 'screen-mode2');
-  });
-
-  window.Ions = { expert: expertQuiz, pools: { atoms: ATOMS, ions: CH2_IONS }, atomExercice: atomEx, cours: IonCours, exercice: ionEx, challenge1: ch1, challenge2: ch2 };
+  window.Ions = { expert: expertQuiz, pools: { atoms: ATOMS, ions: CH2_IONS }, atomExercice: atomEx, cours: IonCours, exercice: ionEx };
 })();

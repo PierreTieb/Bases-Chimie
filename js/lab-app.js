@@ -149,6 +149,7 @@
     var p = cfg.prefix, free = cfg.mode === 'free';
     var root = null, els = {};
     var ion = null, precip = null, busy = false, lit = false;
+    var history = [];               // tests réalisés : { ion, test: 'naoh' | 'ag' | 'flame', result } (lu par la leçon)
     var timers = [], flameTimer = null;
     var unknown = null, lastUnknown = null, chosen = null, found = false, failed = false;
 
@@ -261,6 +262,7 @@
       later(1220, function () {
         dropFall(tx, ty + 2, TUBE[1] + 34, dropColor, function () {
           var color = DATA[which][ion.key];
+          history.push({ ion: ion.key, test: which, result: color || null });
           if (color) {
             precip = color;
             els.blob.querySelectorAll('.lab-blob').forEach(function (b) { b.style.fill = PREC_COLOR[color]; });
@@ -309,6 +311,7 @@
       later(800, function () {
         dropFall(TUBE_FLAME[0], TUBE_FLAME[1] + 4, BURN[1] - 32, 'rgba(160,210,235,.9)', function () {
           var f = DATA.flame[ion.key];
+          history.push({ ion: ion.key, test: 'flame', result: f ? f.name : null });
           if (f) {
             setFlame(f.color, 0.85);
             say('La flamme devient ' + f.name + '.', '');
@@ -381,6 +384,7 @@
       } else {
         failed = true;
         if (els.other) els.other.style.display = '';
+        if (cfg.expert && cfg.expert.onFail) cfg.expert.onFail();
         say("Ce n'est pas cet ion qui est dans le tube, refais des tests avec cet échantillon et compare au tableau de données.", 'error');
       }
     }
@@ -391,6 +395,7 @@
       clearTimers();
       busy = false;
       lit = false;
+      history = [];
       els.flame.style.opacity = 0;
       els.off.style.display = 'none';
       move(els.flNaoh, FL_REST.naoh[0], FL_REST.naoh[1]);
@@ -451,6 +456,7 @@
     return {
       start: start,
       setProgress: function (t) { if (els.progress) els.progress.textContent = t; },
+      state: function () { return { ion: ion && ion.key, precip: precip, busy: busy, history: history.slice() }; },
       hooks: cfg.expert || null
     };
   }
@@ -463,14 +469,11 @@
     sectionId: 'screen-lab-test', prefix: 'lt', mode: 'test', title: 'Faire des tests',
     intro: "Un ion inconnu se trouve dans le tube : fais des tests pour l'identifier."
   });
+  // Question « ion mystère » du Challenge
   var expert = createLab({
-    sectionId: 'screen-atom-expert-lab', prefix: 'axl', mode: 'test', title: 'Mode Expert', backTo: 'screen-atom-challenge', expert: {},
+    sectionId: 'screen-atom-expert-lab', prefix: 'axl', mode: 'test', title: 'Ion mystère', expert: {},
     intro: "Un ion inconnu se trouve dans le tube : fais des tests pour l'identifier."
   });
-  window.Lab = { free: free, test: test, expert: expert };
-
-  document.addEventListener('DOMContentLoaded', function () {
-    var b = $('btn-lab-nav');
-    if (b) b.addEventListener('click', function () { window.App.showScreen('screen-lab'); free.start(); });
-  });
+  // data : résultats des tests, repris par les questions à choix et la leçon
+  window.Lab = { free: free, test: test, expert: expert, data: { ions: IONS, tests: DATA }, ionHTML: ionHTML, dataHTML: dataHTML };
 })();

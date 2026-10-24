@@ -247,6 +247,7 @@ window.Balance = (function () {
     } else {
       done = true;
       confetti();
+      if (window.Lessons) window.Lessons.tutoDone('equilibrer');
     }
     render();
   }

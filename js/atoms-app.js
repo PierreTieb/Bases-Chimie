@@ -320,7 +320,11 @@
     }
 
     document.addEventListener('DOMContentLoaded', init);
-    return {};
+    // ctrl() : constructeur de l'écran (la leçon « L'atome » lit et règle ses particules)
+    return {
+      reset: function () { if (atomCtrl) atomCtrl.reset(); },
+      ctrl: function () { return atomCtrl; }
+    };
   })();
 
   // Briques partagees avec le mode Ions (ions-app.js)

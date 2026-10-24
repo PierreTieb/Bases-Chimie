@@ -14,7 +14,7 @@ window.States = (function () {
   };
 
   var $ = function (id) { return document.getElementById(id); };
-  var els = {}, items = {}, timers = [], cur = null, busy = false;
+  var els = {}, items = {}, timers = [], cur = null, busy = false, last = null;   // last : dernier changement d'état réalisé
 
   // ---------- Représentation microscopique : triangles équilatéraux (côté 10) ----------
   var REG = { liquid: { x0: 97, x1: 203, y0: 143, y1: 179 }, gas: { x0: 97, x1: 203, y0: 44, y1: 179 } };
@@ -172,6 +172,7 @@ window.States = (function () {
       cur = step[0];
       busy = false;
       agitT = 1;
+      last = step[1];
       showName(step[1], step[2]);
       updateButtons();
     }, DURATION));
@@ -207,7 +208,7 @@ window.States = (function () {
   // Appelé à chaque entrée dans l'écran : remise à zéro complète.
   function start() {
     stop();
-    cur = null;
+    cur = null; last = null;
     mmode = null; agit = agitT = 1;
     setMicro(false);
     els.side.style.visibility = 'hidden';
@@ -270,5 +271,10 @@ window.States = (function () {
   }
 
   document.addEventListener('DOMContentLoaded', init);
-  return { start: start, stop: stop };
+  // state() : lu par la leçon « Changements d'état »
+  return {
+    start: start, stop: stop,
+    pick: function (st) { if (!cur) pick(st); },         // remplit le bécher (leçon : reprise d'une étape)
+    state: function () { return { cur: cur, busy: busy, micro: micro, last: last }; }
+  };
 })();
