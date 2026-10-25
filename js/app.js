@@ -86,7 +86,7 @@ window.App = (function () {
     ['Molécules', 'Assemble des atomes et découvre la formule de tes molécules', 'b2', 'screen-mode1-1', function () { if (sandbox) sandbox.clearAll(); }],
     ['Atomes', 'Ajoute protons, neutrons et électrons pour construire un atome', 'k1', 'screen-atom-cours', function () { window.AtomCours.reset(); }],
     ['Tests d\'ions', 'Soude, nitrate d\'argent et flamme', 'k3', 'screen-lab', function () { window.Lab.free.start(); }],
-    ['pH', 'Mesure le pH de différentes solutions avec du papier pH', 'k4', 'screen-phlab', function () { window.PhLab.bench.start(); }]
+    ['Mesurer le pH', 'Mesure le pH de différentes solutions avec du papier pH', 'k4', 'screen-phlab', function () { window.PhLab.bench.start(); }]
   ];
   var sandbox = null;
 
