@@ -1240,3 +1240,9 @@ body[data-theme="k4"] { --bg-top: #F7F7EC; --bg-bottom: #D2D5AE; }
   .phl-fig { flex-direction: row; text-align: left; }
   .phl-fig-img { width: 120px; flex: none; height: 70px; }
 }
+
+/* Leçons : bandeau toujours visible en haut de l'écran ; boutons propres aux anciens tutos masqués */
+.lesson-bar { position: sticky; top: calc(6px + env(safe-area-inset-top, 0px)); z-index: 20; background: rgba(255,255,255,.95); }
+.lesson-on #btn-eqc-next-step, .lesson-on #btn-eqc-new,
+.lesson-on #screen-balance .ex-actions, .lesson-on #bal-text,
+.lesson-on #btn-ionc-prev, .lesson-on #btn-ionc-next, .lesson-on #ionc-text, .lesson-on #ionc-instruction, .lesson-on #ionc-tip { display: none !important; }

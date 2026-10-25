@@ -244,22 +244,6 @@ window.Qcm = (function () {
     });
   }
 
-  var ROLES = ['le combustible', 'le comburant', 'la source de chaleur'];
-  function feu() {
-    var k = rnd(5), fuel = pick(['du méthane', 'du butane', 'du bois', 'du charbon']);
-    if (k === 0) return mk('Dans la combustion ' + fuel + ', le dioxygène de l\'air est :', 'le comburant', ROLES);
-    if (k === 1) return mk('Dans la combustion ' + fuel + ', ' + fuel.replace(/^du /, 'le ') + ' est :', 'le combustible', ROLES);
-    if (k === 2) return mk('L\'allumette qui démarre une combustion joue le rôle :', 'de la source de chaleur', ['du combustible', 'du comburant']);
-    if (k === 3) return mk('Pour qu\'une combustion se produise, il faut :', 'un combustible, un comburant et une source de chaleur',
-      ['un combustible et de l\'eau', 'un comburant et du froid']);
-    var w = pick([
-      ['Étouffer un feu avec une couverture le prive :', 'du comburant (l\'air)'],
-      ['Arroser un feu avec de l\'eau le prive :', 'de la chaleur'],
-      ['Retirer les arbres autour d\'un feu de forêt (pare-feu) le prive :', 'du combustible']
-    ]);
-    return mk(w[0], w[1], ['du comburant (l\'air)', 'de la chaleur', 'du combustible']);
-  }
-
   // ================= Questions de 3e =================
   var PART = [
     ['Le proton a une charge électrique :', 'positive', ['négative', 'nulle (il est neutre)']],
@@ -387,11 +371,11 @@ window.Qcm = (function () {
   }
 
   var GEN = {
-    etats: etats, micro: micro, gaz: gaz, palier: palier, formule: formule, reaction: reaction, equation: equation, transfo: transfo, feu: feu,
+    etats: etats, micro: micro, gaz: gaz, palier: palier, formule: formule, reaction: reaction, equation: equation, transfo: transfo,
     particules: particules, ecriture: ecriture, ion: ion, tests: tests, ph: ph
   };
   var CATS = {
-    '4e': ['etats', 'micro', 'gaz', 'palier', 'formule', 'reaction', 'equation', 'transfo', 'feu'],
+    '4e': ['etats', 'micro', 'gaz', 'palier', 'formule', 'reaction', 'equation', 'transfo'],
     '3e': ['particules', 'ecriture', 'ion', 'tests', 'ph']
   };
 

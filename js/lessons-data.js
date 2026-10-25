@@ -12,7 +12,6 @@
 //    prep(ctx) : remet le labo dans l'état de départ quand on reprend la consigne depuis la liste des étapes)
 //   memo()         : fiche « À retenir » de fin de leçon
 //   train          : { label, screen, start } entraînement proposé avec la leçon
-// Une leçon « tuto » (tuto: true) lance un tutoriel existant qui signale lui-même sa fin (Lessons.tutoDone).
 window.LessonsData = (function () {
   'use strict';
 
@@ -32,6 +31,7 @@ window.LessonsData = (function () {
     return s.history.some(function (h) { return h.ion === ion && h.test === test && h.result === result; });
   }
   function sub(f) { return window.Molecules.formatSubscripts(f); }
+  function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
   function ion(sym, c) { return sym + window.AtomKit.chargeSup(c); }
   function cell(z) { return '<div class="atom-cell lesson-cell">' + window.AtomKit.cellHTML(window.Units.getByZ(z), 0) + '</div>'; }
   // Blocs « À retenir » déjà présents dans un labo
@@ -56,13 +56,6 @@ window.LessonsData = (function () {
     '<div class="ph-zones"><span class="ph-z--acid">Acide</span><span class="ph-z--neutral">Neutre</span><span class="ph-z--base">Basique</span></div></div>';
   var PH_SCALE_PLAIN = '<div class="ph-scale ph-scale--memo"><div class="ph-bar"></div><div class="ph-ticks"><span>0</span><span>7</span><span>14</span></div>' +
     '<div class="ph-zones"><span class="ph-z--acid">Acide</span><span class="ph-z--neutral">Neutre</span><span class="ph-z--base">Basique</span></div></div>';
-
-  var FIRE_SVG = '<svg class="lesson-fire" viewBox="0 0 200 150" aria-hidden="true">' +
-    '<path d="M100 14L184 136H16z" fill="#FFE3D6" stroke="#D9463B" stroke-width="4" stroke-linejoin="round"/>' +
-    '<text x="100" y="98" text-anchor="middle" font-size="30">🔥</text>' +
-    '<text x="34" y="78" text-anchor="end" font-size="12" font-weight="800" fill="#1F2A36">Combustible</text>' +
-    '<text x="166" y="78" font-size="12" font-weight="800" fill="#1F2A36">Comburant</text>' +
-    '<text x="100" y="150" text-anchor="middle" font-size="12" font-weight="800" fill="#1F2A36">Source de chaleur</text></svg>';
 
   var L = [
     // ================= 1. Changements d'état =================
@@ -193,39 +186,49 @@ window.LessonsData = (function () {
 
     // ================= 5. La transformation chimique =================
     {
-      id: 'transformation', group: 1, color: 'b3', title: 'La transformation chimique', sub: 'Réactifs, produits, équation chimique et combustion',
+      id: 'transformation', group: 1, color: 'b3', title: 'La transformation chimique', sub: 'Réactifs, produits et équation chimique',
       host: 'screen-equations-cours', start: function () { window.EquationsCours.startNewReaction(); }, state: function () { return window.EquationsCours.state(); },
       steps: [
         { title: 'Transformation chimique', text: 'Il y a une <b>transformation chimique</b> lorsqu\'on ne retrouve pas les mêmes molécules entre l\'<b>état initial</b> et l\'<b>état final</b>. On parle aussi de réaction chimique.<br><br>Exemple : le sucre chauffé donne du carbone et de l\'eau.<br>Contre-exemple : la glace qui fond reste de l\'eau, c\'est une transformation physique.' },
         { title: 'Physique ou chimique ?', text: 'Applique la définition.',
           quiz: { q: 'Du bicarbonate de soude versé dans du vinaigre fait apparaître un gaz. C\'est une transformation :', choices: ['physique', 'chimique'], answer: 1 } },
         { title: 'Les réactifs', text: 'Les <b class="eq-hl-green">réactifs</b> sont les substances présentes à l\'état initial : on les mélange pour démarrer la transformation.',
-          task: 'Clique sur les réactifs dans la phrase.', prep: newPhrase, check: function (s) { return s.step > 1 || s.reactifs; } },
+          task: 'Clique sur les réactifs dans la phrase.', prep: newPhrase, check: function (s) { return s.reactifs; } },
         { title: 'Les produits', text: 'Les <b class="eq-hl-red">produits</b> sont les substances obtenues à l\'état final.',
-          task: 'Appuie sur « Suivant », puis clique sur les produits.', prep: newPhrase, check: function (s) { return s.step > 2 || (s.step === 2 && s.produits); } },
+          task: 'Clique sur les produits dans la phrase.', prep: newPhrase, setup: function () { window.EquationsCours.setStage(2); },
+          check: function (s) { return s.produits; } },
         { title: 'L\'équation chimique', text: 'Une transformation s\'écrit avec une <b>équation chimique</b> : réactifs → produits. On remplace les noms par les formules chimiques ; le catalogue des substances t\'aide à les trouver.',
-          task: 'Appuie sur « Suivant », écris les formules des substances, puis valide.', prep: newPhrase, check: function (s) { return s.solved; } },
-        { title: 'La conservation des atomes', text: 'Pendant une transformation chimique, les atomes des réactifs se réarrangent pour former les produits, mais ils sont <b>conservés</b> : on retrouve les mêmes atomes des deux côtés de l\'équation.<br><br>C\'est le principe de Lavoisier : « Rien ne se perd, rien ne se crée, tout se transforme ».' },
-        { title: 'La combustion', text: 'Une <b>combustion</b> est une transformation chimique qui libère beaucoup de chaleur. Il lui faut trois éléments, réunis dans le <b>triangle du feu</b> :<br>• un <b>combustible</b>, la matière qui brûle ;<br>• un <b>comburant</b>, le dioxygène de l\'air ;<br>• une <b>source de chaleur</b>, pour démarrer la réaction.' + FIRE_SVG },
-        { title: 'Le comburant', text: 'Le méthane brûle dans une cuisinière.',
-          quiz: { q: 'Dans la combustion du méthane, le dioxygène est :', choices: ['le combustible', 'le comburant', 'la source de chaleur'], answer: 1 } },
-        { title: 'Éteindre un feu', text: 'Pour arrêter une combustion, on supprime l\'un des trois éléments du triangle du feu.',
-          quiz: { q: 'Étouffer un feu avec une couverture le prive :', choices: ['du combustible', 'du comburant (l\'air)', 'de la chaleur'], answer: 1 } }
+          task: 'Écris les formules des réactifs et des produits, puis valide.', prep: newPhrase, setup: function () { window.EquationsCours.setStage(3); },
+          check: function (s) { return s.solved; } }
       ],
       memo: function () {
         return memo('La transformation chimique', '<p>Il y a transformation chimique lorsqu\'on ne retrouve pas les mêmes molécules entre l\'<b>état initial</b> et l\'<b>état final</b>.</p><p>Les <b class="eq-hl-green">réactifs</b> sont consommés, les <b class="eq-hl-red">produits</b> sont formés.</p>') +
-          memo('L\'équation chimique', '<p class="lesson-eq">Réactif 1 + Réactif 2 → Produit 1 + Produit 2</p><p>Les atomes sont <b>conservés</b> : rien ne se perd, rien ne se crée, tout se transforme (Lavoisier).</p>') +
-          memo('La combustion', '<p>Transformation chimique qui libère beaucoup de chaleur. Il faut un <b>combustible</b>, un <b>comburant</b> (le dioxygène) et une <b>source de chaleur</b> : c\'est le triangle du feu.</p>');
+          memo('L\'équation chimique', '<p class="lesson-eq">Réactif 1 + Réactif 2 → Produit 1 + Produit 2</p><p>On écrit les formules chimiques des réactifs avant la flèche, celles des produits après.</p>');
       },
       train: { label: 'Écrire des équations chimiques', screen: 'screen-equations-exercice', start: function () { window.EquationsExercice.start(); } }
     },
 
-    // ================= 6. Équilibrer une équation (tutoriel existant) =================
+    // ================= 6. Équilibrer une équation =================
     {
       id: 'equilibrer', group: 1, color: 'b4', title: 'Équilibrer une équation', sub: 'Les coefficients et la conservation des atomes',
-      tuto: true, host: 'screen-balance', start: function () { window.Balance.start(); },
+      host: 'screen-balance', start: function () { window.Balance.start(); }, state: function () { return window.Balance.state(); },
+      steps: [
+        { title: 'La conservation des atomes', text: 'Pendant une transformation chimique, les atomes des réactifs se réarrangent pour former les produits, mais ils sont <b>conservés</b> : on doit retrouver les mêmes atomes des deux côtés de l\'équation.<br><br>C\'est le principe de Lavoisier : « Rien ne se perd, rien ne se crée, tout se transforme ».' },
+        { title: 'Une équation incomplète', text: 'Voici l\'équation de la formation de l\'eau : H₂ + O₂ → H₂O. Les pastilles sous les molécules comptent les atomes de chaque côté de la flèche.<br><br>Il y a 2 atomes d\'oxygène au départ, mais un seul à l\'arrivée : l\'équation n\'est pas <b>équilibrée</b>.',
+          setup: function () { window.Balance.setStep(1); } },
+        { title: 'Les molécules d\'eau', text: 'Les atomes ne peuvent ni disparaître ni apparaître : pour garder les 2 atomes d\'oxygène, il faut former <b>2 molécules d\'eau</b>. On l\'indique par un <b>coefficient</b> écrit devant la formule.',
+          task: 'Écris le coefficient 2 devant la molécule d\'eau.', setup: function () { window.Balance.setStep(2); },
+          check: function (s) { return s.h2o === '2'; } },
+        { title: 'Le dihydrogène', text: '2 molécules d\'eau contiennent 4 atomes d\'hydrogène : il faut donc en apporter 4 au départ.',
+          task: 'Écris le bon coefficient devant la molécule de dihydrogène pour équilibrer l\'équation.', setup: function () { window.Balance.setStep(3); },
+          check: function (s) { return s.balanced; } },
+        { title: 'Les règles', text: 'L\'équation 2 H₂ + O₂ → 2 H₂O est équilibrée : on trouve 4 atomes H et 2 atomes O de chaque côté. Le coefficient 1 ne s\'écrit pas.',
+          quiz: { q: 'Pour équilibrer une équation, on peut modifier :', choices: ['les coefficients devant les formules', 'les petits chiffres dans les formules'], answer: 0,
+            explain: 'Changer un petit chiffre (indice) changerait la molécule elle-même : H₂O deviendrait une autre substance.' } }
+      ],
       memo: function () {
-        return memo('Équilibrer une équation', '<p>On place des <b>coefficients</b> devant les formules pour avoir, <b>au total</b>, les mêmes atomes dans l\'état initial et dans l\'état final.</p><p class="lesson-eq">2 H' + '₂' + ' + O' + '₂' + ' → 2 H' + '₂' + 'O</p><p class="st-memo__note">Le coefficient 1 ne s\'écrit pas. On utilise les plus petits coefficients possibles.</p>');
+        return memo('La conservation des atomes', '<p>Pendant une transformation chimique, les atomes sont <b>conservés</b> : rien ne se perd, rien ne se crée, tout se transforme (Lavoisier).</p>') +
+          memo('Équilibrer une équation', '<p>On place des <b>coefficients</b> devant les formules pour avoir, <b>au total</b>, les mêmes atomes dans l\'état initial et dans l\'état final.</p><p class="lesson-eq">2 H₂ + O₂ → 2 H₂O</p><p class="st-memo__note">On ne change jamais les petits chiffres des formules. Le coefficient 1 ne s\'écrit pas. On utilise les plus petits coefficients possibles.</p>');
       },
       train: { label: 'Équilibrer des équations', screen: 'screen-balance-exercice', start: function () { window.BalanceExercise.start(); } }
     },
@@ -272,10 +275,31 @@ window.LessonsData = (function () {
       train: { label: 'Construire et identifier des atomes', screen: 'screen-atom-exercice', start: function () { window.Ions.atomExercice.start(); } }
     },
 
-    // ================= 8. Les ions (tutoriel existant) =================
+    // ================= 8. Les ions =================
     {
       id: 'ions', group: 2, color: 'k2', title: 'Les ions', sub: 'Un atome qui a gagné ou perdu des électrons',
-      tuto: true, host: 'screen-ion-cours', start: function () { window.Ions.cours.start(); },
+      host: 'screen-ion-cours', start: function () { window.Ions.cours.start(); }, state: function () { return window.Ions.cours.state(); },
+      steps: [
+        { title: 'Les ions', text: 'Un <b>ion</b> est un atome qui a <b>gagné</b> ou <b>perdu</b> un ou plusieurs électrons :<br>• un ion <span class="ion-pos">positif</span> a <span class="ion-pos">perdu</span> des électrons ; on note au-dessus de son symbole le nombre d\'électrons perdus suivi d\'un <span class="ion-pos">+</span> ;<br>• un ion <span class="ion-neg">négatif</span> a <span class="ion-neg">gagné</span> des électrons ; on note le nombre d\'électrons gagnés suivi d\'un <span class="ion-neg">−</span>.' },
+        { title: 'Un atome', text: 'Un ion est avant tout un atome. Commençons donc par construire un atome neutre.',
+          setup: function () { window.Ions.cours.lessonIon(1); },
+          task: function (c, s) { return 'Construis l\'atome ' + s.name + ' (neutre).'; }, check: function (s) { return s.atomOK; } },
+        { title: 'Un ion positif', text: 'Un ion <span class="ion-pos">positif</span> est un atome qui a <span class="ion-pos">perdu</span> des électrons. Pour retirer un électron, clique sur la zone des électrons de l\'atome.',
+          prep: function () { window.Ions.cours.lessonIon(1); }, setup: function () { window.Ions.cours.goStep(2); },
+          task: function (c, s) { return 'Retire ' + s.n + ' électron' + (s.n > 1 ? 's' : '') + ' pour fabriquer l\'ion ' + s.ion + '.'; }, check: function (s) { return s.ionOK; } },
+        { title: 'Un autre atome', text: 'Fabriquons maintenant un ion négatif, à partir d\'un autre atome.',
+          setup: function () { window.Ions.cours.lessonIon(-1); },
+          task: function (c, s) { return 'Construis l\'atome ' + s.name + ' (neutre).'; }, check: function (s) { return s.atomOK; } },
+        { title: 'Un ion négatif', text: 'Un ion <span class="ion-neg">négatif</span> est un atome qui a <span class="ion-neg">gagné</span> des électrons.',
+          prep: function () { window.Ions.cours.lessonIon(-1); }, setup: function () { window.Ions.cours.goStep(2); },
+          task: function (c, s) { return 'Ajoute ' + s.n + ' électron' + (s.n > 1 ? 's' : '') + ' pour fabriquer l\'ion ' + s.ion + '.'; }, check: function (s) { return s.ionOK; } }
+      ],
+      memo: function () {
+        return memo('Les ions', '<p>Un ion est un atome qui a gagné ou perdu des électrons ; on l\'indique par un chiffre et un signe en haut du symbole.</p>' +
+          '<p>Un ion avec un « <span class="ion-pos">+</span> » est <span class="ion-pos">positif</span> : il a <span class="ion-pos">perdu</span> des électrons. ' + ion('Na', 1) + ', ' + ion('Fe', 2) + ', ' + ion('Al', 3) + '</p>' +
+          '<p>Un ion avec un « <span class="ion-neg">−</span> » est <span class="ion-neg">négatif</span> : il a <span class="ion-neg">gagné</span> des électrons. ' + ion('Cl', -1) + ', ' + ion('O', -2) + ', ' + ion('N', -3) + '</p>') +
+          memo('Sa composition', '<p>Le noyau ne change pas : un ion a le même nombre de protons que son atome.</p><p>Exemple : l\'ion ' + ion('K', 1) + ' a 19 protons et 18 électrons ; l\'ion ' + ion('S', -2) + ' a 16 protons et 18 électrons.</p>');
+      },
       train: { label: 'Construire et identifier des ions', screen: 'screen-ion-exercice', start: function () { window.Ions.exercice.start(); } }
     },
 
@@ -286,20 +310,22 @@ window.LessonsData = (function () {
       steps: [
         { title: 'Les tests chimiques', text: 'Les ions dissous dans une solution sont invisibles. Pour les identifier, on verse quelques gouttes d\'un <b>réactif</b> : avec certains ions, il se forme un <b>précipité</b>, un solide coloré qui apparaît dans le tube.' },
         { title: 'La soude et l\'ion cuivre', text: 'Appuie sur « Sélectionner un ion », puis clique sur le flacon de soude pour en verser dans le tube.',
-          setup: freshLab, task: 'Teste l\'ion ' + 'Cu' + '<sup class="ion-charge ion-pos">2+</sup>' + ' avec la soude.', check: function (s) { return tested(s, 'Cu2+', 'naoh', 'bleu'); } },
+          setup: freshLab, task: 'Teste l\'ion ' + ion('Cu', 2) + ' avec la soude.', check: function (s) { return tested(s, 'Cu2+', 'naoh', 'bleu'); } },
         { title: 'Le précipité bleu', text: 'Observe la couleur du précipité.',
-          quiz: { q: 'Avec la soude, l\'ion cuivre Cu<sup class="ion-charge ion-pos">2+</sup> forme un précipité :', choices: ['vert', 'bleu', 'blanc'], answer: 1 } },
+          quiz: { q: 'Avec la soude, l\'ion cuivre ' + ion('Cu', 2) + ' forme un précipité :', choices: ['vert', 'bleu', 'blanc'], answer: 1 } },
         { title: 'Les ions fer', text: 'Il existe deux ions fer. Pour faire un nouveau test, vide d\'abord le tube.',
-          setup: freshLab, task: 'Teste l\'ion Fe<sup class="ion-charge ion-pos">2+</sup> puis l\'ion Fe<sup class="ion-charge ion-pos">3+</sup> avec la soude.',
+          setup: freshLab, task: 'Teste l\'ion ' + ion('Fe', 2) + ' puis l\'ion ' + ion('Fe', 3) + ' avec la soude.',
           check: function (s) { return tested(s, 'Fe2+', 'naoh', 'vert') && tested(s, 'Fe3+', 'naoh', 'rouille'); } },
         { title: 'Le nitrate d\'argent', text: 'Le nitrate d\'argent révèle l\'ion chlorure.',
-          setup: freshLab, task: 'Teste l\'ion Cl<sup class="ion-charge ion-neg">−</sup> avec le nitrate d\'argent.', check: function (s) { return tested(s, 'Cl-', 'ag', 'blanc'); } },
+          setup: freshLab, task: 'Teste l\'ion ' + ion('Cl', -1) + ' avec le nitrate d\'argent.', check: function (s) { return tested(s, 'Cl-', 'ag', 'blanc'); } },
         { title: 'Le test à la flamme', text: 'Certains ions colorent la flamme d\'un bec : c\'est le <b>test à la flamme</b>. Clique sur le bec pour l\'allumer, puis à nouveau pour y tester l\'échantillon.',
-          setup: freshLab, task: 'Teste l\'ion Na<sup class="ion-charge ion-pos">+</sup> à la flamme.', check: function (s) { return tested(s, 'Na+', 'flame', 'jaune'); } },
-        { title: 'Retenir les couleurs', text: 'Le tableau de données résume tous les tests.',
-          quiz: { q: 'Avec la soude, un précipité vert révèle l\'ion :', choices: ['Fe<sup class="ion-charge ion-pos">2+</sup>', 'Fe<sup class="ion-charge ion-pos">3+</sup>', 'Cu<sup class="ion-charge ion-pos">2+</sup>'], answer: 0 } },
-        { title: 'Le bon réactif', text: 'Chaque réactif révèle certains ions seulement.',
-          quiz: { q: 'Quel réactif permet d\'identifier l\'ion Cl<sup class="ion-charge ion-neg">−</sup> ?', choices: ['la soude', 'le nitrate d\'argent', 'la flamme'], answer: 1 } }
+          setup: freshLab, task: 'Teste l\'ion lithium ' + ion('Li', 1) + ' à la flamme.', check: function (s) { return tested(s, 'Li+', 'flame', 'rouge fuchsia'); } },
+        { title: 'Un ion inconnu', text: 'Un ion inconnu se trouve dans le tube. Il forme un précipité avec l\'un des réactifs. Fais des tests, compare avec le tableau de données, puis indique quel ion est dans le tube.',
+          setup: function () { window.Lab.free.mystery(pick(['Cl-', 'Fe2+', 'Fe3+', 'Zn2+', 'Al3+'])); },
+          task: 'Identifie l\'ion inconnu grâce à la soude et au nitrate d\'argent.', check: function (s) { return s.found; } },
+        { title: 'Un autre ion inconnu', text: 'Cet ion ne forme aucun précipité, mais il colore la flamme. Fais le test à la flamme, puis indique quel ion est dans le tube.',
+          setup: function () { window.Lab.free.mystery(pick(['Na+', 'Li+', 'Ca2+'])); },
+          task: 'Identifie l\'ion inconnu grâce au test à la flamme.', check: function (s) { return s.found; } }
       ],
       memo: function () {
         return memo('Identifier un ion', '<p>On verse quelques gouttes d\'un réactif dans la solution : la couleur du <b>précipité</b> formé révèle l\'ion présent. Certains ions colorent aussi la flamme.</p>') +
@@ -318,9 +344,9 @@ window.LessonsData = (function () {
         { title: 'Le pH', text: 'Le <b>pH</b> (potentiel Hydrogène) mesure l\'<b>acidité</b> ou la <b>basicité</b> d\'une solution. Il varie de <b>0 à 14</b> :' + PH_SCALE +
           'de 0 à 7, la solution est <b>acide</b> ; à 7, elle est <b>neutre</b> ; de 7 à 14, elle est <b>basique</b>.' },
         { title: 'Une solution acide', text: 'Ce bécher contient des ions ' + ion('H', 1) + ' et des ions ' + ion('HO', -1) + '. Dans une solution <b>acide</b>, il y a une <b>majorité d\'ions ' + ion('H', 1) + '</b>.',
-          task: 'Déplace le curseur pour obtenir une solution acide, et observe les ions du bécher.', hold: 3000, check: function (s) { return s.v < 7; } },
+          task: 'Déplace le curseur pour obtenir une solution acide, et observe les ions du bécher.', hold: 1000, check: function (s) { return s.v < 7; } },
         { title: 'Une solution basique', text: 'Dans une solution <b>basique</b>, il y a une <b>majorité d\'ions ' + ion('HO', -1) + '</b>.',
-          task: 'Déplace le curseur pour obtenir une solution basique, et observe les ions du bécher.', hold: 3000, check: function (s) { return s.v > 7; } },
+          task: 'Déplace le curseur pour obtenir une solution basique, et observe les ions du bécher.', hold: 1000, check: function (s) { return s.v > 7; } },
         { title: 'Une solution neutre', text: 'Dans une solution <b>neutre</b>, comme l\'eau pure, il y a <b>autant d\'ions ' + ion('H', 1) + ' que d\'ions ' + ion('HO', -1) + '</b>.',
           task: 'Déplace le curseur pour obtenir une solution neutre, et observe les ions du bécher.', hold: 3000,
           prep: function () { window.Lessons.setPh(12); }, check: function (s) { return s.v === 7; } },

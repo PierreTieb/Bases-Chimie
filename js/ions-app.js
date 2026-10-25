@@ -1,6 +1,6 @@
 // ions-app.js
 // Mode "Ions" du module Atomes et Ions :
-//  - IonCours  : tuto "Découvrir les ions" (2 étapes + réussite + écran "À retenir")
+//  - IonCours  : construction d'un atome puis d'un ion, piloté étape par étape par la leçon « Les ions »
 //  - Quiz      : moteur construire / identifier en alternance, utilisé par
 //                les entraînements atomes et ions, et par les questions du Challenge
 // Code couleur des textes : rouge = positif (+, perdu, positif), bleu foncé = négatif (−, gagné, négatif).
@@ -138,7 +138,6 @@
         show(els.main, false);
         show(els.recap, true);
         window.scrollTo(0, 0);
-        if (window.Lessons) window.Lessons.tutoDone('ions');
       }
     }
 
@@ -177,8 +176,40 @@
       $('btn-ionc-again').addEventListener('click', function () { newIon(); window.scrollTo(0, 0); });
     }
 
+    // Leçon : ion imposé par le signe de sa charge, puis étape 1 (atome) ou 2 (ion)
+    function lessonIon(sign) {
+      var pool = TUTO_IONS.filter(function (i) { return (i.charge > 0) === (sign > 0) && keyOf(i) !== lastKey; });
+      ion = pool[Math.floor(Math.random() * pool.length)];
+      lastKey = keyOf(ion);
+      info = expected(ion);
+      step = 1;
+      show(els.main, true);
+      show(els.recap, false);
+      ctrl.setNeutralVisible(true);
+      ctrl.reset();
+      refresh();
+    }
+    function goStep(n) {
+      if (n === 2) {
+        step = 2;
+        ctrl.setNeutralVisible(false);
+        var c = ctrl.getCounts();
+        if (!(c.protons === info.p && c.neutrons === info.n)) ctrl.setCounts(info.p, info.n, info.p);   // on repart de l'atome neutre
+        refresh();
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', init);
-    return { start: function () { if (els.main) newIon(); } };
+    // lessonIon(), goStep() et state() : utilisés par la leçon « Les ions »
+    return {
+      start: function () { if (els.main) newIon(); },
+      lessonIon: lessonIon,
+      goStep: goStep,
+      state: function () {
+        var st = ion ? state() : { atomOK: false, ionOK: false };
+        return { step: step, atomOK: st.atomOK, ionOK: st.ionOK, name: info ? deName(info.el) : '', ion: info ? ionHTML(info.el, ion.charge) : '', n: ion ? Math.abs(ion.charge) : 0, charge: ion ? ion.charge : 0 };
+      }
+    };
   })();
 
   // ============================================================

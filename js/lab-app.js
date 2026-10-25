@@ -174,6 +174,8 @@
     var history = [];               // tests réalisés : { ion, test: 'naoh' | 'ag' | 'flame', result } (lu par la leçon)
     var timers = [], flameTimer = null;
     var unknown = null, lastUnknown = null, chosen = null, found = false, failed = false;
+    var mys = false;                // labo libre : ion mystère imposé par une leçon
+    function testing() { return !free || mys; }
 
     function later(ms, fn) { timers.push(setTimeout(fn, ms)); }
     function clearTimers() { timers.forEach(clearTimeout); timers = []; clearTimeout(flameTimer); }
@@ -188,7 +190,9 @@
         '<button type="button" class="btn-secondary lab-mini" id="' + p + '-off" style="display:none">Éteindre le bec</button>' +
         '<button type="button" class="btn-secondary lab-mini" id="' + p + '-data">Tableau de données</button></div>';
       var bottom = free
-        ? '<div class="ex-actions"><button type="button" class="btn-primary" id="' + p + '-totest">Faire des tests</button></div>'
+        ? '<div class="ex-actions" id="' + p + '-mys" style="display:none"><button type="button" class="btn-secondary" id="' + p + '-choose">Quel ion est dans le tube ?</button>' +
+          '<button type="button" class="btn-primary" id="' + p + '-validate" disabled>Valider</button></div>' +
+          '<div class="ex-actions"><button type="button" class="btn-primary" id="' + p + '-totest">Faire des tests</button></div>'
         : '<div class="ex-actions"><button type="button" class="btn-secondary" id="' + p + '-choose">Quel ion est dans le tube ?</button>' +
           '<button type="button" class="btn-primary" id="' + p + '-validate" disabled>Valider</button>' +
           (cfg.expert ? '<button type="button" class="btn-primary btn-primary--alt" id="' + p + '-other" style="display:none">Autre échantillon</button>' : '') + '</div>' +
@@ -224,7 +228,7 @@
     function showTube(i) {
       ion = i;
       resetPrecip();
-      els.label.innerHTML = free ? labelSVG(i) : '?';
+      els.label.innerHTML = testing() ? '?' : labelSVG(i);
       move(els.tube, TUBE[0], TUBE[1]);
       els.tube.style.opacity = 1;
       els.empty.disabled = false;
@@ -237,7 +241,7 @@
     }
     function emptyTube() {
       if (busy) return;
-      if (free) {
+      if (!testing()) {
         hideTube();
         els.select.innerHTML = 'Sélectionner un ion';
         say('Le tube est vide. Sélectionne un ion pour recommencer.', '');
@@ -354,7 +358,7 @@
     function onPickIon(key) {
       closePick();
       var i = byKey(key);
-      if (free) {
+      if (!testing()) {
         if (busy) return;
         showTube(i);
         els.select.innerHTML = 'Ion sélectionné : ' + ionHTML(i);
@@ -383,7 +387,7 @@
     function isAZ(i) { return i.key === 'Al3+' || i.key === 'Zn2+'; }
     function onValidate() {
       if (found) {
-        if (cfg.expert) { if (cfg.expert.onNext) cfg.expert.onNext(); } else newUnknown();
+        if (cfg.expert) { if (cfg.expert.onNext) cfg.expert.onNext(); } else if (!free) newUnknown();
         return;
       }
       if (!chosen || busy) return;
@@ -397,7 +401,8 @@
           say("Bravo, c'est bien l'ion " + ionHTML(unknown) + ' qui est dans le tube !', 'success');
         }
         confetti(els.validate);
-        els.validate.textContent = 'Ion suivant';
+        els.validate.textContent = free ? 'Trouvé !' : 'Ion suivant';
+        if (free) els.validate.disabled = true;
         if (cfg.expert) {
           els.validate.textContent = cfg.expert.nextLabel || 'Voir mon score';
           if (els.other) els.other.style.display = 'none';
@@ -409,6 +414,25 @@
         if (cfg.expert && cfg.expert.onFail) cfg.expert.onFail();
         say("Ce n'est pas cet ion qui est dans le tube, refais des tests avec cet échantillon et compare au tableau de données.", 'error');
       }
+    }
+
+    // ---------- Labo libre : ion mystère (leçon) ----------
+    function setMystery(on) {
+      mys = on;
+      els.mys.style.display = on ? '' : 'none';
+      els.select.style.display = on ? 'none' : '';
+    }
+    function mystery(key) {
+      if (!root || !free) return;
+      start();
+      setMystery(true);
+      unknown = byKey(key);
+      chosen = null; found = false; failed = false;
+      els.choose.innerHTML = 'Quel ion est dans le tube ?';
+      els.validate.textContent = 'Valider';
+      els.validate.disabled = true;
+      showTube(unknown);
+      say('Un ion inconnu est dans le tube : fais des tests pour l\'identifier.', '');
     }
 
     // ---------- Démarrage ----------
@@ -426,6 +450,7 @@
       els.pick.style.display = 'none';
       els.dataov.style.display = 'none';
       if (free) {
+        setMystery(false);
         hideTube();
         els.select.innerHTML = 'Sélectionner un ion';
         say('', '');
@@ -443,7 +468,7 @@
         feedback: g('feedback'), tube: g('tube'), label: g('label'), cloud: g('cloud'), blob: g('blob'),
         flNaoh: g('fl-naoh'), flAg: g('fl-ag'), flame: g('flame'), fout: g('fout'), drop: g('drop'),
         empty: g('empty'), off: g('off'), pick: g('pick'), dataov: g('dataov'),
-        select: g('select'), choose: g('choose'), validate: g('validate'), other: g('other'), progress: g('progress')
+        select: g('select'), choose: g('choose'), validate: g('validate'), other: g('other'), progress: g('progress'), mys: g('mys')
       };
       g('fl-naoh').addEventListener('click', function () { pour('naoh'); });
       g('fl-ag').addEventListener('click', function () { pour('ag'); });
@@ -461,6 +486,8 @@
       });
       if (free) {
         els.select.addEventListener('click', openPick);
+        els.choose.addEventListener('click', openPick);
+        els.validate.addEventListener('click', onValidate);
         g('totest').addEventListener('click', function () { clearTimers(); window.App.showScreen('screen-lab-test'); window.Lab.test.start(); });
       } else {
         els.choose.addEventListener('click', openPick);
@@ -478,7 +505,8 @@
     return {
       start: start,
       setProgress: function (t) { if (els.progress) els.progress.textContent = t; },
-      state: function () { return { ion: ion && ion.key, precip: precip, busy: busy, history: history.slice() }; },
+      state: function () { return { ion: ion && ion.key, precip: precip, busy: busy, history: history.slice(), found: mys && found }; },
+      mystery: mystery,
       hooks: cfg.expert || null
     };
   }

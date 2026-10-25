@@ -302,9 +302,19 @@
     }
 
     document.addEventListener('DOMContentLoaded', init);
-    // state() : lu par la leçon « La transformation chimique »
+    // Leçon : amène la description à l'étape n (2 = produits, 3 = formules) en complétant la sélection
+    function setStage(n) {
+      ['reactif', 'produit'].forEach(function (type, k) {
+        if (n > k + 1) reaction.substances.forEach(function (sub, i) { if (sub.type === type) selected[type].add(i); });
+      });
+      while (step < n) onNextStep();
+      render();
+    }
+
+    // state() et setStage() : utilisés par la leçon « La transformation chimique »
     return {
       startNewReaction: function () { startNewReaction(); },
+      setStage: setStage,
       state: function () {
         return {
           step: step, solved: solved,

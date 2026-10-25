@@ -1,5 +1,5 @@
 // balance-app.js
-// Mode "Équilibrer une transformation" : tuto pas à pas sur H2 + O2 -> H2O.
+// Équilibrage pas à pas de H2 + O2 -> H2O, piloté étape par étape par la leçon « Équilibrer une équation ».
 // - Représentation : chaque substance a sa zone ; les molécules se multiplient
 //   en temps réel avec le coefficient saisi (max 9) et rétrécissent pour rester
 //   dans leur zone. Une petite bande de puces "H : 2 → 2 ✓" sert de compteur d'atomes.
@@ -247,7 +247,6 @@ window.Balance = (function () {
     } else {
       done = true;
       confetti();
-      if (window.Lessons) window.Lessons.tutoDone('equilibrer');
     }
     render();
   }
@@ -284,6 +283,20 @@ window.Balance = (function () {
     window.addEventListener('resize', layoutAll);
   }
 
+  // Leçon : affiche l'étape n du tuto (l'étape 3 suppose le coefficient 2 de l'eau déjà placé)
+  function setStep(n) {
+    if (!built) build();
+    step = n;
+    done = false;
+    if (n >= 3 && raw[2] !== '2') raw[2] = '2';
+    render();
+  }
+
   document.addEventListener('DOMContentLoaded', init);
-  return { start: start };
+  // state() et setStep() : utilisés par la leçon « Équilibrer une équation »
+  return {
+    start: start,
+    setStep: setStep,
+    state: function () { return { step: step, h2: raw[0], h2o: raw[2], balanced: raw[0] === '2' && raw[2] === '2' }; }
+  };
 })();

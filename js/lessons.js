@@ -60,7 +60,6 @@ window.Lessons = (function () {
   function start(l) {
     stop();
     window.App.open(l.host, 'screen-lessons', l.start);
-    if (l.tuto) return;                                   // le tutoriel signale lui-même sa fin
     cur = l; idx = 0; ctx = {};
     doneSteps = {};
     var saved = readSteps()[l.id] || [];
@@ -110,25 +109,27 @@ window.Lessons = (function () {
     // Étape déjà réussie auparavant : on peut la refaire ou passer directement à la suivante
     $('lb-next').textContent = 'Consigne suivante';
     $('lb-next').hidden = !(doneSteps[idx] && idx < cur.steps.length - 1);
-    $('lb-step').textContent = (idx + 1) + '/' + cur.steps.length;
-    $('lb-kicker').textContent = 'Leçon ' + num(cur) + ' · ' + s.title;
-    $('lb-task').innerHTML = s.task || (s.quiz ? 'Réponds à la question.' : 'Lis l\'explication.');
     form.hidden = true;
     setStepCls(s.cls);
-    if (s.setup) s.setup(ctx);
+    if (s.setup) s.setup(ctx);                            // avant les textes : ils peuvent dépendre de ce qui a été tiré
+    $('lb-step').textContent = (idx + 1) + '/' + cur.steps.length;
+    $('lb-kicker').textContent = 'Leçon ' + num(cur) + ' · ' + s.title;
+    $('lb-task').innerHTML = txt(s.task) || (s.quiz ? 'Réponds à la question.' : 'Lis l\'explication.');
     if (s.form) buildForm(s);
     intro();
   }
+  // Texte d'une consigne : chaîne, ou fonction (contexte de la leçon, état du labo)
+  function txt(t) { return typeof t === 'function' ? t(ctx, cur.state ? cur.state() : null) : t; }
 
   // Fenêtre de la consigne : explication, puis tâche, question ou bouton « Suivant »
   function intro() {
     var s = step(), last = idx === cur.steps.length - 1;
     var html = '<p class="pop-kicker">Étape ' + (idx + 1) + ' / ' + cur.steps.length + '</p><h2 class="eq-catalog-title">' + s.title + '</h2>' +
-      '<div class="pop-text">' + s.text + '</div>';
+      '<div class="pop-text">' + txt(s.text) + '</div>';
     if (s.quiz) {
       html += '<div class="lesson-quiz" id="lq"></div>';
     } else if (s.task) {
-      html += '<div class="lesson-task"><span aria-hidden="true">➜</span><span>' + s.task + '</span></div>' +
+      html += '<div class="lesson-task"><span aria-hidden="true">➜</span><span>' + txt(s.task) + '</span></div>' +
         '<div class="ex-actions"><button type="button" class="btn-primary" data-pop="go">C\'est parti</button></div>';
     } else {
       html += '<div class="ex-actions"><button type="button" class="btn-primary" data-pop="next">' + (last ? 'Terminer la leçon' : 'Suivant') + '</button></div>';
@@ -282,13 +283,6 @@ window.Lessons = (function () {
     }, { wide: true, lock: true });
     celebrate(null);
   }
-  // Fin d'un tutoriel existant (équilibrer, ions)
-  function tutoDone(id) {
-    var l = byId(id);
-    if (!l) return;
-    markDone(id);
-    if (l.memo) setTimeout(function () { showMemo(l); }, 900);
-  }
 
   function celebrate(anchor) {
     if (!window.Confetti || !$('confetti-canvas')) return;
@@ -335,5 +329,5 @@ window.Lessons = (function () {
     });
   });
 
-  return { openMenu: openMenu, tutoDone: tutoDone, setPh: setPh };
+  return { openMenu: openMenu, setPh: setPh };
 })();
