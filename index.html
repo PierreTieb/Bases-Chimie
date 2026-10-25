@@ -52,13 +52,18 @@
     <div class="mode-list" id="labo-list"></div>
   </section>
 
-  <!-- ÉCRAN : LEÇON SUR LE pH (échelle interactive) -->
-  <section id="screen-ph" class="screen screen--sandbox screen--g4">
+  <!-- ÉCRAN : LEÇON SUR LE pH (bécher des ions, puis labo du papier pH) -->
+  <section id="screen-ph" class="screen screen--sandbox screen--k4">
     <button type="button" class="btn-back" id="btn-back-ph">← Retour</button>
     <h1 class="app-title app-title--small">Acides et bases</h1>
-    <div class="ph-card">
-      <div class="ph-value"><span>pH =</span><b id="ph-num">7</b></div>
-      <p class="ph-kind" id="ph-kind">Solution neutre</p>
+    <div class="ph-card" id="ph-ions-view">
+      <div class="ph-ions">
+        <div class="ph-beaker" id="ph-beaker"></div>
+        <div class="ph-readout">
+          <div class="ph-value"><span>pH =</span><b id="ph-num">7</b></div>
+          <p class="ph-kind" id="ph-kind">Solution neutre</p>
+        </div>
+      </div>
       <div class="ph-scale" aria-hidden="true">
         <div class="ph-bar"></div>
         <div class="ph-ticks"><span>0</span><span>7</span><span>14</span></div>
@@ -66,7 +71,13 @@
       </div>
       <input type="range" id="ph-range" class="ph-range" min="0" max="14" step="1" value="7" aria-label="Valeur du pH">
     </div>
+    <div id="ph-lab-host"></div>
   </section>
+
+  <!-- ÉCRANS : LABO DU PAPIER pH (paillasse, entraînement, question du Challenge ; générés par ph-lab.js) -->
+  <section id="screen-phlab" class="screen screen--sandbox screen--k4"></section>
+  <section id="screen-phlab-test" class="screen screen--sandbox screen--k4"></section>
+  <section id="screen-phlab-ch" class="screen screen--sandbox screen--k4"></section>
 
   <!-- ÉCRAN : ENTRAÎNEMENT À CHOIX MULTIPLES (questions générées par qcm.js) -->
   <section id="screen-qcm" class="screen screen--sandbox">
@@ -680,6 +691,7 @@
   <script src="js/atoms-app.js"></script>
   <script src="js/ions-app.js"></script>
   <script src="js/lab-app.js"></script>
+  <script src="js/ph-lab.js"></script>
   <script src="js/states-app.js"></script>
   <script src="js/temp-app.js"></script>
   <script src="js/piston-app.js"></script>

@@ -47,6 +47,16 @@ window.LessonsData = (function () {
   function newPhrase() { window.EquationsCours.startNewReaction(); }
   function freshLab() { window.Lab.free.start(); }
 
+  // Échelle de pH avec quelques solutions de la vie courante
+  var PH_SCALE = '<div class="ph-scale ph-scale--subs">' +
+    [['Citron', 2], ['Eau pure', 7], ['Savon', 10], ['Soude', 13]].map(function (s) {
+      return '<span class="ph-mark" style="left:' + (s[1] / 14 * 100).toFixed(1) + '%">' + s[0] + '</span>';
+    }).join('') +
+    '<div class="ph-bar"></div><div class="ph-ticks"><span>0</span><span>7</span><span>14</span></div>' +
+    '<div class="ph-zones"><span class="ph-z--acid">Acide</span><span class="ph-z--neutral">Neutre</span><span class="ph-z--base">Basique</span></div></div>';
+  var PH_SCALE_PLAIN = '<div class="ph-scale ph-scale--memo"><div class="ph-bar"></div><div class="ph-ticks"><span>0</span><span>7</span><span>14</span></div>' +
+    '<div class="ph-zones"><span class="ph-z--acid">Acide</span><span class="ph-z--neutral">Neutre</span><span class="ph-z--base">Basique</span></div></div>';
+
   var FIRE_SVG = '<svg class="lesson-fire" viewBox="0 0 200 150" aria-hidden="true">' +
     '<path d="M100 14L184 136H16z" fill="#FFE3D6" stroke="#D9463B" stroke-width="4" stroke-linejoin="round"/>' +
     '<text x="100" y="98" text-anchor="middle" font-size="30">🔥</text>' +
@@ -222,7 +232,7 @@ window.LessonsData = (function () {
 
     // ================= 7. L'atome =================
     {
-      id: 'atome', group: 2, color: 'g1', title: 'L\'atome', sub: 'Protons, neutrons, électrons et écriture conventionnelle',
+      id: 'atome', group: 2, color: 'k1', title: 'L\'atome', sub: 'Protons, neutrons, électrons et écriture conventionnelle',
       host: 'screen-atom-cours', start: function () { window.AtomCours.reset(); }, state: atom,
       steps: [
         { title: 'L\'atome', text: 'Un <b>atome</b> est une particule microscopique qui constitue les molécules. Il est indivisible. On connaît aujourd\'hui <b>118 types d\'atomes</b>, classés dans le <b>tableau périodique des éléments</b>.' },
@@ -264,14 +274,14 @@ window.LessonsData = (function () {
 
     // ================= 8. Les ions (tutoriel existant) =================
     {
-      id: 'ions', group: 2, color: 'g3', title: 'Les ions', sub: 'Un atome qui a gagné ou perdu des électrons',
+      id: 'ions', group: 2, color: 'k2', title: 'Les ions', sub: 'Un atome qui a gagné ou perdu des électrons',
       tuto: true, host: 'screen-ion-cours', start: function () { window.Ions.cours.start(); },
       train: { label: 'Construire et identifier des ions', screen: 'screen-ion-exercice', start: function () { window.Ions.exercice.start(); } }
     },
 
     // ================= 9. Identifier les ions =================
     {
-      id: 'tests', group: 2, color: 'g5', title: 'Identifier les ions', sub: 'Soude, nitrate d\'argent et test à la flamme',
+      id: 'tests', group: 2, color: 'k3', title: 'Identifier les ions', sub: 'Soude, nitrate d\'argent et test à la flamme',
       host: 'screen-lab', start: function () { window.Lab.free.start(); }, state: function () { return window.Lab.free.state(); },
       steps: [
         { title: 'Les tests chimiques', text: 'Les ions dissous dans une solution sont invisibles. Pour les identifier, on verse quelques gouttes d\'un <b>réactif</b> : avec certains ions, il se forme un <b>précipité</b>, un solide coloré qui apparaît dans le tube.' },
@@ -300,29 +310,33 @@ window.LessonsData = (function () {
 
     // ================= 10. Acides et bases =================
     {
-      id: 'ph', group: 2, color: 'g4', title: 'Acides et bases', sub: 'Le pH et les ions H⁺ et HO⁻',
-      host: 'screen-ph', start: function () { window.Lessons.setPh(7); }, state: function () { return { v: +document.getElementById('ph-range').value }; },
+      id: 'ph', group: 2, color: 'k4', title: 'Acides et bases', sub: 'Le pH et les ions H⁺ et HO⁻',
+      host: 'screen-ph',
+      start: function () { window.Lessons.setPh(7); window.PhLab.lesson.start(); },
+      state: function () { return { v: +document.getElementById('ph-range').value, lab: window.PhLab.lesson.state() }; },
       steps: [
-        { title: 'Le pH', text: 'Le <b>pH</b> (potentiel Hydrogène) mesure l\'<b>acidité</b> ou la <b>basicité</b> d\'une solution. Il varie de <b>0 à 14</b>.' },
-        { title: 'Une solution acide', text: 'De 0 à 7, la solution est <b>acide</b>.',
-          task: 'Déplace le curseur sur une valeur de pH acide.', check: function (s) { return s.v < 7; } },
-        { title: 'Une solution basique', text: 'De 7 à 14, la solution est <b>basique</b>.',
-          task: 'Déplace le curseur sur une valeur de pH basique.', check: function (s) { return s.v > 7; } },
-        { title: 'Une solution neutre', text: 'À pH 7, la solution est <b>neutre</b>, comme l\'eau pure.',
-          task: 'Déplace le curseur sur la valeur de pH d\'une solution neutre.', check: function (s) { return s.v === 7; } },
-        { title: 'Mesurer le pH', text: 'Le pH se mesure avec du <b>papier pH</b> (on y dépose une goutte de solution et on compare sa couleur à l\'échelle de la boîte) ou avec un <b>pH-mètre</b>.',
-          quiz: { q: 'Une solution de pH 3 est :', choices: ['acide', 'neutre', 'basique'], answer: 0 } },
-        { title: 'Les ions H⁺ et HO⁻', text: 'Les ions ' + ion('H', 1) + ' sont responsables du caractère <b>acide</b> d\'une solution, les ions ' + ion('HO', -1) + ' de son caractère <b>basique</b>. L\'eau pure contient autant d\'ions ' + ion('H', 1) + ' que d\'ions ' + ion('HO', -1) + ' : elle est neutre.',
-          quiz: { q: 'L\'acide chlorhydrique HCl libère des ions ' + ion('H', 1) + ' et ' + ion('Cl', -1) + '. Sa solution est :', choices: ['acide', 'neutre', 'basique'], answer: 0 } },
-        { title: 'La soude', text: 'La soude a pour formule NaOH.',
-          quiz: { q: 'La soude libère des ions ' + ion('Na', 1) + ' et ' + ion('HO', -1) + '. Sa solution est :', choices: ['acide', 'neutre', 'basique'], answer: 2 } }
+        { title: 'Le pH', text: 'Le <b>pH</b> (potentiel Hydrogène) mesure l\'<b>acidité</b> ou la <b>basicité</b> d\'une solution. Il varie de <b>0 à 14</b> :' + PH_SCALE +
+          'de 0 à 7, la solution est <b>acide</b> ; à 7, elle est <b>neutre</b> ; de 7 à 14, elle est <b>basique</b>.' },
+        { title: 'Une solution acide', text: 'Ce bécher contient des ions ' + ion('H', 1) + ' et des ions ' + ion('HO', -1) + '. Dans une solution <b>acide</b>, il y a une <b>majorité d\'ions ' + ion('H', 1) + '</b>.',
+          task: 'Déplace le curseur pour obtenir une solution acide, et observe les ions du bécher.', hold: 3000, check: function (s) { return s.v < 7; } },
+        { title: 'Une solution basique', text: 'Dans une solution <b>basique</b>, il y a une <b>majorité d\'ions ' + ion('HO', -1) + '</b>.',
+          task: 'Déplace le curseur pour obtenir une solution basique, et observe les ions du bécher.', hold: 3000, check: function (s) { return s.v > 7; } },
+        { title: 'Une solution neutre', text: 'Dans une solution <b>neutre</b>, comme l\'eau pure, il y a <b>autant d\'ions ' + ion('H', 1) + ' que d\'ions ' + ion('HO', -1) + '</b>.',
+          task: 'Déplace le curseur pour obtenir une solution neutre, et observe les ions du bécher.', hold: 3000,
+          prep: function () { window.Lessons.setPh(12); }, check: function (s) { return s.v === 7; } },
+        { title: 'Mesurer le pH', cls: 'ph-lab-on', text: 'Au laboratoire, on mesure le pH avec du <b>papier pH</b> :' + window.PhLab.protocolHTML() },
+        { title: 'Mesurer le pH d\'une solution', cls: 'ph-lab-on', text: 'Choisis un flacon. Fais glisser la pipette dans le bécher pour prélever la solution, puis au-dessus de la bandelette pour y déposer une goutte. La boîte s\'ouvre alors : fais glisser la bandelette sur le cercle et touche la couleur qui correspond.',
+          task: 'Choisis une solution et mesure son pH avec le papier pH.', check: function (s) { return s.lab.history.some(function (h) { return h.ok; }); } }
       ],
       memo: function () {
-        return memo('Le pH', '<p>Le pH mesure l\'acidité ou la basicité d\'une solution. Il varie de 0 à 14 et se mesure avec du papier pH ou un pH-mètre.</p>' +
-          '<div class="ph-scale ph-scale--memo"><div class="ph-bar"></div><div class="ph-ticks"><span>0</span><span>7</span><span>14</span></div><div class="ph-zones"><span class="ph-z--acid">Acide</span><span class="ph-z--neutral">Neutre</span><span class="ph-z--base">Basique</span></div></div>') +
-          memo('Les ions responsables', '<p>Les ions ' + ion('H', 1) + ' rendent une solution <b>acide</b>, les ions ' + ion('HO', -1) + ' la rendent <b>basique</b>. Une solution neutre en contient autant des deux.</p>');
+        var cases = [[7, 2, 'acide', 'Majorité d\'ions ' + ion('H', 1)], [4, 4, 'neutre', 'Autant d\'ions ' + ion('H', 1) + ' que d\'ions ' + ion('HO', -1)], [2, 7, 'basique', 'Majorité d\'ions ' + ion('HO', -1)]];
+        return memo('Le pH', '<p>Le pH mesure l\'acidité ou la basicité d\'une solution. Il varie de 0 à 14.</p>' + PH_SCALE_PLAIN) +
+          memo('Les ions responsables', '<div class="ph-cases">' + cases.map(function (c) {
+            return '<div class="ph-case"><div class="ph-case__img">' + window.PhLab.ionsSVG(c[0], c[1]) + '</div><b class="ph-z--' + (c[2] === 'acide' ? 'acid' : c[2] === 'neutre' ? 'neutral' : 'base') + '">Solution ' + c[2] + '</b><span>' + c[3] + '</span></div>';
+          }).join('') + '</div>') +
+          memo('Mesurer le pH', '<p>On dépose une goutte de solution sur une bandelette de <b>papier pH</b>, puis on compare sa couleur avec celles de la boîte.</p>');
       },
-      train: qcm('les acides et les bases', ['ph'])
+      train: { label: 'Mesurer le pH et identifier des solutions inconnues', screen: 'screen-phlab-test', start: function () { window.PhLab.test.start(); } }
     }
   ];
 

@@ -9,7 +9,10 @@ window.App = (function () {
     'screen-ch-results': 'yellow',
     'screen-ch-qcm': 'yellow',
     'screen-qcm': 'home',
-    'screen-ph': 'g4',
+    'screen-ph': 'k4',
+    'screen-phlab': 'k4',
+    'screen-phlab-test': 'k4',
+    'screen-phlab-ch': 'k4',
     'screen-mode1-1': 'b1',
     'screen-exercise1-2': 'b2',
     'screen-equations-cours': 'b3',
@@ -81,8 +84,9 @@ window.App = (function () {
     ['Températures', 'Suis la température de différentes substances qui changent d\'état', 'r2', 'screen-temp', function () { window.TempLab.start('free'); }],
     ['Piston', 'Comprime, étire, chauffe et refroidis solides, liquides et gaz', 'r3', 'screen-piston', function () { window.PistonLab.start(); }],
     ['Molécules', 'Assemble des atomes et découvre la formule de tes molécules', 'b2', 'screen-mode1-1', function () { if (sandbox) sandbox.clearAll(); }],
-    ['Atomes', 'Ajoute protons, neutrons et électrons pour construire un atome', 'g1', 'screen-atom-cours', function () { window.AtomCours.reset(); }],
-    ['Tests d\'ions', 'Soude, nitrate d\'argent et flamme', 'g5', 'screen-lab', function () { window.Lab.free.start(); }]
+    ['Atomes', 'Ajoute protons, neutrons et électrons pour construire un atome', 'k1', 'screen-atom-cours', function () { window.AtomCours.reset(); }],
+    ['Tests d\'ions', 'Soude, nitrate d\'argent et flamme', 'k3', 'screen-lab', function () { window.Lab.free.start(); }],
+    ['pH', 'Mesure le pH de différentes solutions avec du papier pH', 'k4', 'screen-phlab', function () { window.PhLab.bench.start(); }]
   ];
   var sandbox = null;
 

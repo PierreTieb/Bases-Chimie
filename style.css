@@ -1143,3 +1143,100 @@ button.lesson-bar__step::after { content: ''; border: 4px solid transparent; bor
 @media (prefers-reduced-motion: reduce) {
   .medal__shine, .medal__spark, .medal--platine .medal__disc::after, .ch-hud__time--end { animation: none; }
 }
+
+/* ===== Atomes et ions : dégradé du vert clair au kaki (boutons des leçons, paillasses, écrans du pH) ===== */
+.mode-btn--k1 { --c-light: #F3FAE1; --c-mid: #DCEFAF; --c-dark: #B3CF78; --c-text: #3A561A; }
+.mode-btn--k2 { --c-light: #DDEFB6; --c-mid: #BCDB7E; --c-dark: #94B552; --c-text: #324C16; }
+.mode-btn--k3 { --c-light: #CBDA9F; --c-mid: #A8BC6D; --c-dark: #7F9446; --c-text: #2C3F12; }
+.mode-btn--k4 { --c-light: #BFC48E; --c-mid: #9CA265; --c-dark: #747A41; --c-text: #262A0E; }
+body[data-theme="k4"] { --bg-top: #F7F7EC; --bg-bottom: #D2D5AE; }
+.screen--k4, .screen--k4 .eq-catalog-panel { --acc-light: #E4E6C8; --acc-mid: #B5BA82; --acc-dark: #8A905A; --acc-text: #2A2E12; }
+
+/* Échelle de pH : mêmes couleurs que la boîte de papier pH */
+.ph-bar { background: linear-gradient(90deg, #C8202F, #DE2F2C, #EC5A2A, #F38A2B, #F7B52E, #F2DC33, #C6D93A, #8CC43F, #4DB34B, #2A9F86, #2D86C2, #3563AF, #4A4CA0, #5D3A96, #6B2C82); }
+.ph-scale--subs { position: relative; padding-top: 20px; margin: 10px auto 8px; }
+.ph-mark { position: absolute; top: 0; transform: translateX(-50%); font-size: .72rem; font-weight: 800; white-space: nowrap; color: var(--ink); }
+.ph-mark::after { content: ''; position: absolute; left: 50%; top: 100%; width: 2px; height: 6px; background: var(--ink-soft); }
+
+/* Bécher des ions : colonnes de largeur fixe, le bécher ne bouge pas quand le texte du pH change */
+.ph-ions { display: grid; grid-template-columns: 250px 170px; align-items: center; justify-content: center; gap: 12px; margin-bottom: 10px; }
+.ph-beaker { width: 250px; }
+.phi-svg { display: block; width: 100%; height: auto; }
+.ph-readout { text-align: center; }
+.ph-readout .ph-value b { display: inline-block; min-width: 2ch; font-variant-numeric: tabular-nums; }
+.ph-readout .ph-kind { margin-bottom: 0; white-space: nowrap; }
+.phi { font-family: var(--font-display); font-weight: 700; font-size: 15px; }
+.phi--h { fill: #D9463B; }
+.phi--ho { fill: #1F3FA8; }
+.phi-sup { font-size: 10px; }
+#ph-lab-host { display: none; }
+.ph-lab-on #ph-ions-view { display: none; }
+.ph-lab-on #ph-lab-host { display: block; }
+.ph-cases { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; text-align: center; }
+.ph-case { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.ph-case__img { width: 100%; max-width: 130px; }
+.ph-case b { font-size: .9rem; }
+.ph-case span { font-size: .78rem; font-weight: 700; line-height: 1.3; }
+
+/* Labo du papier pH */
+.phl-hit { cursor: pointer; }
+.phl-pip { cursor: grab; touch-action: none; }
+.phl-pip--smooth { transition: transform .5s ease; }
+.phl-pip--drag { cursor: grabbing; }
+.phl-cap { font-size: 7.5px; font-weight: 800; fill: #5E4A28; }
+.phl-top { margin-bottom: 8px; }
+.phl-help { margin: 0; text-align: center; font-weight: 700; color: var(--ink-soft); line-height: 1.35; }
+.phl-cmp-panel { gap: 8px; padding-top: 16px; padding-bottom: 14px; }
+.phl-area { position: relative; touch-action: none; }
+.phl-wheel { display: block; width: min(100%, 290px); height: auto; margin: 0 auto; }
+.phl-num { font-family: var(--font-display); font-weight: 700; font-size: 19px; fill: #fff; text-anchor: middle; paint-order: stroke; stroke: rgba(0,0,0,.35); stroke-width: 3px; pointer-events: none; }
+.phl-wheel-ph { font-family: var(--font-display); font-weight: 700; font-size: 30px; fill: var(--ink-soft); text-anchor: middle; }
+.phl-wheel--pick .phl-sec { cursor: pointer; }
+.phl-wheel .phl-sec.on { stroke: #1F2A36; stroke-width: 6; }
+.phl-dstrip {
+  position: absolute; width: 30px; height: 52px; border-radius: 5px; cursor: grab; z-index: 2;
+  box-shadow: 0 6px 14px rgba(30,36,44,.3), inset 0 0 0 2px rgba(255,255,255,.55);
+}
+.phl-dstrip::after { content: ''; position: absolute; left: 0; right: 0; bottom: -16px; height: 16px; border-radius: 0 0 5px 5px; background: #F3E9C6; box-shadow: 0 6px 14px rgba(30,36,44,.2); }
+.phl-dstrip.drag { cursor: grabbing; }
+.phl-cmsg { margin: 0; min-height: 1.3em; }
+.phl-cmp-panel .ex-actions { margin: 4px 0 0; }
+/* Illustrations du protocole (leçon) */
+.phl-figs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+.phl-fig { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.phl-fig-img { width: 100%; height: 90px; display: flex; align-items: center; justify-content: center; border-radius: 14px; background: #F6F8EE; padding: 6px; }
+.phl-fig-img svg { max-width: 100%; max-height: 100%; }
+.phl-fig figcaption { font-size: .8rem; font-weight: 700; line-height: 1.3; }
+.phl-fig3 { position: relative; height: 100%; aspect-ratio: 1; }
+.phl-fig-wheel { width: 100%; height: 100%; }
+.phl-fig-strip { position: absolute; right: -10px; top: 6px; width: 12px; height: 22px; border-radius: 3px; box-shadow: 0 2px 5px rgba(0,0,0,.3); }
+.phl-subs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.phl-sub {
+  display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 14px; border: 2px solid #E1E6EC; background: #fff;
+  font: inherit; font-weight: 800; font-size: .9rem; text-align: left; color: var(--ink); cursor: pointer;
+}
+.phl-sub:active { background: var(--acc-light); }
+.phl-sw { flex: none; width: 18px; height: 22px; border-radius: 0 0 6px 6px; border: 1.5px solid #9DB9CC; border-top: none; }
+.phl-table { width: 100%; border-collapse: collapse; }
+.phl-table th, .phl-table td { padding: 9px 10px; text-align: left; border-bottom: 1px solid #EEF1F5; font-weight: 700; }
+.phl-table th { font-size: .82rem; color: var(--ink-soft); }
+.phl-table td:last-child, .phl-table th:last-child { text-align: right; font-family: var(--font-display); }
+.phl-row { cursor: pointer; }
+.phl-row:hover td { background: #F6F8EE; }
+.phl-row.on td { background: var(--acc-light); color: var(--acc-text); }
+.ch-run #pch-next { display: none !important; }
+
+/* Questions à choix : bandelette et bécher figé */
+.qcm-strip { display: flex; align-items: center; justify-content: center; gap: 16px; width: 100%; }
+.qcm-wheel { width: min(62%, 220px); height: auto; }
+.qcm-strip__paper { flex: none; width: 30px; height: 64px; border-radius: 5px; box-shadow: 0 4px 10px rgba(30,36,44,.25), inset 0 0 0 2px rgba(255,255,255,.5); }
+.qcm-beaker-ions { width: min(100%, 280px); }
+
+@media (max-width: 480px) {
+  .ph-ions { grid-template-columns: 230px; gap: 0; }
+  .ph-beaker { width: 230px; }
+  .phl-subs { grid-template-columns: 1fr; }
+  .phl-figs { grid-template-columns: 1fr; }
+  .phl-fig { flex-direction: row; text-align: left; }
+  .phl-fig-img { width: 120px; flex: none; height: 70px; }
+}

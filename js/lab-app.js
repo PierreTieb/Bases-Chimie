@@ -60,17 +60,18 @@
   // ---------- Icônes pour le tableau de données ----------
   function tubeIcon(color) {
     var blob = color
-      ? '<ellipse cx="12" cy="38" rx="6.5" ry="4.5" fill="' + PREC_COLOR[color] + '" stroke="#8C98A4" stroke-width=".8"/>' +
-        '<ellipse cx="10" cy="34" rx="4" ry="2.6" fill="' + PREC_COLOR[color] + '" stroke="#8C98A4" stroke-width=".6"/>'
-      : '';
+      ? '<path d="M6.2 33Q6.2 41.5 12 41.5T17.8 33Q15 30.5 12 31.5T6.2 33Z" fill="' + PREC_COLOR[color] + '" stroke="#8C98A4" stroke-width=".7"/>' : '';
     return '<svg viewBox="0 0 24 46" width="24" height="44" aria-hidden="true">' +
-      '<path d="M5 3 V35 A7 7 0 0 0 19 35 V3" fill="rgba(180,220,240,.45)" stroke="#8FA3B3" stroke-width="1.6"/>' + blob + '</svg>';
+      '<path d="M6 5V35A6 6 0 0 0 18 35V5" fill="rgba(170,215,238,.5)" stroke="#8FA3B3" stroke-width="1.4"/>' + blob +
+      '<rect x="4.5" y="2.5" width="15" height="3.2" rx="1.6" fill="#DCE6EE" stroke="#8FA3B3" stroke-width="1"/>' +
+      '<path d="M8.6 9V30" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity=".8"/></svg>';
   }
   function flameIcon(color) {
     return '<svg viewBox="-12 0 24 36" width="24" height="36" aria-hidden="true">' +
-      '<path d="M0 34 C-10 30 -10 14 0 2 C10 14 10 30 0 34 Z" fill="' + color + '" fill-opacity=".85"/>' +
-      '<path d="M0 34 C-5 32 -5 24 0 17 C5 24 5 32 0 34 Z" fill="#4A8CFF" fill-opacity=".8"/></svg>';
+      '<path d="M0 34C-10 31-10 16-1.5 3-1 9 4 11 5 17 8 22 8 31 0 34Z" fill="' + color + '" fill-opacity=".9"/>' +
+      '<path d="M0 34C-4.5 32.5-5 25-.5 18 .5 22 3.5 24 3.5 28 3.5 31.5 2 33.4 0 34Z" fill="#5C93FF" fill-opacity=".85"/></svg>';
   }
+
   function dataHTML() {
     var order1 = ['Cl-', 'Cu2+', 'Fe2+', 'Fe3+', 'Zn2+', 'Al3+'];
     function cell(color, what) {
@@ -93,52 +94,73 @@
   }
 
   // ---------- Scène SVG ----------
-  function flaskSVG(id, formula, l1, l2, body, cap) {
+  // Flacon de réactif, dessiné bouchon en haut (0,0) : il pivote autour du bouchon pour verser
+  function flaskSVG(id, formula, l1, l2, glass, liquid, cap, band) {
     return '<g class="lab-flask" id="' + id + '" role="button" aria-label="Flacon ' + formula + '">' +
-      '<rect x="-5" y="0" width="10" height="13" rx="2" fill="' + cap + '"/>' +
-      '<path d="M-5 12 L5 12 L26 28 L-26 28 Z" fill="' + body + '" stroke="#7E95A6" stroke-width="1.5"/>' +
-      '<rect x="-28" y="26" width="56" height="64" rx="11" fill="' + body + '" stroke="#7E95A6" stroke-width="1.5"/>' +
-      '<rect x="-22" y="38" width="44" height="43" rx="4" fill="#fff" fill-opacity=".95"/>' +
-      '<text x="0" y="53" text-anchor="middle" font-size="11" font-weight="800" fill="#1F2A36">' + formula + '</text>' +
-      '<text x="0" y="65" text-anchor="middle" font-size="8" fill="#3C4A58">' + l1 + '</text>' +
-      (l2 ? '<text x="0" y="74" text-anchor="middle" font-size="8" fill="#3C4A58">' + l2 + '</text>' : '') +
+      '<rect x="-30" y="-2" width="60" height="96" fill="transparent"/>' +
+      '<rect x="-7.5" y="0" width="15" height="12" rx="3" fill="' + cap + '"/>' +
+      '<path d="M-4.5 3v7M-1.5 3v7M1.5 3v7M4.5 3v7" stroke="#fff" stroke-width="1" opacity=".22"/>' +
+      '<path d="M-5.5 11.5h11V19c0 4 19 5 19 15v48c0 5-4 8-9 8h-31c-5 0-9-3-9-8V34c0-10 19-11 19-15z" fill="' + glass + '" stroke="#6F8597" stroke-width="1.5" stroke-linejoin="round"/>' +
+      '<path d="M-22.5 52h45v30c0 4-3 6.5-7 6.5h-31c-4 0-7-2.5-7-6.5z" fill="' + liquid + '"/>' +
+      '<rect x="-20" y="40" width="40" height="38" rx="5" fill="#fff" fill-opacity=".96"/>' +
+      '<path d="M-20 45a5 5 0 0 1 5-5h30a5 5 0 0 1 5 5v1h-40z" fill="' + band + '"/>' +
+      '<text x="0" y="58" text-anchor="middle" font-size="10.5" font-weight="800" fill="#1F2A36">' + formula + '</text>' +
+      '<text x="0" y="68" text-anchor="middle" font-size="7.5" font-weight="700" fill="#3C4A58">' + l1 + '</text>' +
+      (l2 ? '<text x="0" y="76" text-anchor="middle" font-size="7.5" font-weight="700" fill="#3C4A58">' + l2 + '</text>' : '') +
+      '<path d="M-19.5 36c2-4 6-6 10-7" stroke="#fff" stroke-width="2.6" stroke-linecap="round" fill="none" opacity=".75"/>' +
+      '<path d="M22 50v28" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".45"/>' +
       '</g>';
   }
   function sceneSVG(p) {
     var f = window.Molecules.formatSubscripts;
     return '<svg class="lab-svg" viewBox="0 0 360 270" role="img" aria-label="Laboratoire">' +
-      '<defs><clipPath id="' + p + '-clip"><path d="M-13 0 V108 A13 13 0 0 0 13 108 V0 Z"/></clipPath></defs>' +
+      '<defs><clipPath id="' + p + '-clip"><path d="M-13 0 V108 A13 13 0 0 0 13 108 V0 Z"/></clipPath>' +
+        '<radialGradient id="' + p + '-glow"><stop offset="0" stop-color="#FFE9A8" stop-opacity=".75"/><stop offset=".55" stop-color="#FFC566" stop-opacity=".25"/><stop offset="1" stop-color="#FFB040" stop-opacity="0"/></radialGradient></defs>' +
       '<rect x="0" y="250" width="360" height="20" class="lab-table-top"/>' +
-      '<rect x="178" y="232" width="54" height="18" rx="6" fill="#C79A6B"/>' +
-      // bec
+      '<path d="M0 250h360" stroke="#B9A584" stroke-width="2"/>' +
+      // portoir en bois du tube
+      '<path d="M176 250v-16q0-5 5-5h48q5 0 5 5v16z" fill="#D2A876"/>' +
+      '<path d="M176 236h58" stroke="#B88A57" stroke-width="1.5"/>' +
+      '<ellipse cx="205" cy="230.5" rx="16" ry="3" fill="#9C7243"/>' +
+      '<path d="M182 241h10M218 241h10" stroke="#E6C496" stroke-width="2" stroke-linecap="round"/>' +
+      // bec électrique (bec benzène)
       '<g id="' + p + '-burner" class="lab-burner" role="button" aria-label="Bec benzène">' +
-        '<rect x="276" y="120" width="58" height="130" fill="transparent"/>' +
-        '<rect x="283" y="240" width="44" height="10" rx="4" fill="#5B6773"/>' +
-        '<rect x="297" y="190" width="16" height="52" fill="#8693A0"/>' +
-        '<rect x="293" y="212" width="24" height="9" rx="3" fill="#5B6773"/>' +
-        '<rect x="298" y="183" width="14" height="9" rx="2" fill="#5B6773"/>' +
+        '<rect x="272" y="120" width="66" height="130" fill="transparent"/>' +
+        '<path d="M330 244h18q6 0 8 6" fill="none" stroke="#E06A3B" stroke-width="5" stroke-linecap="round"/>' +
+        '<path d="M282 250v-5q0-7 8-7h30q8 0 8 7v5z" fill="#55616D"/>' +
+        '<path d="M287 241q2-2 6-2h24" stroke="#7D8995" stroke-width="2" stroke-linecap="round" fill="none"/>' +
+        '<rect x="297" y="188" width="16" height="52" rx="2.5" fill="#97A3AF"/>' +
+        '<path d="M300.5 192v44" stroke="#C9D2DA" stroke-width="2.4" stroke-linecap="round"/>' +
+        '<rect x="293" y="214" width="24" height="10" rx="3.5" fill="#66727E"/>' +
+        '<circle cx="305" cy="219" r="2.6" fill="#2F3740"/>' +
+        '<rect x="296" y="182" width="18" height="8" rx="2.5" fill="#55616D"/>' +
       '</g>' +
       '<g class="lab-flame" id="' + p + '-flame" style="opacity:0">' +
         '<g transform="translate(305,185)">' +
-          '<path id="' + p + '-fout" d="M0 0 C-17 -8 -15 -36 0 -62 C15 -36 17 -8 0 0 Z" fill="' + FLAME_NORMAL + '" fill-opacity=".45"/>' +
-          '<path d="M0 0 C-8 -4 -8 -17 0 -28 C8 -17 8 -4 0 0 Z" fill="#3D7BFF" fill-opacity=".85"/>' +
+          '<ellipse cx="0" cy="-26" rx="30" ry="40" fill="url(#' + p + '-glow)"/>' +
+          '<path id="' + p + '-fout" d="M0 0C-16-6-17-30-3-64-1-50 9-43 11-30 15-19 12-5 0 0Z" fill="' + FLAME_NORMAL + '" fill-opacity=".5"/>' +
+          '<path d="M0 0C-10-4-11-20-2-42-1-33 6-27 7-19 9-11 7-3 0 0Z" fill="#FFD27A" fill-opacity=".45"/>' +
+          '<path d="M0 0C-6-3-7-12-1-24 0-18 4-15 4.5-10 5.5-5 4-1.5 0 0Z" fill="#3D7BFF" fill-opacity=".85"/>' +
         '</g></g>' +
       // flacons
-      flaskSVG(p + '-fl-naoh', 'NaOH', 'Soude', '', 'rgba(190,225,240,.85)', '#2B3A67') +
-      flaskSVG(p + '-fl-ag', f('AgNO3'), 'Nitrate', "d'argent", 'rgba(201,139,58,.9)', '#2B2B2B') +
-      // tube
+      flaskSVG(p + '-fl-naoh', 'NaOH', 'Soude', '', 'rgba(214,236,248,.9)', 'rgba(170,214,238,.75)', '#2B3A67', '#5B8BD6') +
+      flaskSVG(p + '-fl-ag', f('AgNO3'), 'Nitrate', 'd\'argent', 'rgba(176,110,40,.9)', 'rgba(120,70,20,.55)', '#2B2B2B', '#9AA6B4') +
+      // tube à essais
       '<g class="lab-tube" id="' + p + '-tube" style="opacity:0">' +
+        '<path d="M-14 0V108A14 14 0 0 0 14 108V0" fill="rgba(235,245,252,.45)"/>' +
         '<g clip-path="url(#' + p + '-clip)">' +
-          '<rect x="-14" y="34" width="28" height="100" fill="rgba(160,210,235,.55)"/>' +
+          '<rect x="-14" y="34" width="28" height="100" fill="rgba(160,210,235,.6)"/>' +
+          '<ellipse cx="0" cy="34" rx="13" ry="2.4" fill="rgba(200,232,248,.95)"/>' +
           '<rect id="' + p + '-cloud" x="-14" y="34" width="28" height="100" fill="#fff" style="opacity:0;transition:opacity .8s"/>' +
           '<g id="' + p + '-blob" style="opacity:0;transition:opacity .9s">' +
-            '<ellipse cx="0" cy="113" rx="13" ry="9" class="lab-blob"/><ellipse cx="-3" cy="104" rx="9" ry="5" class="lab-blob"/>' +
+            '<path d="M-13 110Q-13 123 0 123T13 110Q8 103 0 105T-13 110Z" class="lab-blob"/><ellipse cx="-3" cy="104" rx="8" ry="4.5" class="lab-blob"/>' +
           '</g>' +
         '</g>' +
-        '<path d="M-14 0 V108 A14 14 0 0 0 14 108 V0" fill="rgba(255,255,255,.18)" stroke="#8FA3B3" stroke-width="2.2" stroke-linecap="round"/>' +
-        '<rect x="-17" y="-2" width="34" height="5" rx="2.5" fill="#8FA3B3"/>' +
-        '<rect x="-13" y="50" width="26" height="22" rx="4" fill="#fff" fill-opacity=".95"/>' +
-        '<text id="' + p + '-label" x="0" y="65" text-anchor="middle" font-size="10" font-weight="800" fill="#1F2A36"></text>' +
+        '<path d="M-14 0V108A14 14 0 0 0 14 108V0" fill="none" stroke="#7F98AC" stroke-width="2.2" stroke-linecap="round"/>' +
+        '<rect x="-17.5" y="-3" width="35" height="6.5" rx="3.2" fill="#DCE6EE" stroke="#7F98AC" stroke-width="1.6"/>' +
+        '<path d="M-8 9V100" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".75"/>' +
+        '<rect x="-12.5" y="48" width="25" height="22" rx="5" fill="#fff" fill-opacity=".96" stroke="#D3DCE4"/>' +
+        '<text id="' + p + '-label" x="0" y="63" text-anchor="middle" font-size="10" font-weight="800" fill="#1F2A36"></text>' +
       '</g>' +
       '<circle id="' + p + '-drop" r="4" cx="0" cy="0" style="opacity:0"/>' +
     '</svg>';

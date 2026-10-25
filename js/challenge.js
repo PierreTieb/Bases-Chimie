@@ -30,6 +30,11 @@ window.Challenge = (function () {
     Q.hooks.onSolved = h.onSolved; Q.hooks.onFail = h.onFail; Q.hooks.onNext = h.onNext;
     Q.startExpert({ type: spec.type, ions: spec.ions, pool: spec.ions ? P.ions : P.atoms, shake: false });
   }
+  function phLab(kind, h) {
+    var X = window.PhLab.challenge;
+    X.hooks.onSolved = h.onSolved; X.hooks.onFail = h.onFail;
+    X.start(kind);
+  }
   var KINDS = [
     { id: 'qcm4', lvl: '4e', pts: 1, label: 'Question à choix', screen: 'screen-ch-qcm', qcm: '4e' },
     { id: 'qcm3', lvl: '3e', pts: 1, label: 'Question à choix', screen: 'screen-ch-qcm', qcm: '3e' },
@@ -43,7 +48,9 @@ window.Challenge = (function () {
     { id: 'eqBalance', lvl: '4e', pts: 5, label: 'Équilibrer une équation', screen: 'screen-expert', run: function (h) { window.Expert.startOne('balance', h, game.sigs); } },
     { id: 'substance', lvl: '4e', pts: 5, label: 'Identifier une substance', screen: 'screen-temp', run: function (h) { window.TempLab.start('exp', h); } },
     { id: 'ionLab', lvl: '3e', pts: 5, label: 'Identifier un ion au labo', screen: 'screen-atom-expert-lab',
-      run: function (h) { var X = window.Lab.expert; X.hooks.onSolved = h.onSolved; X.hooks.onFail = h.onFail; X.hooks.onNext = h.onNext; X.hooks.nextLabel = 'Question suivante'; X.start(); } }
+      run: function (h) { var X = window.Lab.expert; X.hooks.onSolved = h.onSolved; X.hooks.onFail = h.onFail; X.hooks.onNext = h.onNext; X.hooks.nextLabel = 'Question suivante'; X.start(); } },
+    { id: 'phMeasure', lvl: '3e', pts: 5, label: 'Mesurer un pH', screen: 'screen-phlab-ch', run: function (h) { phLab('measure', h); } },
+    { id: 'phIdentify', lvl: '3e', pts: 5, label: 'Identifier une solution par son pH', screen: 'screen-phlab-ch', run: function (h) { phLab('identify', h); } }
   ];
 
   var game = null, q = null, token = 0, tick = 0, popT = 0, lastLevel = null;
@@ -212,6 +219,7 @@ window.Challenge = (function () {
   // Arrête ce qui tourne encore sur l'écran de la question précédente
   function cleanup() {
     if (q && q.kind.id === 'substance' && window.TempLab) window.TempLab.stop();
+    if (q && /^ph/.test(q.kind.id)) window.PhLab.challenge.stop();
   }
 
   function stopGame() {

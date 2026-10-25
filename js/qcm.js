@@ -334,8 +334,40 @@ window.Qcm = (function () {
     return mk('Quel réactif permet de mettre en évidence l\'ion ' + ionK('Cl-') + ' ?', 'le nitrate d\'argent', ['la soude', 'l\'eau']);
   }
 
+  // Bandelette de papier pH colorée, avec la gamme de la boîte
+  function stripHTML(v) {
+    var P = window.PhLab;
+    return '<div class="qcm-strip">' + P.wheelSVG({ cls: 'qcm-wheel' }) + '<div class="qcm-strip__paper" style="background:' + P.colorAt(v) + '"></div></div>';
+  }
   function ph() {
-    var k = rnd(6);
+    var k = rnd(9), P = window.PhLab, KIND = ['acide', 'neutre', 'basique'];
+    if (k === 6) {
+      // Comparaison de deux solutions dont le pH est donné
+      var two = shuffle(P.SUBS).filter(function (s, i, a) { return a.findIndex(function (x) { return x.ph === s.ph; }) === i; }).slice(0, 2);
+      var more = !!rnd(2), a = two[0], b = two[1];
+      var isTrue = more ? a.ph < b.ph : a.ph > b.ph;
+      var art = function (n) {
+        var l = n.charAt(0).toLowerCase() + n.slice(1);
+        if (/^[aeiou]/.test(l)) return 'l\'' + l;
+        return (l === 'soude' ? 'la ' : 'le ') + l;
+      };
+      var A = art(a.n);
+      return trueFalse(A.charAt(0).toUpperCase() + A.slice(1) + ' (pH = ' + P.phTxt(a.ph) + ') est plus ' + (more ? 'acide' : 'basique') + ' que ' + art(b.n) + ' (pH = ' + P.phTxt(b.ph) + ').',
+        isTrue, 'Plus le pH est petit, plus la solution est acide ; plus il est grand, plus elle est basique.');
+    }
+    if (k === 7) {
+      var sv = pick([1, 2, 3, 4, 5, 7, 9, 10, 11, 12, 13]);
+      return mk('Une goutte de solution a coloré cette bandelette de papier pH. La solution est :', P.kindOf(sv), [], {
+        visual: stripHTML(sv), fixed: KIND, explain: 'La couleur de la bandelette correspond à un pH de ' + sv + '.'
+      });
+    }
+    if (k === 8) {
+      var iv = pick([1, 3, 5, 7, 7, 9, 11, 13]), n = P.counts(iv), half = function (x) { return Math.max(1, Math.round(x / 2)); };
+      return mk('Ce bécher représente les ions ' + ionTxt('H', 1) + ' et ' + ionTxt('HO', -1) + ' d\'une solution. Elle est :', P.kindOf(iv), [], {
+        visual: '<div class="qcm-beaker-ions">' + P.ionsSVG(half(n.h), half(n.ho)) + '</div>', fixed: KIND,
+        explain: 'Plus d\'ions H⁺ : acide ; plus d\'ions HO⁻ : basique ; autant des deux : neutre.'
+      });
+    }
     if (k === 0) {
       var v = rnd(15);
       return mk('Une solution de <b>pH = ' + v + '</b> est :', v < 7 ? 'acide' : (v === 7 ? 'neutre' : 'basique'), [], {

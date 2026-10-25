@@ -18,7 +18,7 @@ window.Lessons = (function () {
   function markStep() {
     if (doneSteps[idx]) return;
     doneSteps[idx] = true;
-    var m = readSteps(), l = m[cur.id] || [];
+    var m = readSteps(), l = (m[cur.id] || []).filter(function (k) { return k < cur.steps.length && doneSteps[k]; });
     if (l.indexOf(idx) < 0) l.push(idx);
     m[cur.id] = l;
     try { localStorage.setItem(KEY_STEPS, JSON.stringify(m)); } catch (e) { /* stockage indisponible */ }
@@ -63,7 +63,10 @@ window.Lessons = (function () {
     if (l.tuto) return;                                   // le tutoriel signale lui-même sa fin
     cur = l; idx = 0; ctx = {};
     doneSteps = {};
-    (readSteps()[l.id] || []).forEach(function (k) { doneSteps[k] = true; });
+    var saved = readSteps()[l.id] || [];
+    // Une étape enregistrée au-delà de la fin : la leçon a changé depuis, sa progression repart de zéro
+    if (saved.some(function (k) { return k >= l.steps.length; })) saved = [];
+    saved.forEach(function (k) { doneSteps[k] = true; });
     document.body.classList.add('lesson-on');
     mountBar();
     showStep();
@@ -313,6 +316,7 @@ window.Lessons = (function () {
     $('ph-kind').textContent = v < 7 ? 'Solution acide' : (v === 7 ? 'Solution neutre' : 'Solution basique');
     $('ph-kind').className = 'ph-kind ' + (v < 7 ? 'ph-z--acid' : (v === 7 ? 'ph-z--neutral' : 'ph-z--base'));
     $('ph-range').style.setProperty('--ph', v / 14);
+    window.PhLab.Ions.set(v);
   }
 
   document.addEventListener('DOMContentLoaded', function () {
