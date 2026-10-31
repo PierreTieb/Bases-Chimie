@@ -100,7 +100,19 @@
     </div>
     <p class="ch-rules__more">Chaque erreur fait perdre 1 point à la question en cours. Passer une question coûte 5 secondes.</p>
     <div class="ch-bests" id="ch-bests"></div>
-    <div class="ex-actions"><button type="button" class="btn-primary ch-go" id="btn-ch-start">Commencer</button></div>
+    <!-- Solo : une silhouette ; Duel : deux silhouettes séparées par un éclair -->
+    <div class="ch-modes">
+      <button type="button" class="mode-btn mode-btn--yellow ch-mode" id="btn-ch-solo">
+        <svg class="ch-mode__ico" viewBox="0 0 120 56" aria-hidden="true"><circle cx="60" cy="15" r="9" fill="currentColor"/><path d="M44 54v-8a16 16 0 0 1 32 0v8z" fill="currentColor"/></svg>
+        <span class="mode-btn__title">Mode Solo</span>
+        <span class="mode-btn__subtitle">Bats ton meilleur score</span>
+      </button>
+      <button type="button" class="mode-btn mode-btn--orange ch-mode" id="btn-ch-duel">
+        <svg class="ch-mode__ico" viewBox="0 0 120 56" aria-hidden="true"><circle cx="24" cy="15" r="9" fill="currentColor"/><path d="M8 54v-8a16 16 0 0 1 32 0v8z" fill="currentColor"/><path d="M64 4L50 30h10l-6 22 18-30H61l7-18z" fill="#FFD84D" stroke="#B8860B" stroke-width="2" stroke-linejoin="round"/><circle cx="96" cy="15" r="9" fill="currentColor"/><path d="M80 54v-8a16 16 0 0 1 32 0v8z" fill="currentColor"/></svg>
+        <span class="mode-btn__title">Mode Duel</span>
+        <span class="mode-btn__subtitle">Les mêmes questions que ton adversaire</span>
+      </button>
+    </div>
   </section>
 
   <!-- ÉCRAN : QUESTION À CHOIX DU CHALLENGE -->
